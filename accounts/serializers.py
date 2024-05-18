@@ -162,3 +162,5 @@ class LogoutUserSerializer(serializers.Serializer):
 class VerifyUserEmailSerializer(serializers.Serializer):
     otp = serializers.CharField(max_length=6)
 
+
+

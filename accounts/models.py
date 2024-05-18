@@ -5,6 +5,13 @@ from django.contrib.auth.models import Group, Permission
 from rest_framework_simplejwt.tokens import RefreshToken
 from .validators import validate_phone_number
 
+MEETING_TYPES = (
+    ('Şənlik', 'Şənlik'),
+    ('Toplantı', 'Toplantı'),
+    ('Konfrans', 'Konfrans'),
+    ('Seminar', 'Seminar'),
+)
+
 
 USER_TYPE = (
     ("technician", "technician"),
@@ -36,10 +43,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
-    groups = models.ManyToManyField(
+    group = models.ForeignKey(
         Group,
         verbose_name=('groups'),
         blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
         related_name='accounts_users',  
         related_query_name='user',
     )
@@ -93,7 +102,17 @@ class OneTimePassword(models.Model):
     user=models.OneToOneField(User, on_delete=models.CASCADE)
     otp=models.CharField(max_length=6)
 
-
     def __str__(self):
         return f"{self.user.first_name} - otp code"
     
+class Meeting(models.Model):
+    title = models.CharField(max_length=300)
+    meeting_type = models.CharField(max_length=100,choices=MEETING_TYPES)
+    participants = models.ManyToManyField(User,related_name='meetings')
+    date = models.DateTimeField()
+    meeting_description = models.TextField(null=True,blank=True)
+
+    def __str__(self):
+        return f"{self.title}-{self.meeting_type}"
+
+

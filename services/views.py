@@ -1,5 +1,5 @@
 from .models import Task
-from .serializers import TaskSerializer, TaskDetailSerializer
+from .serializers import TaskSerializer, TaskDetailSerializer,MainPageUserSerializer,CreateTaskSerializer
 from .filters import StatusAndTaskFilter
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
@@ -65,3 +65,17 @@ class UserTaskListView(APIView):
         }
 
         return Response(response_data, status=status.HTTP_200_OK)
+    
+#####################################################################################################################
+
+class MainPageView(generics.RetrieveAPIView):
+    serializer_class = MainPageUserSerializer
+
+    def get_object(self):
+        return self.request.user
+
+class CreateTaskView(generics.CreateAPIView):
+    serializer_class = CreateTaskSerializer
+    queryset = Task
+
+

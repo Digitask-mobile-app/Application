@@ -30,39 +30,56 @@ from modeltranslation.admin import TranslationAdmin
 
 #         self.fields['task_type'].choices = choices
 
-@admin.register(Task)
-class TaskAdmin(TranslationAdmin):
-    # form = TaskAdminForm
-    list_display = ("description",)
-    class Media:
+# @admin.register(Task)
+# class TaskAdmin(TranslationAdmin):
+#     # form = TaskAdminForm
+#     list_display = ("description",)
+#     class Media:
 
-        group_fieldsets = True 
+#         group_fieldsets = True 
 
-        js = (
-            'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
-            'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
-            'modeltranslation/js/tabbed_translation_fields.js',
-        )
-        css = {
-            'screen': ('modeltranslation/css/tabbed_translation_fields.css',),
-        }
+#         js = (
+#             'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
+#             'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
+#             'modeltranslation/js/tabbed_translation_fields.js',
+#         )
+#         css = {
+#             'screen': ('modeltranslation/css/tabbed_translation_fields.css',),
+#         }
 
-@admin.register(PlumberTask)
-class PlumberTaskAdmin(TranslationAdmin):
-    list_display = ("equipment",)
-    class Media:
+# @admin.register(PlumberTask)
+# class PlumberTaskAdmin(TranslationAdmin):
+#     list_display = ("equipment",)
+#     class Media:
 
-        group_fieldsets = True 
+#         group_fieldsets = True 
 
-        js = (
-            'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
-            'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
-            'modeltranslation/js/tabbed_translation_fields.js',
-        )
-        css = {
-            'screen': ('modeltranslation/css/tabbed_translation_fields.css',),
-        }
+#         js = (
+#             'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
+#             'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
+#             'modeltranslation/js/tabbed_translation_fields.js',
+#         )
+#         css = {
+#             'screen': ('modeltranslation/css/tabbed_translation_fields.css',),
+#         }
 
-admin.site.register(Internet)
-admin.site.register(Voice)
-admin.site.register(TV)
+
+
+admin.site.register(PlumberTask)
+
+class TvInline(admin.StackedInline):  
+    model = TV
+    extra = 0
+
+class InternetInline(admin.StackedInline):  
+    model = Internet
+    extra = 0
+
+class VoiceInline(admin.StackedInline):  
+    model = Voice
+    extra = 0
+
+class TaskAdmin(admin.ModelAdmin):
+    inlines = [TvInline,InternetInline,VoiceInline]
+    
+admin.site.register(Task,TaskAdmin)

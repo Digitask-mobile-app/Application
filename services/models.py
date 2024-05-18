@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import User
+from accounts.models import User,Group
 # from django.contrib.gis.db import models
 
 
@@ -28,13 +28,18 @@ class Task(Status):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     task_type = models.CharField(max_length=100, choices=TASK_TYPES)
     description = models.TextField()
+
     registration_number = models.CharField(max_length=100)
     contact_number = models.CharField(max_length=100)
-    photo_ID = models.ImageField(upload_to='photo_id/')
     location = models.CharField(max_length=100)  
     note = models.CharField(max_length=300)
     date = models.CharField(max_length=100)
+    group = models.ManyToManyField(Group, related_name='group_tasks')
     status = models.CharField(max_length=100, choices=status_task, default='waiting')
+
+    is_voice = models.BooleanField(default=False)
+    is_internet = models.BooleanField(default=False)
+    is_tv = models.BooleanField(default=False)
 
     def __str__(self):
         return self.description
@@ -90,3 +95,4 @@ class PlumberTask(models.Model):
     def __str__(self):
         return self.equipment
     
+
