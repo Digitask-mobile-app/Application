@@ -27,14 +27,14 @@ class Status(models.Model):
 class Task(Status):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     task_type = models.CharField(max_length=100, choices=TASK_TYPES)
-    description = models.TextField()
+    description = models.TextField(null=True,blank=True)
 
     registration_number = models.CharField(max_length=100)
-    contact_number = models.CharField(max_length=100)
+    contact_number = models.CharField(max_length=100,null=True,blank=True)
     location = models.CharField(max_length=100)  
-    note = models.CharField(max_length=300)
+    note = models.TextField(null=True,blank=True)
     date = models.CharField(max_length=100)
-    group = models.ManyToManyField(Group, related_name='group_tasks')
+    group = models.ManyToManyField(Group, related_name='group_tasks',blank=True)
     status = models.CharField(max_length=100, choices=status_task, default='waiting')
 
     is_voice = models.BooleanField(default=False)

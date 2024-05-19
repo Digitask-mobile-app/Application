@@ -1,5 +1,5 @@
 from .models import Task
-from .serializers import TaskSerializer, TaskDetailSerializer,MainPageUserSerializer,CreateTaskSerializer
+from .serializers import *
 from .filters import StatusAndTaskFilter
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
@@ -76,6 +76,18 @@ class MainPageView(generics.RetrieveAPIView):
 
 class CreateTaskView(generics.CreateAPIView):
     serializer_class = CreateTaskSerializer
-    queryset = Task
+    queryset = Task.objects.all()
 
 
+
+class CreateUpdateTvView(generics.CreateAPIView,generics.UpdateAPIView):
+    serializer_class = TVSerializer
+    queryset = TV.objects.all()
+
+class CreateUpdateInternetView(generics.CreateAPIView,generics.UpdateAPIView):
+    serializer_class = InternetSerializer
+    queryset = Internet.objects.all()
+
+class CreateUpdateVoiceView(generics.CreateAPIView,generics.UpdateAPIView):
+    serializer_class = VoiceSerializer
+    queryset = Voice.objects.all()
