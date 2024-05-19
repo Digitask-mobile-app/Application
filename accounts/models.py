@@ -71,7 +71,6 @@ class User(AbstractBaseUser, PermissionsMixin):
             "access":str(refresh.access_token)
         }
 
-
     def __str__(self):
         return self.email
 
