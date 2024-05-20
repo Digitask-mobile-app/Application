@@ -36,7 +36,6 @@ class TaskListAPIView(generics.ListAPIView):
     filter_backends = (DjangoFilterBackend,)
 
     
-
 class UserTaskListView(APIView):
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]

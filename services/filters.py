@@ -23,7 +23,7 @@ MONTH_CHOICES = [
 ]
 
 class StatusAndTaskFilter(django_filters.FilterSet):
-    status = django_filters.ChoiceFilter(choices=status_task, field_name='status')
+    status = django_filters.MultipleChoiceFilter(choices=status_task, field_name='status')
     task_type = django_filters.ChoiceFilter(choices=TASK_TYPES, field_name='task_type')
     month = django_filters.ChoiceFilter(choices=MONTH_CHOICES, method='filter_by_month', field_name='date')
 
@@ -37,11 +37,9 @@ class StatusAndTaskFilter(django_filters.FilterSet):
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
         if self.request.user.is_authenticated:
-            if self.request.user.is_office_manager or self.request.user.is_superuser:
-                return queryset
-
             if self.request.user.is_technician:
                 return queryset.filter(user=self.request.user) | queryset.filter(status='waiting')
+<<<<<<< HEAD
 
         return queryset.filter(status='waiting')
 
@@ -58,3 +56,6 @@ class TaskFilter(django_filters.FilterSet):
     class Meta:
         model = Task
         fields = ['start_date', 'end_date']
+=======
+        return queryset
+>>>>>>> 750d8d0c1af4453e9b92352b620e26c69fd9aa4e

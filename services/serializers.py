@@ -4,6 +4,12 @@ from accounts.models import User,Group,Meeting
 from django.db.models import Q
 from .filters import TaskFilter
 
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = '__all__'
+
 class InternetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Internet
@@ -20,6 +26,7 @@ class VoiceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TaskSerializer(serializers.ModelSerializer):
+    group = GroupSerializer(many=True)
     class Meta:
         model = Task
         fields = '__all__'
@@ -42,11 +49,6 @@ class TaskDetailSerializer(serializers.ModelSerializer):
 
     def get_services(self, obj):
         return obj.get_service()
-
-class GroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Group
-        fields = '__all__'
 
 
 class PerformanceSerializer(serializers.ModelSerializer):
@@ -71,6 +73,7 @@ class MeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meeting
         exclude = ['participants']
+
 
 
 
