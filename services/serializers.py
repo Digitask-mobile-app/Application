@@ -3,6 +3,11 @@ from .models import Task, Internet, Voice, TV
 from accounts.models import User,Group,Meeting
 from django.db.models import Q
 
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = '__all__'
+
 class InternetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Internet
@@ -19,6 +24,7 @@ class VoiceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TaskSerializer(serializers.ModelSerializer):
+    group = GroupSerializer(many=True)
     class Meta:
         model = Task
         fields = '__all__'
@@ -53,10 +59,7 @@ class MeetingSerializer(serializers.ModelSerializer):
         model = Meeting
         exclude = ['participants']
 
-class GroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Group
-        fields = '__all__'
+
 
 
 class MainPageUserSerializer(serializers.ModelSerializer):
