@@ -68,7 +68,6 @@ class CreateTaskView(generics.CreateAPIView):
     queryset = Task.objects.all()
 
 
-
 class CreateUpdateTvView(generics.CreateAPIView,generics.UpdateAPIView):
     serializer_class = TVSerializer
     queryset = TV.objects.all()

@@ -27,24 +27,13 @@ class Status(models.Model):
 class Task(Status):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     task_type = models.CharField(max_length=100, choices=TASK_TYPES)
-<<<<<<< HEAD
-    description = models.TextField()
-=======
     description = models.TextField(null=True,blank=True)
-
->>>>>>> dc86624421ba9e88307d8fd0f1eb2c0508c246cf
     registration_number = models.CharField(max_length=100)
     contact_number = models.CharField(max_length=100,null=True,blank=True)
     location = models.CharField(max_length=100)  
-<<<<<<< HEAD
-    note = models.CharField(max_length=300)
-    date = models.DateField()
-    group = models.ManyToManyField(Group, related_name='group_tasks')
-=======
     note = models.TextField(null=True,blank=True)
-    date = models.CharField(max_length=100)
+    date = models.DateField()
     group = models.ManyToManyField(Group, related_name='group_tasks',blank=True)
->>>>>>> dc86624421ba9e88307d8fd0f1eb2c0508c246cf
     status = models.CharField(max_length=100, choices=status_task, default='waiting')
 
     is_voice = models.BooleanField(default=False)
@@ -105,4 +94,3 @@ class PlumberTask(models.Model):
     def __str__(self):
         return self.equipment
     
-
