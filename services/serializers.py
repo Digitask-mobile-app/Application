@@ -2,6 +2,7 @@ from rest_framework import serializers, viewsets
 from .models import Task, Internet, Voice, TV
 from accounts.models import User,Group,Meeting
 from django.db.models import Q
+from .filters import TaskFilter
 
 class InternetSerializer(serializers.ModelSerializer):
     class Meta:
@@ -42,9 +43,27 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     def get_services(self, obj):
         return obj.get_service()
 
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = '__all__'
 
 
+class PerformanceSerializer(serializers.ModelSerializer):
+    group = GroupSerializer(many=True)
+    task_count = serializers.SerializerMethodField()
 
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'group', 'task_count']
+
+    def get_task_count(self, obj):
+        request = self.context.get('request')
+        if request:
+            queryset = Task.objects.filter(user=obj)
+            filtered_queryset = TaskFilter(request.GET, queryset=queryset).qs
+            return filtered_queryset.count()
+        return 0
 
 ################################################################################################
 
@@ -53,10 +72,6 @@ class MeetingSerializer(serializers.ModelSerializer):
         model = Meeting
         exclude = ['participants']
 
-class GroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Group
-        fields = '__all__'
 
 
 class MainPageUserSerializer(serializers.ModelSerializer):

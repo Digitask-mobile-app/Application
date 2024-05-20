@@ -1,6 +1,10 @@
 import django_filters
 from .models import status_task, TASK_TYPES
 from .models import Task
+from django_filters import rest_framework as filters
+from django import forms
+from django_filters import DateFilter
+
 
 
 MONTH_CHOICES = [
@@ -31,6 +35,7 @@ class StatusAndTaskFilter(django_filters.FilterSet):
         return queryset.filter(date__month=value)
     
     def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
         if self.request.user.is_authenticated:
             if self.request.user.is_office_manager or self.request.user.is_superuser:
                 return queryset
@@ -39,3 +44,17 @@ class StatusAndTaskFilter(django_filters.FilterSet):
                 return queryset.filter(user=self.request.user) | queryset.filter(status='waiting')
 
         return queryset.filter(status='waiting')
+
+class TaskFilter(django_filters.FilterSet):
+    start_date = DateFilter(field_name='date', lookup_expr='gte', widget=forms.DateInput(attrs={
+        'type': 'date',
+        'class': 'form-control',
+    }))
+    end_date = DateFilter(field_name='date', lookup_expr='lte', widget=forms.DateInput(attrs={
+        'type': 'date',
+        'class': 'form-control',
+    }))
+
+    class Meta:
+        model = Task
+        fields = ['start_date', 'end_date']

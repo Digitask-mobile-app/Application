@@ -1,6 +1,6 @@
 from .models import Task
 from .serializers import *
-from .filters import StatusAndTaskFilter
+from .filters import StatusAndTaskFilter,TaskFilter
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import ListAPIView, RetrieveAPIView
@@ -54,6 +54,20 @@ class UserTaskListView(APIView):
         }
 
         return Response(response_data, status=status.HTTP_200_OK)
+    
+
+class PerformanceView(generics.RetrieveAPIView):
+    serializer_class = PerformanceSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = TaskFilter
+
+    def get_object(self):
+        return self.request.user
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
     
 #####################################################################################################################
 
