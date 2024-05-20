@@ -6,7 +6,6 @@ from django import forms
 from django_filters import DateFilter
 
 
-
 MONTH_CHOICES = [
     (1, 'January'),
     (2, 'February'),
@@ -39,10 +38,8 @@ class StatusAndTaskFilter(django_filters.FilterSet):
         if self.request.user.is_authenticated:
             if self.request.user.is_technician:
                 return queryset.filter(user=self.request.user) | queryset.filter(status='waiting')
-<<<<<<< HEAD
-
-        return queryset.filter(status='waiting')
-
+        return queryset
+    
 class TaskFilter(django_filters.FilterSet):
     start_date = DateFilter(field_name='date', lookup_expr='gte', widget=forms.DateInput(attrs={
         'type': 'date',
@@ -56,6 +53,3 @@ class TaskFilter(django_filters.FilterSet):
     class Meta:
         model = Task
         fields = ['start_date', 'end_date']
-=======
-        return queryset
->>>>>>> 750d8d0c1af4453e9b92352b620e26c69fd9aa4e
