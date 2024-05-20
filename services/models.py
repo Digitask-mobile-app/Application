@@ -28,12 +28,11 @@ class Task(Status):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     task_type = models.CharField(max_length=100, choices=TASK_TYPES)
     description = models.TextField()
-
     registration_number = models.CharField(max_length=100)
     contact_number = models.CharField(max_length=100)
     location = models.CharField(max_length=100)  
     note = models.CharField(max_length=300)
-    date = models.CharField(max_length=100)
+    date = models.DateField()
     group = models.ManyToManyField(Group, related_name='group_tasks')
     status = models.CharField(max_length=100, choices=status_task, default='waiting')
 

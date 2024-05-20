@@ -48,20 +48,9 @@ class UserTaskListView(APIView):
 
     def get(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        connection_completed_count = queryset.filter(task_type='connection', status='completed').count()
-        problem_completed_count = queryset.filter(task_type='problem', status='completed').count()
-        completed_count = queryset.filter(status='completed').count()
-
-        context = {
-            'connection_completed_count': connection_completed_count,
-            'problem_completed_count': problem_completed_count,
-            'completed_count': completed_count
-        }
-
         serializer = self.serializer_class(queryset, many=True)
         response_data = {
             'tasks': serializer.data,
-            'summary': context
         }
 
         return Response(response_data, status=status.HTTP_200_OK)

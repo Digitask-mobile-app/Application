@@ -37,7 +37,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ['id', 'user', 'task_type', 'description', 'registration_number', 'contact_number', 'photo_ID', 'location', 'note', 'date', 'status', 'tv', 'voice', 'internet', 'services']
+        fields = ['id', 'user', 'task_type', 'description', 'registration_number', 'contact_number', 'location', 'note', 'date', 'status', 'tv', 'voice', 'internet', 'services']
 
     def get_services(self, obj):
         return obj.get_service()
