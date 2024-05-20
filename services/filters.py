@@ -36,7 +36,6 @@ class StatusAndTaskFilter(django_filters.FilterSet):
                 return queryset
 
             if self.request.user.is_technician:
-                return queryset.filter(user=self.request.user)
+                return queryset.filter(user=self.request.user) | queryset.filter(status='waiting')
 
         return queryset.filter(status='waiting')
-    
