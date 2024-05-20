@@ -2,8 +2,6 @@ from django.db import models
 from accounts.models import User,Group
 # from django.contrib.gis.db import models
 
-
-
 TASK_TYPES = (
     ('connection', 'connection'),
     ('problem', 'problem'),

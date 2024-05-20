@@ -29,3 +29,14 @@ class StatusAndTaskFilter(django_filters.FilterSet):
 
     def filter_by_month(self, queryset, name, value):
         return queryset.filter(date__month=value)
+    
+    def filter_queryset(self, queryset):
+        if self.request.user.is_authenticated:
+            if self.request.user.is_office_manager or self.request.user.is_superuser:
+                return queryset
+
+            if self.request.user.is_technician:
+                return queryset.filter(user=self.request.user)
+
+        return queryset.filter(status='waiting')
+    
