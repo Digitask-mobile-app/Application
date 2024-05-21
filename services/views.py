@@ -51,23 +51,19 @@ class UserTaskListView(APIView):
         response_data = {
             'tasks': serializer.data,
         }
-
         return Response(response_data, status=status.HTTP_200_OK)
     
-
-class PerformanceView(generics.RetrieveAPIView):
-    serializer_class = PerformanceSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_class = TaskFilter
-
-    def get_object(self):
-        return self.request.user
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['request'] = self.request
-        return context
     
+
+class PerformanceListView(generics.ListAPIView):
+    serializer_class = PerformanceSerializer
+    filterset_class = TaskFilter
+    filter_backends = (DjangoFilterBackend,)
+
+    def get_queryset(self):
+        return User.objects.filter(task__isnull=False).distinct()
+    
+
 #####################################################################################################################
 
 class MainPageView(generics.RetrieveAPIView):

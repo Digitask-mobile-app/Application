@@ -60,12 +60,10 @@ class PerformanceSerializer(serializers.ModelSerializer):
         fields = ['id', 'first_name', 'last_name', 'group', 'task_count']
 
     def get_task_count(self, obj):
-        request = self.context.get('request')
-        if request:
-            queryset = Task.objects.filter(user=obj)
-            filtered_queryset = TaskFilter(request.GET, queryset=queryset).qs
-            return filtered_queryset.count()
-        return 0
+        return Task.objects.filter(user=obj).count()
+
+
+
 
 ################################################################################################
 
