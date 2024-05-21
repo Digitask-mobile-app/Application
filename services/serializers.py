@@ -57,10 +57,18 @@ class PerformanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'group', 'task_count']
+        fields = ['id', 'user_type', 'first_name', 'last_name', 'group', 'task_count']
 
     def get_task_count(self, obj):
-        return Task.objects.filter(user=obj).count()
+        total = Task.objects.filter(user=obj).count()
+        connection = Task.objects.filter(user=obj,task_type='connection').count()
+        problem = Task.objects.filter(user=obj,task_type='problem').count()
+        data = {
+            'total':total,
+            'connection':connection,
+            'problem':problem
+        }
+        return data
 
 
 
