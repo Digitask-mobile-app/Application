@@ -52,7 +52,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
 
 
 class PerformanceSerializer(serializers.ModelSerializer):
-    group = GroupSerializer(many=True)
+    group = GroupSerializer()
     task_count = serializers.SerializerMethodField()
 
     class Meta:
