@@ -94,6 +94,10 @@ class PlumberTask(models.Model):
 
     def __str__(self):
         return self.equipment
+
+class WarehouseManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(deleted=False)
     
 class Warehouse(models.Model):
     equipment_name = models.CharField(max_length=255)
@@ -103,9 +107,16 @@ class Warehouse(models.Model):
     number = models.PositiveIntegerField()
     region = models.CharField(max_length=255)
     size_length = models.DecimalField(max_digits=10, decimal_places=2)
+    deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.equipment_name} - {self.serial_number}"
+    
+    objects = WarehouseManager()
+
+    def delete(self):
+        self.deleted = True
+        self.save()
 
 
 class History(models.Model):

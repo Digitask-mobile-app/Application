@@ -9,7 +9,9 @@ urlpatterns = [
     path('task/<int:id>/', views.TaskDetailView.as_view(), name='task-detail'),
     path('status/', views.TaskListAPIView.as_view(), name='filtered_tasks'),
     path('performance/', views.PerformanceListView.as_view(), name='performance'),
+    
     path('import/', views.WarehouseImportView.as_view(), name='warehouse-import'),
+    path('export/<int:id>/', views.WarehouseExportView.as_view(), name='warehouse-export'),
 
     path('create_task/', views.CreateTaskView.as_view(), name='create_task'),
 
