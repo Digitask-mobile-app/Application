@@ -75,9 +75,59 @@ class WarehouseSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class HistorySerializer(serializers.ModelSerializer):
+    equipment_name = serializers.SerializerMethodField()
+    brand = serializers.SerializerMethodField()
+    model = serializers.SerializerMethodField()
+    serial_number = serializers.SerializerMethodField()
+    region = serializers.SerializerMethodField()
+    number = serializers.SerializerMethodField()
+    size_length = serializers.SerializerMethodField()
+
     class Meta:
         model = History
-        fields = '__all__'
+        fields = ['equipment_name', 'brand', 'model', 'serial_number', 'region', 'number', 'size_length', 'action', 'timestamp']
+
+    def get_equipment_name(self, obj):
+        try:
+            return obj.warehouse_item.equipment_name
+        except AttributeError:
+            return "Deleted"
+
+    def get_brand(self, obj):
+        try:
+            return obj.warehouse_item.brand
+        except AttributeError:
+            return "Deleted"
+
+    def get_model(self, obj):
+        try:
+            return obj.warehouse_item.model
+        except AttributeError:
+            return "Deleted"
+
+    def get_serial_number(self, obj):
+        try:
+            return obj.warehouse_item.serial_number
+        except AttributeError:
+            return "Deleted"
+
+    def get_region(self, obj):
+        try:
+            return obj.warehouse_item.region
+        except AttributeError:
+            return "Deleted"
+
+    def get_number(self, obj):
+        try:
+            return obj.warehouse_item.number
+        except AttributeError:
+            return "Deleted"
+
+    def get_size_length(self, obj):
+        try:
+            return obj.warehouse_item.size_length
+        except AttributeError:
+            return "Deleted"
 
 
 ################################################################################################

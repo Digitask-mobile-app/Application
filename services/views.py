@@ -6,18 +6,17 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
 from accounts.models import User
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import TokenAuthentication
-from django.db.models import Q, ProtectedError
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
-from django.http import JsonResponse, HttpResponseNotFound
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
+from django.views import View
+from .models import History
 
 class CreateTaskView(generics.CreateAPIView):
     serializer_class = TaskDetailSerializer
@@ -127,6 +126,12 @@ class WarehouseExportView(generics.DestroyAPIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class HistoryListView(APIView):
+    def get(self, request):
+        history_items = History.objects.all()
+        serializer = HistorySerializer(history_items, many=True)
+        return Response(serializer.data)
 
 #####################################################################################################################
 
