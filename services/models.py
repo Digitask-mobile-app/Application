@@ -134,4 +134,25 @@ class History(models.Model):
         else:
             return f"{self.get_action_display()} - Deleted Warehouse Item - {self.timestamp}"
 
+    def get_equipment_name(self):
+        return self.warehouse_item.equipment_name if self.warehouse_item else "Deleted"
+
+    def get_brand(self):
+        return self.warehouse_item.brand if self.warehouse_item else "Deleted"
+
+    def get_model(self):
+        return self.warehouse_item.model if self.warehouse_item else "Deleted"
+
+    def get_serial_number(self):
+        return self.warehouse_item.serial_number if self.warehouse_item else "Deleted"
+
+    def get_region(self):
+        return self.warehouse_item.region if self.warehouse_item else "Deleted"
+
+    def get_number(self):
+        return self.warehouse_item.number if self.warehouse_item else "Deleted"
+
+    def get_size_length(self):
+        return self.warehouse_item.size_length if self.warehouse_item else "Deleted"
+
 

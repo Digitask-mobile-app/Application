@@ -89,8 +89,63 @@ class WarehouseAdmin(admin.ModelAdmin):
     list_display = ('equipment_name', 'brand', 'model', 'serial_number', 'number', 'region', 'size_length')
     search_fields = ('equipment_name', 'brand', 'model', 'serial_number', 'region')
 
+from django.contrib import admin
+
 @admin.register(History)
 class HistoryAdmin(admin.ModelAdmin):
-    list_display = ('warehouse_item', 'action', 'timestamp')
-    search_fields = ('warehouse_item__equipment_name', 'action')
-    
+    list_display = (
+        'get_equipment_name', 
+        'get_brand', 
+        'get_model', 
+        'get_serial_number', 
+        'get_region', 
+        'action', 
+        'timestamp'
+    )
+    search_fields = (
+        'warehouse_item__equipment_name', 
+        'warehouse_item__brand', 
+        'warehouse_item__model', 
+        'warehouse_item__serial_number', 
+        'warehouse_item__region', 
+        'action'
+    )
+    readonly_fields = (
+        'warehouse_item', 
+        'get_equipment_name', 
+        'get_brand', 
+        'get_model', 
+        'get_serial_number', 
+        'get_region', 
+        'get_number', 
+        'get_size_length'
+    )
+
+    def get_equipment_name(self, obj):
+        return obj.get_equipment_name()
+    get_equipment_name.short_description = 'Equipment Name'
+
+    def get_brand(self, obj):
+        return obj.get_brand()
+    get_brand.short_description = 'Brand'
+
+    def get_model(self, obj):
+        return obj.get_model()
+    get_model.short_description = 'Model'
+
+    def get_serial_number(self, obj):
+        return obj.get_serial_number()
+    get_serial_number.short_description = 'Serial Number'
+
+    def get_region(self, obj):
+        return obj.get_region()
+    get_region.short_description = 'Region'
+
+    def get_number(self, obj):
+        return obj.get_number()
+    get_number.short_description = 'Number'
+
+    def get_size_length(self, obj):
+        return obj.get_size_length()
+    get_size_length.short_description = 'Size Length'
+
