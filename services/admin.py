@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Task, Internet, Voice, TV, PlumberTask
+from .models import Task, Internet, Voice, TV, PlumberTask, Warehouse, History
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import get_language
@@ -83,3 +83,14 @@ class TaskAdmin(admin.ModelAdmin):
     inlines = [TvInline,InternetInline,VoiceInline]
     
 admin.site.register(Task,TaskAdmin)
+
+@admin.register(Warehouse)
+class WarehouseAdmin(admin.ModelAdmin):
+    list_display = ('equipment_name', 'brand', 'model', 'serial_number', 'number', 'region', 'size_length')
+    search_fields = ('equipment_name', 'brand', 'model', 'serial_number', 'region')
+
+@admin.register(History)
+class HistoryAdmin(admin.ModelAdmin):
+    list_display = ('warehouse_item', 'action', 'timestamp')
+    search_fields = ('warehouse_item__equipment_name', 'action')
+    

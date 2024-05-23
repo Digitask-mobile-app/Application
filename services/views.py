@@ -1,4 +1,4 @@
-from .models import Task
+from .models import Task, Warehouse
 from .serializers import *
 from .filters import StatusAndTaskFilter,TaskFilter
 from rest_framework import generics
@@ -10,10 +10,14 @@ from rest_framework.authtoken.models import Token
 from accounts.models import User
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
-from django.db.models import Q
+from django.db.models import Q, ProtectedError
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
-
+from django.http import JsonResponse, HttpResponseNotFound
+from django.views.decorators.csrf import csrf_exempt
+from django.db import transaction
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 
 class CreateTaskView(generics.CreateAPIView):
     serializer_class = TaskDetailSerializer
@@ -62,7 +66,67 @@ class PerformanceListView(generics.ListAPIView):
 
     def get_queryset(self):
         return User.objects.filter(task__isnull=False).distinct()
+
+
+
+@receiver(pre_delete, sender=Warehouse)
+def warehouse_pre_delete(sender, instance, **kwargs):
+    History.objects.create(
+        warehouse_item=instance,
+        action='export'
+    )
+
+@csrf_exempt
+def export_item(request, id):
+    if request.method == 'DELETE':
+        try:
+            warehouse_item = Warehouse.objects.get(id=id)
+            History.objects.create(
+                warehouse_item=warehouse_item,
+                action='export'
+            )
+            warehouse_item.delete()
+            return JsonResponse({"success": "Item exported successfully."})
+        except Warehouse.DoesNotExist:
+            return JsonResponse({"error": "Item not found."}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        return JsonResponse({"error": "Invalid request method."}, status=status.HTTP_400_BAD_REQUEST)
+
     
+    
+class WarehouseImportView(generics.CreateAPIView):
+    queryset = Warehouse.objects.all()
+    serializer_class = WarehouseSerializer
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        if response.status_code == status.HTTP_201_CREATED:
+            warehouse_item = Warehouse.objects.get(id=response.data['id'])
+            warehouse_item.number += 1
+            warehouse_item.save()
+        return response
+
+class WarehouseExportView(generics.DestroyAPIView):
+    queryset = Warehouse.objects.all()
+    serializer_class = WarehouseSerializer
+    lookup_field = 'id'
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        try:
+            with transaction.atomic():
+                deleted_instance = instance
+                History.objects.create(
+                    warehouse_item=deleted_instance,
+                    action='export'
+                )
+                warehouse_item = Warehouse.objects.get(id=instance.id)
+                warehouse_item.number -= 1
+                warehouse_item.save()
+                instance.delete()
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 #####################################################################################################################
 

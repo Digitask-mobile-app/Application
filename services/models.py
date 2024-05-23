@@ -1,6 +1,9 @@
-from django.db import models
+from django.db import models, transaction
 from accounts.models import User,Group
 # from django.contrib.gis.db import models
+from django.db.models import ProtectedError
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 TASK_TYPES = (
     ('connection', 'connection'),
@@ -92,3 +95,32 @@ class PlumberTask(models.Model):
     def __str__(self):
         return self.equipment
     
+class Warehouse(models.Model):
+    equipment_name = models.CharField(max_length=255)
+    brand = models.CharField(max_length=255)
+    model = models.CharField(max_length=255)
+    serial_number = models.CharField(max_length=255, unique=True)
+    number = models.PositiveIntegerField()
+    region = models.CharField(max_length=255)
+    size_length = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.equipment_name} - {self.serial_number}"
+
+
+class History(models.Model):
+    ACTION_CHOICES = [
+        ('import', 'Import'),
+        ('export', 'Export')
+    ]
+    warehouse_item = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
+    action = models.CharField(max_length=6, choices=ACTION_CHOICES)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        if self.warehouse_item:
+            return f"{self.get_action_display()} - {self.warehouse_item.equipment_name} - {self.timestamp}"
+        else:
+            return f"{self.get_action_display()} - Deleted Warehouse Item - {self.timestamp}"
+
+
