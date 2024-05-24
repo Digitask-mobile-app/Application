@@ -150,20 +150,31 @@ class MainPageUserSerializer(serializers.ModelSerializer):
         fields = ('first_name','last_name','group','user_type','task_details','ongoing_tasks','meetings')
 
     def get_task_details(self,obj):
-        tv_task_count = Task.objects.filter(user=obj, is_tv=True).count()
-        internet_task_count = Task.objects.filter(user=obj, is_internet=True).count()
-        voice_task_count = Task.objects.filter(user=obj, is_voice=True).count()
+        if obj.user_type == 'technician' or obj.user_type == 'plumber':
+            tv_task_count = Task.objects.filter(user=obj, is_tv=True).count()
+            internet_task_count = Task.objects.filter(user=obj, is_internet=True).count()
+            voice_task_count = Task.objects.filter(user=obj, is_voice=True).count()
 
-        response = {
-            'tv_count':tv_task_count,
-            'internet_count':internet_task_count,
-            'voice_count':voice_task_count,
-        }
-
+            response = {
+                'tv_count':tv_task_count,
+                'internet_count':internet_task_count,
+                'voice_count':voice_task_count,
+            }
+        else:
+            problem_count = Task.objects.filter(task_type='problem').count()
+            connection_count = Task.objects.filter(task_type='connection').count()
+            
+            response = {
+                'problem_count':problem_count,
+                'connection_count':connection_count
+            }
         return response
     
     def get_ongoing_tasks(self,obj):
-        ongoing_tasks = Task.objects.filter(user=obj, status__in=['started', 'inprogress'])
+        if obj.user_type == 'technician' or obj.user_type == 'plumber':
+            ongoing_tasks = Task.objects.filter(user=obj, status__in=['started', 'inprogress'])
+        else:
+            ongoing_tasks = Task.objects.filter(status__in=['started', 'inprogress'])
         data = TaskSerializer(ongoing_tasks,many=True).data
         return data
     
