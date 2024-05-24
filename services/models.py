@@ -34,6 +34,7 @@ class Task(Status):
     location = models.CharField(max_length=100)  
     note = models.TextField(null=True,blank=True)
     date = models.DateField()
+    time = models.CharField(max_length=200,null=True,blank=True)
     group = models.ManyToManyField(Group, related_name='group_tasks',blank=True)
     status = models.CharField(max_length=100, choices=status_task, default='waiting')
 

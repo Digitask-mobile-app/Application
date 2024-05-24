@@ -135,6 +135,7 @@ class HistoryListView(APIView):
 
 #####################################################################################################################
 
+
 class MainPageView(generics.RetrieveAPIView):
     serializer_class = MainPageUserSerializer
 
