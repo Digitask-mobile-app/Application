@@ -23,7 +23,7 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('email',)
 
     def change_password_link(self, obj):
-        return format_html('<a href="{}">Change Password</a>', reverse('password_reset'))
+        return format_html('<a href="{}">Change Password</a>', reverse('password-reset'))
 
     change_password_link.short_description = 'Password Reset'
 
