@@ -150,7 +150,7 @@ class MainPageUserSerializer(serializers.ModelSerializer):
         fields = ('first_name','last_name','group','user_type','task_details','ongoing_tasks','meetings')
 
     def get_task_details(self,obj):
-        if obj.user_type == 'technician' | obj.user_type == 'plumber':
+        if obj.user_type == 'technician' or obj.user_type == 'plumber':
             tv_task_count = Task.objects.filter(user=obj, is_tv=True).count()
             internet_task_count = Task.objects.filter(user=obj, is_internet=True).count()
             voice_task_count = Task.objects.filter(user=obj, is_voice=True).count()
@@ -171,7 +171,7 @@ class MainPageUserSerializer(serializers.ModelSerializer):
         return response
     
     def get_ongoing_tasks(self,obj):
-        if obj.user_type == 'technician' | obj.user_type == 'plumber':
+        if obj.user_type == 'technician' or obj.user_type == 'plumber':
             ongoing_tasks = Task.objects.filter(user=obj, status__in=['started', 'inprogress'])
         else:
             ongoing_tasks = Task.objects.filter(status__in=['started', 'inprogress'])
