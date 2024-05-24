@@ -161,8 +161,8 @@ class MainPageUserSerializer(serializers.ModelSerializer):
                 'voice_count':voice_task_count,
             }
         else:
-            problem_count = Task.objects.filter(task_type='problem')
-            connection_count = Task.objects.filter(task_type='connection')
+            problem_count = Task.objects.filter(task_type='problem').count()
+            connection_count = Task.objects.filter(task_type='connection').count()
             
             response = {
                 'problem_count':problem_count,
