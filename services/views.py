@@ -74,24 +74,6 @@ def warehouse_pre_delete(sender, instance, **kwargs):
         warehouse_item=instance,
         action='export'
     )
-
-@csrf_exempt
-def export_item(request, id):
-    if request.method == 'DELETE':
-        try:
-            warehouse_item = Warehouse.objects.get(id=id)
-            History.objects.create(
-                warehouse_item=warehouse_item,
-                action='export'
-            )
-            warehouse_item.delete()
-            return JsonResponse({"success": "Item exported successfully."})
-        except Warehouse.DoesNotExist:
-            return JsonResponse({"error": "Item not found."}, status=status.HTTP_404_NOT_FOUND)
-    else:
-        return JsonResponse({"error": "Invalid request method."}, status=status.HTTP_400_BAD_REQUEST)
-
-    
     
 class WarehouseImportView(generics.CreateAPIView):
     queryset = Warehouse.objects.all()
@@ -157,3 +139,19 @@ class CreateUpdateInternetView(generics.CreateAPIView,generics.UpdateAPIView):
 class CreateUpdateVoiceView(generics.CreateAPIView,generics.UpdateAPIView):
     serializer_class = VoiceSerializer
     queryset = Voice.objects.all()
+
+# @csrf_exempt
+# def export_item(request, id):
+#     if request.method == 'DELETE':
+#         try:
+#             warehouse_item = Warehouse.objects.get(id=id)
+#             History.objects.create(
+#                 warehouse_item=warehouse_item,
+#                 action='export'
+#             )
+#             warehouse_item.delete()
+#             return JsonResponse({"success": "Item exported successfully."})
+#         except Warehouse.DoesNotExist:
+#             return JsonResponse({"error": "Item not found."}, status=status.HTTP_404_NOT_FOUND)
+#     else:
+#         return JsonResponse({"error": "Invalid request method."}, status=status.HTTP_400_BAD_REQUEST)

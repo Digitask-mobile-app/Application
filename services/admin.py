@@ -89,8 +89,6 @@ class WarehouseAdmin(admin.ModelAdmin):
     list_display = ('equipment_name', 'brand', 'model', 'serial_number', 'number', 'region', 'size_length')
     search_fields = ('equipment_name', 'brand', 'model', 'serial_number', 'region')
 
-from django.contrib import admin
-
 @admin.register(History)
 class HistoryAdmin(admin.ModelAdmin):
     list_display = (
@@ -120,32 +118,3 @@ class HistoryAdmin(admin.ModelAdmin):
         'get_number', 
         'get_size_length'
     )
-
-    def get_equipment_name(self, obj):
-        return obj.get_equipment_name()
-    get_equipment_name.short_description = 'Equipment Name'
-
-    def get_brand(self, obj):
-        return obj.get_brand()
-    get_brand.short_description = 'Brand'
-
-    def get_model(self, obj):
-        return obj.get_model()
-    get_model.short_description = 'Model'
-
-    def get_serial_number(self, obj):
-        return obj.get_serial_number()
-    get_serial_number.short_description = 'Serial Number'
-
-    def get_region(self, obj):
-        return obj.get_region()
-    get_region.short_description = 'Region'
-
-    def get_number(self, obj):
-        return obj.get_number()
-    get_number.short_description = 'Number'
-
-    def get_size_length(self, obj):
-        return obj.get_size_length()
-    get_size_length.short_description = 'Size Length'
-
