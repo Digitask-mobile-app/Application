@@ -1,9 +1,11 @@
 from django.contrib import admin
-from .models import User, OneTimePassword, Group, Meeting
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext, gettext_lazy as _
+from .models import User, OneTimePassword, Group, Meeting
 from django.urls import reverse
 from django.utils.html import format_html
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+
 
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
@@ -18,14 +20,15 @@ class UserAdmin(BaseUserAdmin):
             'fields': ('email', 'password1', 'password2'),
         }),
     )
-    list_display = ('email', 'first_name', 'last_name', 'is_staff', 'change_password_link')
-    search_fields = ('email', 'first_name', 'last_name')
+    list_display = ('email', 'first_name', 'last_name', 'phone', 'user_type', 'group', 'is_active', 'is_staff', 'is_superuser')
+    search_fields = ('email', 'first_name', 'last_name', 'phone')
     ordering = ('email',)
 
     def change_password_link(self, obj):
         return format_html('<a href="{}">Change Password</a>', reverse('password-reset'))
 
     change_password_link.short_description = 'Password Reset'
+
 
 admin.site.register(User, UserAdmin)
 admin.site.register(OneTimePassword)

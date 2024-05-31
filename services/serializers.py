@@ -41,13 +41,21 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     voice = VoiceSerializer()
 
     services = serializers.SerializerMethodField()
+    first_name = serializers.SerializerMethodField()
+    last_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Task
-        fields = ['id', 'user', 'task_type', 'description', 'registration_number', 'contact_number', 'location', 'note', 'date', 'status', 'tv', 'voice', 'internet', 'services']
+        fields = ['id', 'user', 'task_type', 'description', 'registration_number', 'contact_number', 'location', 'note', 'date', "time", 'status', 'tv', 'voice', 'internet', 'services', 'first_name', 'last_name']
 
     def get_services(self, obj):
         return obj.get_service()
+    
+    def get_first_name(self, obj):
+        return obj.user.first_name if obj.user else None
+
+    def get_last_name(self, obj):
+        return obj.user.last_name if obj.user else None
 
 
 class PerformanceSerializer(serializers.ModelSerializer):
