@@ -41,46 +41,13 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     voice = VoiceSerializer()
 
     services = serializers.SerializerMethodField()
-    first_name = serializers.SerializerMethodField()
-    last_name = serializers.SerializerMethodField()
-    phone = serializers.SerializerMethodField()
+
     class Meta:
         model = Task
-        fields = [
-            'id', 'user', 'task_type', 'description', 'registration_number',
-            'contact_number', 'location', 'note', 'date', 'time', 'status',
-            'tv', 'voice', 'internet', 'services', 'first_name', 'last_name', 'phone'
-        ]
+        fields = ['id', 'user', 'task_type', 'description', 'registration_number', 'contact_number', 'location', 'note', 'date', 'status', 'tv', 'voice', 'internet', 'services']
 
     def get_services(self, obj):
-        try:
-            return obj.get_service()
-        except Exception as e:
-            print(f"Error getting services: {e}")
-            return None
-
-    def get_first_name(self, obj):
-        try:
-            return obj.user.first_name if obj.user else None
-        except AttributeError as e:
-            print(f"Error getting first name: {e}")
-            return None
-
-    def get_last_name(self, obj):
-        try:
-            return obj.user.last_name if obj.user else None
-        except AttributeError as e:
-            print(f"Error getting last name: {e}")
-            return None
-        
-    def get_phone(self, obj):
-        try:
-            return obj.user.phone if obj.user else None
-        except AttributeError as e:
-            print(f"Error getting phone: {e}")
-            return None
-    
-
+        return obj.get_service()
 
 
 class PerformanceSerializer(serializers.ModelSerializer):
