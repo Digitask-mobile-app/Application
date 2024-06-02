@@ -21,7 +21,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=User
-        fields = ['email', 'first_name', 'last_name','phone', 'username', 'password', 'password2']
+        fields = ['email', 'first_name', 'last_name', 'phone', 'username', 'password', 'password2']
 
     def validate(self, attrs):
         password=attrs.get('password', '')
@@ -45,31 +45,34 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
 class LoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=155, min_length=6)
-    password=serializers.CharField(max_length=68, write_only=True)
-    access_token=serializers.CharField(max_length=255, read_only=True)
-    refresh_token=serializers.CharField(max_length=255, read_only=True)
+    password = serializers.CharField(max_length=68, write_only=True)
+    access_token = serializers.CharField(max_length=255, read_only=True)
+    refresh_token = serializers.CharField(max_length=255, read_only=True)
+    user_type = serializers.CharField(max_length=20, read_only=True)
 
     class Meta:
         model = User
-        fields = ['email', 'password', 'access_token', 'refresh_token']
+        fields = ['email', 'password', 'access_token', 'refresh_token', 'user_type']
 
     def validate(self, attrs):
         email = attrs.get('email')
         password = attrs.get('password')
-        request=self.context.get('request')
+        request = self.context.get('request')
         user = authenticate(email=email, password=password)
+
         if not user:
-            raise AuthenticationFailed("invalid credential try again")
+            raise AuthenticationFailed("Invalid credentials, try again.")
         if not user.is_verified:
             raise AuthenticationFailed("Email is not verified")
-        tokens=user.tokens()
+
+        tokens = user.tokens()
+
         return {
-            'email':user.email,
-            "access_token":str(tokens.get('access')),
-            "refresh_token":str(tokens.get('refresh'))
+            'email': user.email,
+            'access_token': str(tokens.get('access')),
+            'refresh_token': str(tokens.get('refresh')),
+            'user_type': user.user_type,
         }
-
-
 
 class PasswordResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=255)
