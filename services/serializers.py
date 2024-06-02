@@ -88,7 +88,6 @@ class TaskDetailSerializer(serializers.ModelSerializer):
         except AttributeError as e:
             print(f"Error getting phone: {e}")
             return None
-    
 
 
 
