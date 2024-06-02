@@ -36,10 +36,20 @@ class StatusAndTaskFilter(django_filters.FilterSet):
     
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
+        
         if self.request.user.is_authenticated:
             if self.request.user.is_technician:
-                return queryset.filter(user=self.request.user) | queryset.filter(status='waiting')
+                valid_statuses = ['waiting']  
+                technician_tasks = queryset.filter(user=self.request.user)
+                waiting_tasks = queryset.filter(status__in=valid_statuses)
+                
+                combined_queryset = technician_tasks | waiting_tasks
+                combined_queryset = combined_queryset.distinct()
+                
+                return combined_queryset
+            
         return queryset
+
     
 class TaskFilter(django_filters.FilterSet):
     start_date = django_filters.DateFilter(field_name='task__date', lookup_expr='gte', widget=forms.DateInput(attrs={
