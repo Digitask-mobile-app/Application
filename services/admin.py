@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Task, Internet, Voice, TV, PlumberTask, Warehouse, History, WarehouseManager
+from .models import Task, Internet, Voice, TV, PlumberTask
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import get_language
@@ -67,6 +67,7 @@ from modeltranslation.admin import TranslationAdmin
 
 admin.site.register(PlumberTask)
 
+
 class TvInline(admin.StackedInline):  
     model = TV
     extra = 0
@@ -84,37 +85,37 @@ class TaskAdmin(admin.ModelAdmin):
     
 admin.site.register(Task,TaskAdmin)
 
-@admin.register(Warehouse)
-class WarehouseAdmin(admin.ModelAdmin):
-    list_display = ('equipment_name', 'brand', 'model', 'serial_number', 'number', 'region', 'size_length')
-    search_fields = ('equipment_name', 'brand', 'model', 'serial_number', 'region')
+# admin.site.register(Warehouse)
 
-@admin.register(History)
-class HistoryAdmin(admin.ModelAdmin):
-    list_display = (
-        'get_equipment_name', 
-        'get_brand', 
-        'get_model', 
-        'get_serial_number', 
-        'get_region', 
-        'action', 
-        'timestamp'
-    )
-    search_fields = (
-        'warehouse_item__equipment_name', 
-        'warehouse_item__brand', 
-        'warehouse_item__model', 
-        'warehouse_item__serial_number', 
-        'warehouse_item__region', 
-        'action'
-    )
-    readonly_fields = (
-        'warehouse_item', 
-        'get_equipment_name', 
-        'get_brand', 
-        'get_model', 
-        'get_serial_number', 
-        'get_region', 
-        'get_number', 
-        'get_size_length'
-    )
+
+# @admin.register(Item)
+# class ItemAdmin(admin.ModelAdmin):
+#     list_display = ('warehouse', 'equipment_name', 'brand', 'model', 'serial_number', 'number', 'size_length')
+#     search_fields = ('warehouse', 'equipment_name', 'brand', 'model', 'serial_number')
+
+# @admin.register(History)
+# class HistoryAdmin(admin.ModelAdmin):
+#     list_display = (
+#         'get_equipment_name', 
+#         'get_brand', 
+#         'get_model', 
+#         'get_serial_number', 
+#         'action', 
+#         'timestamp'
+#     )
+#     search_fields = (
+#         'warehouse_item__equipment_name', 
+#         'warehouse_item__brand', 
+#         'warehouse_item__model', 
+#         'warehouse_item__serial_number', 
+#         'action'
+#     )
+#     readonly_fields = (
+#         'warehouse_item', 
+#         'get_equipment_name', 
+#         'get_brand', 
+#         'get_model', 
+#         'get_serial_number', 
+#         'get_number', 
+#         'get_size_length'
+#     )
