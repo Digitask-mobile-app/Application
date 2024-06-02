@@ -96,71 +96,71 @@ class PlumberTask(models.Model):
     def __str__(self):
         return self.equipment
     
-# class Warehouse(models.Model):
-#     name = models.CharField(max_length=255)
-#     region = models.CharField(max_length=255)
+class Warehouse(models.Model):
+    name = models.CharField(max_length=255)
+    region = models.CharField(max_length=255)
 
-#     def __str__(self):
-#         return self.name
+    def __str__(self):
+        return self.name
 
-# class ItemManager(models.Manager):
-#     def get_queryset(self):
-#         return super().get_queryset().filter(deleted=False)
+class ItemManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(deleted=False)
     
-# class Item(models.Model):
-#     warehouse = models.ForeignKey(Warehouse, on_delete= models.CASCADE)
-#     equipment_name = models.CharField(max_length=255)
-#     brand = models.CharField(max_length=255)
-#     model = models.CharField(max_length=255)
-#     serial_number = models.CharField(max_length=255, unique=True)
-#     number = models.PositiveIntegerField()
-#     size_length = models.DecimalField(max_digits=10, decimal_places=2)
-#     deleted = models.BooleanField(default=False)
+class Item(models.Model):
+    warehouse = models.ForeignKey(Warehouse, on_delete= models.CASCADE)
+    equipment_name = models.CharField(max_length=255)
+    brand = models.CharField(max_length=255)
+    model = models.CharField(max_length=255)
+    serial_number = models.CharField(max_length=255, unique=True)
+    number = models.PositiveIntegerField()
+    size_length = models.DecimalField(max_digits=10, decimal_places=2)
+    deleted = models.BooleanField(default=False)
 
-#     def __str__(self):
-#         return f"{self.equipment_name} - {self.serial_number}"
+    def __str__(self):
+        return f"{self.equipment_name} - {self.serial_number}"
     
-#     objects = ItemManager()
+    objects = ItemManager()
 
-#     def delete(self):
-#         self.deleted = True
-#         self.save()
+    def delete(self):
+        self.deleted = True
+        self.save()
 
 
-# class History(models.Model):
-#     ACTION_CHOICES = [
-#         ('import', 'Import'),
-#         ('export', 'Export')
-#     ]
-#     warehouse_item = models.ForeignKey(Item, on_delete=models.CASCADE)
-#     action = models.CharField(max_length=6, choices=ACTION_CHOICES)
-#     timestamp = models.DateTimeField(auto_now_add=True)
+class History(models.Model):
+    ACTION_CHOICES = [
+        ('import', 'Import'),
+        ('export', 'Export')
+    ]
+    warehouse_item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    action = models.CharField(max_length=6, choices=ACTION_CHOICES)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
-#     def __str__(self):
-#         if self.warehouse_item:
-#             return f"{self.get_action_display()} - {self.warehouse_item.equipment_name} - {self.timestamp}"
-#         else:
-#             return f"{self.get_action_display()} - Deleted Warehouse Item - {self.timestamp}"
+    def __str__(self):
+        if self.warehouse_item:
+            return f"{self.get_action_display()} - {self.warehouse_item.equipment_name} - {self.timestamp}"
+        else:
+            return f"{self.get_action_display()} - Deleted Warehouse Item - {self.timestamp}"
 
-#     def get_warehouse(self):
-#         return self.warehouse_item.warehouse if self.warehouse_item else "Deleted"
+    def get_warehouse(self):
+        return self.warehouse_item.warehouse if self.warehouse_item else "Deleted"
 
-#     def get_equipment_name(self):
-#         return self.warehouse_item.equipment_name if self.warehouse_item else "Deleted"
+    def get_equipment_name(self):
+        return self.warehouse_item.equipment_name if self.warehouse_item else "Deleted"
 
-#     def get_brand(self):
-#         return self.warehouse_item.brand if self.warehouse_item else "Deleted"
+    def get_brand(self):
+        return self.warehouse_item.brand if self.warehouse_item else "Deleted"
 
-#     def get_model(self):
-#         return self.warehouse_item.model if self.warehouse_item else "Deleted"
+    def get_model(self):
+        return self.warehouse_item.model if self.warehouse_item else "Deleted"
 
-#     def get_serial_number(self):
-#         return self.warehouse_item.serial_number if self.warehouse_item else "Deleted"
+    def get_serial_number(self):
+        return self.warehouse_item.serial_number if self.warehouse_item else "Deleted"
 
-#     def get_number(self):
-#         return self.warehouse_item.number if self.warehouse_item else "Deleted"
+    def get_number(self):
+        return self.warehouse_item.number if self.warehouse_item else "Deleted"
 
-#     def get_size_length(self):
-#         return self.warehouse_item.size_length if self.warehouse_item else "Deleted"
+    def get_size_length(self):
+        return self.warehouse_item.size_length if self.warehouse_item else "Deleted"
 
 

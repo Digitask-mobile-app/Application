@@ -1,4 +1,4 @@
-from .models import Task
+from .models import Task, Item, History
 from .serializers import *
 from .filters import StatusAndTaskFilter,TaskFilter
 from rest_framework import generics
@@ -16,7 +16,6 @@ from django.db import transaction
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.views import View
-# from .models import History
 
 class CreateTaskView(generics.CreateAPIView):
     serializer_class = TaskDetailSerializer
@@ -68,52 +67,52 @@ class PerformanceListView(generics.ListAPIView):
 
 
 
-# @receiver(pre_delete, sender=Item)
-# def warehouse_pre_delete(sender, instance, **kwargs):
-#     History.objects.create(
-#         warehouse_item=instance,
-#         action='export'
-#     )
+@receiver(pre_delete, sender=Item)
+def warehouse_pre_delete(sender, instance, **kwargs):
+    History.objects.create(
+        warehouse_item=instance,
+        action='export'
+    )
     
-# class ItemImportView(generics.CreateAPIView):
-#     queryset = Item.objects.all()
-#     serializer_class = ItemSerializer
+class ItemImportView(generics.CreateAPIView):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
 
-#     def create(self, request, *args, **kwargs):
-#         response = super().create(request, *args, **kwargs)
-#         if response.status_code == status.HTTP_201_CREATED:
-#             warehouse_item = Item.objects.get(id=response.data['id'])
-#             warehouse_item.number += 1
-#             warehouse_item.save()
-#         return response
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        if response.status_code == status.HTTP_201_CREATED:
+            warehouse_item = Item.objects.get(id=response.data['id'])
+            warehouse_item.number += 1
+            warehouse_item.save()
+        return response
 
-# class ItemExportView(generics.DestroyAPIView):
-#     queryset = Item.objects.all()
-#     serializer_class = ItemSerializer
-#     lookup_field = 'id'
+class ItemExportView(generics.DestroyAPIView):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+    lookup_field = 'id'
 
-#     def destroy(self, request, *args, **kwargs):
-#         instance = self.get_object()
-#         try:
-#             with transaction.atomic():
-#                 deleted_instance = instance
-#                 History.objects.create(
-#                     warehouse_item=deleted_instance,
-#                     action='export'
-#                 )
-#                 warehouse_item = Item.objects.get(id=instance.id)
-#                 warehouse_item.number -= 1
-#                 warehouse_item.save()
-#                 instance.delete()
-#         except Exception as e:
-#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-#         return Response(status=status.HTTP_204_NO_CONTENT)
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        try:
+            with transaction.atomic():
+                deleted_instance = instance
+                History.objects.create(
+                    warehouse_item=deleted_instance,
+                    action='export'
+                )
+                warehouse_item = Item.objects.get(id=instance.id)
+                warehouse_item.number -= 1
+                warehouse_item.save()
+                instance.delete()
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
-# class HistoryListView(APIView):
-#     def get(self, request):
-#         history_items = History.objects.all()
-#         serializer = HistorySerializer(history_items, many=True)
-#         return Response(serializer.data)
+class HistoryListView(APIView):
+    def get(self, request):
+        history_items = History.objects.all()
+        serializer = HistorySerializer(history_items, many=True)
+        return Response(serializer.data)
 
 #####################################################################################################################
 
