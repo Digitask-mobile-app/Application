@@ -26,9 +26,18 @@ class VoiceSerializer(serializers.ModelSerializer):
 
 class TaskSerializer(serializers.ModelSerializer):
     group = GroupSerializer(many=True)
+    first_name = serializers.SerializerMethodField()
+    last_name = serializers.SerializerMethodField()
+
     class Meta:
         model = Task
         fields = '__all__'
+
+    def get_first_name(self, obj):
+        return obj.user.first_name if obj.user else None
+
+    def get_last_name(self, obj):
+        return obj.user.last_name if obj.user else None
 
 class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
