@@ -94,6 +94,7 @@ class ItemAdmin(admin.ModelAdmin):
 @admin.register(History)
 class HistoryAdmin(admin.ModelAdmin):
     list_display = (
+        'get_warehouse',
         'get_equipment_name', 
         'get_brand', 
         'get_model', 
@@ -102,6 +103,7 @@ class HistoryAdmin(admin.ModelAdmin):
         'timestamp'
     )
     search_fields = (
+        'warehouse_item__warehouse',
         'warehouse_item__equipment_name', 
         'warehouse_item__brand', 
         'warehouse_item__model', 
@@ -110,6 +112,7 @@ class HistoryAdmin(admin.ModelAdmin):
     )
     readonly_fields = (
         'warehouse_item', 
+        'get_warehouse',
         'get_equipment_name', 
         'get_brand', 
         'get_model', 
