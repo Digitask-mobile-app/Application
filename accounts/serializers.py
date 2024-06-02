@@ -58,6 +58,7 @@ class LoginSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         email = attrs.get('email')
         password = attrs.get('password')
+        request = self.context.get('request')
         user = authenticate(email=email, password=password)
 
         if not user:
@@ -72,7 +73,7 @@ class LoginSerializer(serializers.ModelSerializer):
             'access_token': str(tokens.get('access')),
             'refresh_token': str(tokens.get('refresh')),
             'user_type': user.user_type,
-            'is_admin': user.is_staff
+            'is_admin': user.is_staff 
         }
 
 class PasswordResetRequestSerializer(serializers.Serializer):
