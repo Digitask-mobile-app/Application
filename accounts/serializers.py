@@ -1,6 +1,7 @@
 import json
 from dataclasses import field
 from .models import User, Group
+from services.serializers import GroupSerializer
 from rest_framework import serializers
 from string import ascii_lowercase, ascii_uppercase
 from django.contrib.auth import authenticate
@@ -129,7 +130,6 @@ class SetNewPasswordSerializer(serializers.Serializer):
 
 
     
-from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework_simplejwt.exceptions import TokenError
 
@@ -162,5 +162,13 @@ class LogoutUserSerializer(serializers.Serializer):
 class VerifyUserEmailSerializer(serializers.Serializer):
     otp = serializers.CharField(max_length=6)
 
+class ProfileSerializer(serializers.ModelSerializer):
+    group = GroupSerializer()
 
-
+    class Meta:
+        model = User
+        fields = [
+            'id', 'email', 'first_name', 'last_name', 'phone',
+            'user_type', 'group',
+            
+        ]

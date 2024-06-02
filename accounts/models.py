@@ -93,8 +93,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def is_tech_manager(self):
         return self.user_type == "tech_manager"
-    
-
 
     
 class OneTimePassword(models.Model):
