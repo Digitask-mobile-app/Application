@@ -1,5 +1,5 @@
 from rest_framework import serializers, viewsets
-from .models import Task, Internet, Voice, TV, Item, History
+from .models import Task, Internet, Voice, TV, Item, History, Warehouse
 from accounts.models import User,Group,Meeting
 from django.db.models import Q
 from .filters import TaskFilter

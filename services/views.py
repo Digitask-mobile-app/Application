@@ -86,6 +86,10 @@ class ItemImportView(generics.CreateAPIView):
             warehouse_item.save()
         return response
 
+class ItemListView(ListAPIView):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+
 class ItemExportView(generics.DestroyAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
