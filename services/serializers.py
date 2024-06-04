@@ -109,11 +109,19 @@ class PerformanceSerializer(serializers.ModelSerializer):
             'problem':problem
         }
         return data
+    
+class WarehouseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Warehouse
+        fields = '__all__'
+
 
 class ItemSerializer(serializers.ModelSerializer):
+    warehouse = WarehouseSerializer()
     class Meta:
         model = Item
         fields = '__all__'
+
 
 class HistorySerializer(serializers.ModelSerializer):
     warehouse = serializers.SerializerMethodField()
