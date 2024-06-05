@@ -12,6 +12,7 @@ urlpatterns = [
     path('history/', views.HistoryListView.as_view(), name='history_list'),
     path('import/', views.ItemImportView.as_view(), name='warehouse-item-import'),
     path('export/<int:id>/', views.ItemExportView.as_view(), name='warehouse-item-export'),
+    path('groups/', views.GroupListView.as_view(), name='tasks'),
 
     path('create_task/', views.CreateTaskView.as_view(), name='create_task'),
 

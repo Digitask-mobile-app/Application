@@ -25,6 +25,10 @@ class TaskListView(ListAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskDetailSerializer
 
+class GroupListView(ListAPIView):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+
 class TaskDetailView(RetrieveAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskDetailSerializer
