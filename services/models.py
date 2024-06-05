@@ -43,7 +43,7 @@ class Task(Status):
     is_tv = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.note
+        return self.task_type
  
 
     def is_service(self):
