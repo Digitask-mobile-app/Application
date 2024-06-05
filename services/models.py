@@ -27,8 +27,8 @@ class Status(models.Model):
 
 class Task(Status):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    full_name = models.CharField(max_length=100)
     task_type = models.CharField(max_length=100, choices=TASK_TYPES)
-    description = models.TextField(null=True,blank=True)
     registration_number = models.CharField(max_length=100)
     contact_number = models.CharField(max_length=100,null=True,blank=True)
     location = models.CharField(max_length=100)  
@@ -43,7 +43,7 @@ class Task(Status):
     is_tv = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.description
+        return self.note
  
 
     def is_service(self):
