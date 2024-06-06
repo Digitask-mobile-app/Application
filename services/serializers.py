@@ -184,18 +184,6 @@ class HistorySerializer(serializers.ModelSerializer):
             return "Deleted"
 
 
-class TaskUpdateSerializer(serializers.ModelSerializer):
-    group = GroupSerializer(many=True)
-
-    class Meta:
-        model = Task
-        fields = '__all__'
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['first_name'] = instance.user.first_name if instance.user else None
-        data['last_name'] = instance.user.last_name if instance.user else None
-        return data
 
 ################################################################################################
 
