@@ -45,6 +45,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     
 
 class TaskDetailSerializer(serializers.ModelSerializer):
+    group = GroupSerializer(many=True)
     tv = TVSerializer()
     internet = InternetSerializer()
     voice = VoiceSerializer()
@@ -58,7 +59,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'user', 'full_name', 'task_type', 'registration_number',
             'contact_number', 'location', 'note', 'date', 'time', 'status',
-            'tv', 'voice', 'internet', 'services', 'first_name', 'last_name', 'phone'
+            'tv', 'voice', 'internet', 'services', 'first_name', 'last_name', 'phone','group'
         ]
 
     def get_services(self, obj):
