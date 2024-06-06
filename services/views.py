@@ -92,11 +92,11 @@ class ItemImportView(generics.CreateAPIView):
 
 class ItemListView(ListAPIView):
     queryset = Item.objects.all()
-    serializer_class = ItemSerializer
+    serializer_class = WarehouseItemSerializer
 
 class ItemExportView(generics.DestroyAPIView):
     queryset = Item.objects.all()
-    serializer_class = ItemSerializer
+    serializer_class = WarehouseItemSerializer
     lookup_field = 'id'
 
     def destroy(self, request, *args, **kwargs):

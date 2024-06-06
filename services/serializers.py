@@ -117,8 +117,13 @@ class WarehouseSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ItemSerializer(serializers.ModelSerializer):
+class WarehouseItemSerializer(serializers.ModelSerializer):
     warehouse = WarehouseSerializer()
+    class Meta:
+        model = Item
+        fields = '__all__'
+
+class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = '__all__'
