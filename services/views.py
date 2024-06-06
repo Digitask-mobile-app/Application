@@ -121,6 +121,17 @@ class HistoryListView(APIView):
         history_items = History.objects.all()
         serializer = HistorySerializer(history_items, many=True)
         return Response(serializer.data)
+    
+class TaskUpdateAPIView(generics.UpdateAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskUpdateSerializer
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 #####################################################################################################################
 
@@ -147,6 +158,7 @@ class CreateUpdateInternetView(generics.CreateAPIView,generics.UpdateAPIView):
 class CreateUpdateVoiceView(generics.CreateAPIView,generics.UpdateAPIView):
     serializer_class = VoiceSerializer
     queryset = Voice.objects.all()
+    
 
 # @csrf_exempt
 # def export_item(request, id):
