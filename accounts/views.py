@@ -14,6 +14,8 @@ from rest_framework.permissions import IsAuthenticated
 from .models import User
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
+from rest_framework.views import APIView
+
 
 
 class RegisterView(GenericAPIView):
@@ -136,3 +138,9 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+    
+class UserListView(APIView):
+    def get(self, request, *args, **kwargs):
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)

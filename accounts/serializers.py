@@ -177,3 +177,9 @@ class ProfileSerializer(serializers.ModelSerializer):
             'user_type', 'group',
             
         ]
+
+class UserSerializer(serializers.ModelSerializer):
+    group = GroupSerializer()
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'first_name', 'last_name', 'phone', 'user_type', 'group','is_staff']

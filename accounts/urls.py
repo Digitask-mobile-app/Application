@@ -6,7 +6,7 @@ from .views import (
         LoginUserView, 
         TestingAuthenticatedReq, 
         PasswordResetConfirm, 
-        PasswordResetRequestView,SetNewPasswordView, LogoutApiView, delete_user, ProfileView)
+        PasswordResetRequestView,SetNewPasswordView, LogoutApiView, delete_user, ProfileView, UserListView)
 
 from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
 
@@ -23,5 +23,6 @@ urlpatterns = [
     path('logout/', LogoutApiView.as_view(), name='logout'),
     path('delete-user/<int:user_id>/', delete_user, name='delete_user'),
     path('profile/', ProfileView.as_view(), name='profile'),
+    path('users/', UserListView.as_view(), name='user-list'),
 
 ]
