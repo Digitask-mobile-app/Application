@@ -141,6 +141,7 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     
 class UserListView(APIView):
     def get(self, request, *args, **kwargs):
-        users = User.objects.all()
+        allowed_user_types = ["technician", "plumber", "office_manager", "tech_manager"]
+        users = User.objects.filter(user_type__in=allowed_user_types)
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
