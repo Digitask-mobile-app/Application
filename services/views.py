@@ -35,8 +35,9 @@ class TaskDetailView(RetrieveAPIView):
     lookup_field = 'id'
 
 
+
 class TaskListAPIView(generics.ListAPIView):
-    queryset = Task.objects.all()
+    queryset = Task.objects.all().order_by('-created_at')
     serializer_class = TaskSerializer
     filterset_class = StatusAndTaskFilter
     filter_backends = (DjangoFilterBackend,)
