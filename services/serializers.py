@@ -95,6 +95,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
 class PerformanceSerializer(serializers.ModelSerializer):
     group = GroupSerializer()
     task_count = serializers.SerializerMethodField()
+    date = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -102,14 +103,21 @@ class PerformanceSerializer(serializers.ModelSerializer):
 
     def get_task_count(self, obj):
         total = Task.objects.filter(user=obj).count()
-        connection = Task.objects.filter(user=obj,task_type='connection').count()
-        problem = Task.objects.filter(user=obj,task_type='problem').count()
+        connection = Task.objects.filter(user=obj, task_type='connection').count()
+        problem = Task.objects.filter(user=obj, task_type='problem').count()
         data = {
-            'total':total,
-            'connection':connection,
-            'problem':problem
+            'total': total,
+            'connection': connection,
+            'problem': problem
         }
         return data
+
+    def get_date(self, obj):
+        user_tasks = Task.objects.filter(user=obj)
+        if user_tasks.exists():
+            return user_tasks.first().date
+        return None
+
     
 class WarehouseSerializer(serializers.ModelSerializer):
     class Meta:
