@@ -98,7 +98,7 @@ class PerformanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'user_type', 'first_name', 'last_name', 'group', 'task_count']
+        fields = ['id', 'user_type', 'first_name', 'last_name', 'group', 'task_count', 'date']
 
     def get_task_count(self, obj):
         total = Task.objects.filter(user=obj).count()
