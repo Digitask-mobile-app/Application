@@ -67,7 +67,7 @@ class LoginSerializer(serializers.ModelSerializer):
             raise AuthenticationFailed("Email is not verified")
 
         tokens = user.tokens()
-
+        #is_admin
         is_admin = False
         if user.user_type == 'office_manager' or user.user_type == 'tech_manager':
             is_admin = True 
