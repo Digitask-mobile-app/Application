@@ -77,7 +77,8 @@ class LoginSerializer(serializers.ModelSerializer):
             'access_token': str(tokens.get('access')),
             'refresh_token': str(tokens.get('refresh')),
             'user_type': user.user_type,
-            'is_admin': is_admin
+            'is_admin': is_admin,
+            'check':'check'
         }
 
 class PasswordResetRequestSerializer(serializers.Serializer):
