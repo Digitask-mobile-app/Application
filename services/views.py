@@ -152,7 +152,22 @@ class CreateUpdateInternetView(generics.CreateAPIView,generics.UpdateAPIView):
 class CreateUpdateVoiceView(generics.CreateAPIView,generics.UpdateAPIView):
     serializer_class = VoiceSerializer
     queryset = Voice.objects.all()
-    
+   
+class UpdateTaskView(generics.UpdateAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskUpdateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
 
 # @csrf_exempt
 # def export_item(request, id):
