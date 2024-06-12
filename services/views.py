@@ -152,7 +152,10 @@ class CreateUpdateInternetView(generics.CreateAPIView,generics.UpdateAPIView):
 class CreateUpdateVoiceView(generics.CreateAPIView,generics.UpdateAPIView):
     serializer_class = VoiceSerializer
     queryset = Voice.objects.all()
-    
+
+class CreateMeetingView(generics.CreateAPIView):
+    serializer_class = MeetingSerializer
+    queryset = Meeting.objects.all()   
 
 # @csrf_exempt
 # def export_item(request, id):

@@ -4,6 +4,8 @@ from accounts.models import User,Group
 from django.db.models import ProtectedError
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+from django.utils import timezone
+
 
 TASK_TYPES = (
     ('connection', 'connection'),
@@ -41,6 +43,7 @@ class Task(Status):
     is_voice = models.BooleanField(default=False)
     is_internet = models.BooleanField(default=False)
     is_tv = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.task_type
