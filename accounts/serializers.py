@@ -67,13 +67,17 @@ class LoginSerializer(serializers.ModelSerializer):
             raise AuthenticationFailed("Email is not verified")
 
         tokens = user.tokens()
+        #is_admin
+        is_admin = False
+        if user.user_type == 'office_manager' or user.user_type == 'tech_manager':
+            is_admin = True 
 
         return {
             'email': user.email,
             'access_token': str(tokens.get('access')),
             'refresh_token': str(tokens.get('refresh')),
             'user_type': user.user_type,
-            'is_admin': user.is_staff 
+            'is_admin': is_admin
         }
 
 class PasswordResetRequestSerializer(serializers.Serializer):

@@ -127,7 +127,6 @@ def delete_task(task_id):
     with connection.cursor() as cursor:
         cursor.execute("DELETE FROM myapp_task WHERE id = %s", [task_id])
 
-
 def update_auto_increment():
     with connection.cursor() as cursor:
         cursor.execute("UPDATE sqlite_sequence SET seq = (SELECT MAX(id) FROM myapp_task) WHERE name = 'myapp_task'")

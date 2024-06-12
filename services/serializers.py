@@ -252,3 +252,15 @@ class CreateTaskSerializer(serializers.ModelSerializer):
     class Meta: 
         model = Task
         fields = '__all__'
+
+class TaskUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = ['user', 'status']
+
+    def update(self, instance, validated_data):
+        request = self.context.get('request')
+        instance.user = request.user
+        instance.status = validated_data.get('status', instance.status)
+        instance.save()
+        return instance
