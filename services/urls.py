@@ -16,6 +16,7 @@ urlpatterns = [
     path('update_task/<int:pk>/', views.TaskUpdateAPIView.as_view(), name='update_task'),
     path('create_meeting/', views.CreateMeetingView.as_view(), name='create_meeting'),
 
+
     path('create_task/', views.CreateTaskView.as_view(), name='create_task'),
     path('creat_tv/', views.CreateUpdateTvView.as_view(), name='creat_tv'),
     path('update_tv/<int:pk>/', views.CreateUpdateTvView.as_view(), name='update_tv'),
