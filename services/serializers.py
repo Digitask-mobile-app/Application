@@ -149,7 +149,7 @@ class HistorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = History
-        fields = ['warehouse', 'equipment_name', 'brand', 'model', 'serial_number', 'number', 'mac', 'port_number', 'size_length', 'action', 'timestamp']
+        fields = ['id','warehouse', 'equipment_name', 'brand', 'model', 'serial_number', 'number', 'mac', 'port_number', 'size_length', 'action', 'timestamp']
 
     def get_warehouse(self, obj):
         try:
