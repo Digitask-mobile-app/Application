@@ -144,10 +144,12 @@ class HistorySerializer(serializers.ModelSerializer):
     serial_number = serializers.SerializerMethodField()
     number = serializers.SerializerMethodField()
     size_length = serializers.SerializerMethodField()
+    mac= serializers.SerializerMethodField()
+    port_number = serializers.SerializerMethodField()
 
     class Meta:
         model = History
-        fields = ['warehouse', 'equipment_name', 'brand', 'model', 'serial_number', 'number', 'size_length', 'action', 'timestamp']
+        fields = ['warehouse', 'equipment_name', 'brand', 'model', 'serial_number', 'number', 'mac', 'port_number', 'size_length', 'action', 'timestamp']
 
     def get_warehouse(self, obj):
         try:
@@ -195,8 +197,23 @@ class HistorySerializer(serializers.ModelSerializer):
             return obj.warehouse_item.size_length
         except AttributeError:
             return "Deleted"
+        
+    def get_port_number(self, obj):
+        try:
+            return obj.warehouse_item.port_number
+        except AttributeError:
+            return "Deleted"
+        
+    def get_mac(self, obj):
+        try:
+            return obj.warehouse_item.mac
+        except AttributeError:
+            return "Deleted"
 
-
+class CreatingMeetingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Meeting
+        fields = '__all__'
 
 ################################################################################################
 

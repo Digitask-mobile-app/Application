@@ -115,6 +115,8 @@ class Item(models.Model):
     equipment_name = models.CharField(max_length=255)
     brand = models.CharField(max_length=255)
     model = models.CharField(max_length=255)
+    mac = models.CharField(max_length=255)
+    port_number = models.PositiveIntegerField()
     serial_number = models.CharField(max_length=255, unique=True)
     number = models.PositiveIntegerField()
     size_length = models.DecimalField(max_digits=10, decimal_places=2)
@@ -147,7 +149,7 @@ class History(models.Model):
 
     def get_warehouse(self):
         return self.warehouse_item.warehouse if self.warehouse_item else "Deleted"
-
+    
     def get_equipment_name(self):
         return self.warehouse_item.equipment_name if self.warehouse_item else "Deleted"
 
@@ -166,4 +168,8 @@ class History(models.Model):
     def get_size_length(self):
         return self.warehouse_item.size_length if self.warehouse_item else "Deleted"
 
-
+    def get_mac(self):
+        return self.warehouse_item.mac if self.warehouse_item else "Deleted"
+    
+    def get_port_number(self):
+        return self.warehouse_item.port_number if self.warehouse_item else "Deleted"

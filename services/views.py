@@ -128,8 +128,17 @@ class TaskUpdateAPIView(generics.UpdateAPIView):
     serializer_class = CreateTaskSerializer
 
 class CreateMeetingView(generics.CreateAPIView):
-    serializer_class = MeetingSerializer
+    serializer_class = CreatingMeetingSerializer
     queryset = Meeting.objects.all()  
+
+class TaskDeleteAPIView(APIView):
+    def delete(self, request, id):
+        try:
+            task = Task.objects.get(pk=id)
+            task.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Task.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 #####################################################################################################################
 

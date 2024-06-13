@@ -15,6 +15,7 @@ urlpatterns = [
     path('groups/', views.GroupListView.as_view(), name='tasks'),
     path('update_task/<int:pk>/', views.TaskUpdateAPIView.as_view(), name='update_task'),
     path('create_meeting/', views.CreateMeetingView.as_view(), name='create_meeting'),
+    path('task/<int:id>/delete/', views.TaskDeleteAPIView.as_view(), name='task-delete'),
 
 
     path('create_task/', views.CreateTaskView.as_view(), name='create_task'),

@@ -88,7 +88,7 @@ admin.site.register(Task,TaskAdmin)
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ('warehouse', 'equipment_name', 'brand', 'model', 'serial_number', 'number', 'size_length')
+    list_display = ('warehouse', 'equipment_name', 'brand', 'model', 'serial_number', 'number', 'size_length', 'mac', 'port_number')
     search_fields = ('warehouse', 'equipment_name', 'brand', 'model', 'serial_number')
 
 @admin.register(History)
@@ -99,6 +99,8 @@ class HistoryAdmin(admin.ModelAdmin):
         'get_brand', 
         'get_model', 
         'get_serial_number', 
+        'get_mac',
+        'get_port_number',
         'action', 
         'timestamp'
     )
@@ -108,6 +110,8 @@ class HistoryAdmin(admin.ModelAdmin):
         'warehouse_item__brand', 
         'warehouse_item__model', 
         'warehouse_item__serial_number', 
+        'warehouse_item__mac',
+        'warehouse_item__port_number',
         'action'
     )
     readonly_fields = (
@@ -118,5 +122,7 @@ class HistoryAdmin(admin.ModelAdmin):
         'get_model', 
         'get_serial_number', 
         'get_number', 
-        'get_size_length'
+        'get_size_length',
+        'get_mac',
+        'get_port_number',
     )
