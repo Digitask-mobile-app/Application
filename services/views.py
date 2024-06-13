@@ -1,6 +1,6 @@
 from .models import Task, Item, History
 from .serializers import *
-from .filters import StatusAndTaskFilter,TaskFilter
+from .filters import StatusAndTaskFilter,TaskFilter, WarehouseItemFilter
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import ListAPIView, RetrieveAPIView
@@ -94,6 +94,8 @@ class ItemImportView(generics.CreateAPIView):
 class ItemListView(ListAPIView):
     queryset = Item.objects.all()
     serializer_class = WarehouseItemSerializer
+    filterset_class = WarehouseItemFilter
+    filter_backends = (DjangoFilterBackend,)
 
 class ItemExportView(generics.DestroyAPIView):
     queryset = Item.objects.all()
