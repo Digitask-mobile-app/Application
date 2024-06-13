@@ -67,7 +67,7 @@ class TaskFilter(django_filters.FilterSet):
 
 class WarehouseItemFilter(django_filters.FilterSet):
     name = django_filters.CharFilter(field_name='equipment_name', lookup_expr='icontains')
-    warehouse = django_filters.CharFilter(field_name='warehouse__name', lookup_expr='exact')
+    warehouse = django_filters.CharFilter(field_name='warehouse__name', lookup_expr='icontains')
 
     class Meta:
         model = Item
