@@ -64,9 +64,11 @@ class TaskFilter(django_filters.FilterSet):
         fields = ['start_date', 'end_date']
 
 
+
 class WarehouseItemFilter(django_filters.FilterSet):
     name = django_filters.CharFilter(field_name='equipment_name', lookup_expr='icontains')
+    warehouse = django_filters.CharFilter(field_name='warehouse__name', lookup_expr='exact')
 
     class Meta:
         model = Item
-        fields = ['name']
+        fields = ['name', 'warehouse']
