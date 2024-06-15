@@ -59,10 +59,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         related_name='accounts_users',
         related_query_name='user',
     )
-    objects = UserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELD = "username"
+    REQUIRED_FIELD = ['username']
+
+    objects = UserManager()
 
     def tokens(self):    
         refresh = RefreshToken.for_user(self)
