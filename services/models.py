@@ -111,7 +111,7 @@ class ItemManager(models.Manager):
         return super().get_queryset().filter(deleted=False)
     
 class Item(models.Model):
-    warehouse = models.ForeignKey(Warehouse, on_delete= models.CASCADE)
+    warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     equipment_name = models.CharField(max_length=255)
     brand = models.CharField(max_length=255)
     model = models.CharField(max_length=255)
@@ -127,9 +127,12 @@ class Item(models.Model):
     
     objects = ItemManager()
 
-    def delete(self):
-        self.deleted = True
-        self.save()
+    def delete(self, *args, **kwargs):
+        if self.number > 0:
+            self.number -= 1
+            self.save()
+        if self.number == 0:
+            super().delete(*args, **kwargs)
 
 
 class History(models.Model):
@@ -140,6 +143,7 @@ class History(models.Model):
     warehouse_item = models.ForeignKey(Item, on_delete=models.CASCADE)
     action = models.CharField(max_length=6, choices=ACTION_CHOICES)
     timestamp = models.DateTimeField(auto_now_add=True)
+    number = models.PositiveIntegerField(default=0) 
 
     def __str__(self):
         if self.warehouse_item:
@@ -163,7 +167,7 @@ class History(models.Model):
         return self.warehouse_item.serial_number if self.warehouse_item else "Deleted"
 
     def get_number(self):
-        return self.warehouse_item.number if self.warehouse_item else "Deleted"
+        return self.number if self.warehouse_item else "Deleted"
 
     def get_size_length(self):
         return self.warehouse_item.size_length if self.warehouse_item else "Deleted"

@@ -87,7 +87,6 @@ class ItemImportView(generics.CreateAPIView):
         response = super().create(request, *args, **kwargs)
         if response.status_code == status.HTTP_201_CREATED:
             warehouse_item = Item.objects.get(id=response.data['id'])
-            warehouse_item.number += 1
             warehouse_item.save()
         return response
 

@@ -144,12 +144,32 @@ class HistorySerializer(serializers.ModelSerializer):
     serial_number = serializers.SerializerMethodField()
     number = serializers.SerializerMethodField()
     size_length = serializers.SerializerMethodField()
-    mac= serializers.SerializerMethodField()
+    mac = serializers.SerializerMethodField()
     port_number = serializers.SerializerMethodField()
 
     class Meta:
         model = History
-        fields = ['id','warehouse', 'equipment_name', 'brand', 'model', 'serial_number', 'number', 'mac', 'port_number', 'size_length', 'action', 'timestamp']
+        fields = ['id', 'warehouse', 'equipment_name', 'brand', 'model', 'serial_number', 'number', 'mac', 'port_number', 'size_length', 'action', 'timestamp']
+
+    def create(self, validated_data):
+        validated_data['action'] = 'export'
+        instance = super().create(validated_data)
+
+        try:
+            warehouse_item = instance.warehouse_item
+            if warehouse_item.number > 0:
+                warehouse_item.number -= 1
+                warehouse_item.save()
+
+            # History kaydında number alanını güncelle
+            instance.number = validated_data['number']
+            instance.save()
+
+        except Exception as e:
+            # Hata durumunda gerekli işlemleri burada yapabilirsiniz
+            pass
+
+        return instance
 
     def get_warehouse(self, obj):
         try:
@@ -188,7 +208,7 @@ class HistorySerializer(serializers.ModelSerializer):
 
     def get_number(self, obj):
         try:
-            return obj.warehouse_item.number
+            return obj.number  # History kaydında kaç adet öğe silindiğini gösteren alan
         except AttributeError:
             return "Deleted"
 
