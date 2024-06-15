@@ -1,4 +1,3 @@
-# accounts/models.py veya benzeri bir dosyada
 from django.contrib.auth.models import BaseUserManager
 
 class UserManager(BaseUserManager):
@@ -22,3 +21,5 @@ class UserManager(BaseUserManager):
 
         return self.create_user(email, password=password, **extra_fields)
 
+    def get_by_natural_key(self, email):
+        return self.get(email=email)
