@@ -97,6 +97,10 @@ class ItemListView(ListAPIView):
     filterset_class = WarehouseItemFilter
     filter_backends = (DjangoFilterBackend,)
 
+class WarehouseListView(ListAPIView):
+    queryset = Warehouse.objects.all()
+    serializer_class = WarehouseSerializer
+
 class ItemExportView(generics.DestroyAPIView):
     queryset = Item.objects.all()
     serializer_class = WarehouseItemSerializer
