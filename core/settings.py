@@ -77,6 +77,7 @@ SITE_ID = 1
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'services.middleware.languages.SetDefaultLangMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
@@ -189,46 +190,38 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
-
 from django.utils.translation import gettext_lazy as _
-
-MODELTRANSLATION_DEFAULT_LANGUAGE = 'az'
-
-MODELTRANSLATION_LANGUAGES = ('az', 'en')
-
 
 
 LANGUAGES = [
-    ('az', _('Azerbaijani')),
-    ('en', _('English')),
+    ('az', _('Az')),
+    ('en', _('En')),
 ]
 
-LANGUAGE_CODE = 'az-AZ'
-DEFAULT_LANGUAGE = True
-
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'az'
 PARLER_LANGUAGES = {
     None : (
         {'code': 'az',},
         {'code': 'en',},
     ),
     'default': {
-        'fallbacks': ['az'],
+        'fallbacks': [],
         'hide_untranslated': False,
     }
 }
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-
-USE_TZ = True
+LANGUAGE_CODE = 'az'
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'az'
+DEFAULT_LANGUAGE = 'az'
 
 LOCALE_PATHS = [
-    os.path.join(BASE_DIR, 'locale')
+    os.path.join(BASE_DIR, 'locale'),
 ]
+
+TIME_ZONE = 'Asia/Baku'
+SITE_ID = 1
+
+USE_I18N = True
+USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
