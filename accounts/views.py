@@ -5,7 +5,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from .models import OneTimePassword
 from .serializers import *
-from rest_framework import status, generics, permissions
+from rest_framework import status, generics, permissions, viewsets
 from .utils import send_generated_otp_to_email
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import smart_str, DjangoUnicodeDecodeError
@@ -15,7 +15,11 @@ from .models import User
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from rest_framework.views import APIView
-
+from .models import User
+from .serializers import UserSerializer
+from .filters import UserFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 
 
 class RegisterView(GenericAPIView):
@@ -138,9 +142,12 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         return self.request.user
     
-class UserListView(APIView):
-    def get(self, request, *args, **kwargs):
-        allowed_user_types = ["technician", "plumber", "office_manager", "tech_manager"]
-        users = User.objects.filter(user_type__in=allowed_user_types)
-        serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)
+
+
+class UserListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = User.objects.filter(user_type__in=["technician", "plumber", "office_manager", "tech_manager"])
+    serializer_class = UserSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = UserFilter
+    search_fields = ['first_name', 'last_name']
