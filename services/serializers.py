@@ -272,8 +272,6 @@ class MainPageUserSerializer(serializers.ModelSerializer):
                 'tv_count':tv_task_count,
                 'internet_count':internet_task_count,
                 'voice_count':voice_task_count,
-                'problem_count':problem_count,
-                'connection_count':connection_count
             }
             
         return response
