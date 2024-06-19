@@ -185,28 +185,7 @@ class UpdateTaskView(generics.UpdateAPIView):
         return self.update(request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
-        task_id = kwargs.get('pk')
-        new_status = request.data.get('status')
-
-        try:
-            task = Task.objects.get(pk=task_id)
-
-            if task.assigned_to != request.user:
-                return Response({'error': 'You do not have permission to update this task.'}, status=status.HTTP_403_FORBIDDEN)
-
-            serializer = self.get_serializer(task, data=request.data, partial=True)
-            serializer.is_valid(raise_exception=True)
-            self.perform_update(serializer)
-
-            return Response(serializer.data)
-        
-        except Task.DoesNotExist:
-            return Response({'error': 'Task not found.'}, status=status.HTTP_404_NOT_FOUND)
-        
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-        
+        return self.partial_update(request, *args, **kwargs)
 
 # @csrf_exempt
 # def export_item(request, id):
