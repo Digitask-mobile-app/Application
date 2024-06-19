@@ -30,12 +30,14 @@ ALLOWED_HOSTS = ['*']
 
 CORS_ALLOWED_ORIGINS = [
     'http://135.181.42.192',
+    'http://135.181.42.192:100',
     'http://localhost:5173',
 ]
 
 # Application definition
 CSRF_TRUSTED_ORIGINS = [
     'http://135.181.42.192',
+    'http://135.181.42.192:100',
     'http://localhost:5173',
 ]
 
