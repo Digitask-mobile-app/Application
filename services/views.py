@@ -187,6 +187,19 @@ class UpdateTaskView(generics.UpdateAPIView):
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+
+        if instance.assigned_to != request.user.id:
+            return Response({"error": "Bu tapşırığı yeniləməyə icazəniz yoxdur."}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
+
 # @csrf_exempt
 # def export_item(request, id):
 #     if request.method == 'DELETE':
