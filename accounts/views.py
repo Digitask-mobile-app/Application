@@ -20,6 +20,7 @@ from .serializers import UserSerializer
 from .filters import UserFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
+from django.db.models import Q 
 
 
 class RegisterView(GenericAPIView):
@@ -146,8 +147,19 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 
 class UserListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
-    queryset = User.objects.filter(user_type__in=["technician", "plumber", "office_manager", "tech_manager"])
     serializer_class = UserSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = UserFilter
     search_fields = ['first_name', 'last_name']
+
+    def get_queryset(self):
+        queryset = User.objects.filter(user_type__in=["technician", "plumber", "office_manager", "tech_manager"])
+
+        search_term = self.request.query_params.get('search', None)
+        if search_term:
+            queryset = queryset.filter(
+                Q(first_name__icontains=search_term) |
+                Q(last_name__icontains=search_term)
+            )
+
+        return queryset
