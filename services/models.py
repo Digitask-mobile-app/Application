@@ -61,7 +61,6 @@ class Task(Status):
             return 'Voice'
         return None
     
-    
 
 class Internet(models.Model):
     task = models.OneToOneField(Task, on_delete=models.CASCADE, related_name='internet')

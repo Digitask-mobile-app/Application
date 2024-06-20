@@ -130,7 +130,8 @@ class HistoryListView(APIView):
     
 class TaskUpdateAPIView(generics.UpdateAPIView):
     queryset = Task.objects.all()
-    serializer_class = CreateTaskSerializer
+    serializer_class = TaskSerializer
+    http_method_names = ['patch']
 
 class CreateMeetingView(generics.CreateAPIView):
     serializer_class = CreatingMeetingSerializer
