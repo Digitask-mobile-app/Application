@@ -309,4 +309,4 @@ class TaskUpdateSerializer(serializers.ModelSerializer):
 class UpdateTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ['task_type', 'full_name', 'time', 'registration_number', 'contact_number', 'region', 'location', 'services', 'status', 'group', 'note']
+        fields = ['task_type', 'full_name', 'time', 'registration_number', 'contact_number', 'location', 'services', 'status', 'group', 'note']
