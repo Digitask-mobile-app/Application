@@ -28,6 +28,7 @@ class TaskSerializer(serializers.ModelSerializer):
     group = GroupSerializer(many=True)
     first_name = serializers.SerializerMethodField()
     last_name = serializers.SerializerMethodField()
+    email = serializers.SerializerMethodField()
 
     class Meta:
         model = Task
@@ -38,6 +39,9 @@ class TaskSerializer(serializers.ModelSerializer):
 
     def get_last_name(self, obj):
         return obj.user.last_name if obj.user else None
+    
+    def get_email(self, obj):
+        return obj.user.email if obj.user else None
 
 class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
