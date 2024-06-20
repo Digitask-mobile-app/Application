@@ -307,6 +307,14 @@ class TaskUpdateSerializer(serializers.ModelSerializer):
         return instance
     
 class UpdateTaskSerializer(serializers.ModelSerializer):
+    services = serializers.SerializerMethodField()
     class Meta:
         model = Task
         fields = ['task_type', 'full_name', 'time', 'registration_number', 'contact_number', 'location', 'services', 'status', 'group', 'note']
+
+    def get_services(self, obj):
+        try:
+            return obj.get_service()
+        except Exception as e:
+            print(f"Error getting services: {e}")
+            return None
