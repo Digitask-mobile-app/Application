@@ -305,3 +305,8 @@ class TaskUpdateSerializer(serializers.ModelSerializer):
         instance.status = validated_data.get('status', instance.status)
         instance.save()
         return instance
+    
+class UpdateTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = ['task_type', 'full_name', 'time', 'registration_number', 'contact_number', 'region', 'location', 'services', 'status', 'group', 'note']
