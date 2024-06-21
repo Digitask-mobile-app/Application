@@ -10,7 +10,7 @@ from .utils import send_generated_otp_to_email
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import smart_str, DjangoUnicodeDecodeError
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .models import User
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
@@ -25,19 +25,25 @@ from django.db.models import Q
 
 class RegisterView(GenericAPIView):
     serializer_class = UserRegisterSerializer
+    permission_classes = [IsAdminUser]
 
     def post(self, request):
         user = request.data
-        serializer=self.serializer_class(data=user)
+        serializer = self.serializer_class(data=user)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            user_data=serializer.data
-            send_generated_otp_to_email(user_data['email'], request)
+            user_instance = serializer.save()
+            user_data = serializer.data
+            if not user_instance.is_verified:
+                return Response({
+                    'data': user_data,
+                    'message': 'User registered successfully'
+                }, status=status.HTTP_201_CREATED)
             return Response({
-                'data':user_data,
-                'message':'thanks for signing up a passcode has be sent to verify your email'
+                'data': user_data,
+                'message': 'User registered but email verification is pending'
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class VerifyUserEmail(GenericAPIView):
@@ -59,11 +65,13 @@ class VerifyUserEmail(GenericAPIView):
         
 
 class LoginUserView(GenericAPIView):
-    serializer_class=LoginSerializer
+    serializer_class = LoginSerializer
+
     def post(self, request):
-        serializer= self.serializer_class(data=request.data, context={'request': request})
+        serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 class PasswordResetRequestView(GenericAPIView):

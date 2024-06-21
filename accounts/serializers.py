@@ -63,14 +63,12 @@ class LoginSerializer(serializers.ModelSerializer):
 
         if not user:
             raise AuthenticationFailed("Invalid credentials, try again.")
-        if not user.is_verified:
-            raise AuthenticationFailed("Email is not verified")
 
         tokens = user.tokens()
-        #is_admin
+        
         is_admin = False
         if user.user_type == 'office_manager' or user.user_type == 'tech_manager':
-            is_admin = True 
+            is_admin = True
 
         return {
             'email': user.email,
@@ -79,6 +77,7 @@ class LoginSerializer(serializers.ModelSerializer):
             'user_type': user.user_type,
             'is_admin': is_admin
         }
+
 
 class PasswordResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=255)
@@ -179,7 +178,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'email', 'first_name', 'last_name', 'phone',
             'user_type', 'group',
-            
         ]
 
 class UserSerializer(serializers.ModelSerializer):
