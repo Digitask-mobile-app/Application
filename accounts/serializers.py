@@ -186,3 +186,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'email', 'first_name', 'last_name', 'phone', 'user_type', 'group','is_staff']
+
+class PerformanceUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields = ['id', 'first_name', 'last_name', 'user_type']

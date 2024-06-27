@@ -3,6 +3,8 @@ from .models import Task, Internet, Voice, TV, Item, History, Warehouse
 from accounts.models import User,Group,Meeting
 from django.db.models import Q
 from .filters import TaskFilter
+from django.db.models import Count
+
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
@@ -97,30 +99,46 @@ class TaskDetailSerializer(serializers.ModelSerializer):
 
 
 class PerformanceSerializer(serializers.ModelSerializer):
-    group = GroupSerializer()
+    user_type = serializers.CharField(source='user.user_type')
+    first_name = serializers.CharField(source='user.first_name')
+    last_name = serializers.CharField(source='user.last_name')
+    group = serializers.SerializerMethodField()
     task_count = serializers.SerializerMethodField()
-    date = serializers.SerializerMethodField()
+    date = serializers.DateField(format='%Y-%m-%d')
 
     class Meta:
-        model = User
+        model = Task
         fields = ['id', 'user_type', 'first_name', 'last_name', 'group', 'task_count', 'date']
 
-    def get_task_count(self, obj):
-        total = Task.objects.filter(user=obj).count()
-        connection = Task.objects.filter(user=obj, task_type='connection').count()
-        problem = Task.objects.filter(user=obj, task_type='problem').count()
-        data = {
-            'total': total,
-            'connection': connection,
-            'problem': problem
-        }
-        return data
+    def get_group(self, obj):
+        group_data = {}
+        if obj.user and obj.user.group:
+            group_data = {
+                'id': obj.user.group.id,
+                'group': obj.user.group.group,
+                'region': obj.user.group.region
+            }
+        return group_data
 
-    def get_date(self, obj):
-        user_tasks = Task.objects.filter(user=obj)
-        if user_tasks.exists():
-            return user_tasks.first().date
-        return None
+    def get_task_count(self, obj):
+        if obj.user:
+            task_counts = Task.objects.filter(user=obj.user).values('task_type').annotate(count=Count('id'))
+            total_count = sum([count['count'] for count in task_counts])
+            connection_count = next((count['count'] for count in task_counts if count['task_type'] == 'connection'), 0)
+            problem_count = next((count['count'] for count in task_counts if count['task_type'] == 'problem'), 0)
+
+            return {
+                'total': total_count,
+                'connection': connection_count,
+                'problem': problem_count
+            }
+        else:
+            return {
+                'total': 0,
+                'connection': 0,
+                'problem': 0
+            }
+
 
     
 class WarehouseSerializer(serializers.ModelSerializer):
@@ -165,12 +183,10 @@ class HistorySerializer(serializers.ModelSerializer):
                 warehouse_item.number -= 1
                 warehouse_item.save()
 
-            # History kaydında number alanını güncelle
             instance.number = validated_data['number']
             instance.save()
 
         except Exception as e:
-            # Hata durumunda gerekli işlemleri burada yapabilirsiniz
             pass
 
         return instance
@@ -212,7 +228,7 @@ class HistorySerializer(serializers.ModelSerializer):
 
     def get_number(self, obj):
         try:
-            return obj.number  # History kaydında kaç adet öğe silindiğini gösteren alan
+            return obj.number  
         except AttributeError:
             return "Deleted"
 

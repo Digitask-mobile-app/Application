@@ -68,7 +68,7 @@ class PerformanceListView(generics.ListAPIView):
     filter_backends = (DjangoFilterBackend,)
 
     def get_queryset(self):
-        return User.objects.filter(task__isnull=False).distinct()
+        return Task.objects.filter(user__isnull=False).distinct()
 
 
 

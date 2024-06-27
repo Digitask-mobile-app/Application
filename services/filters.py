@@ -50,18 +50,12 @@ class StatusAndTaskFilter(django_filters.FilterSet):
 
     
 class TaskFilter(django_filters.FilterSet):
-    start_date = django_filters.DateFilter(field_name='task__date', lookup_expr='gte', widget=forms.DateInput(attrs={
-        'type': 'date',
-        'class': 'form-control',
-    }))
-    end_date = django_filters.DateFilter(field_name='task__date', lookup_expr='lte', widget=forms.DateInput(attrs={
-        'type': 'date',
-        'class': 'form-control',
-    }))
+    start_date = django_filters.DateFilter(field_name='date', lookup_expr='gte', label='Start Date')
+    end_date = django_filters.DateFilter(field_name='date', lookup_expr='lte', label='End Date')
 
     class Meta:
-        model = User
-        fields = ['start_date', 'end_date']
+        model = Task
+        fields = []
 
 
 
