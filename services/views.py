@@ -16,6 +16,8 @@ from django.db import transaction
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.views import View
+from django.db.models import Subquery, OuterRef
+
 
 class CreateTaskView(generics.CreateAPIView):
     serializer_class = TaskDetailSerializer
@@ -60,7 +62,6 @@ class UserTaskListView(APIView):
         }
         return Response(response_data, status=status.HTTP_200_OK)
     
-    
 
 class PerformanceListView(generics.ListAPIView):
     serializer_class = PerformanceSerializer
@@ -68,7 +69,10 @@ class PerformanceListView(generics.ListAPIView):
     filter_backends = (DjangoFilterBackend,)
 
     def get_queryset(self):
-        return Task.objects.filter(user__isnull=False).distinct()
+        latest_task_ids = Task.objects.filter(user_id=OuterRef('user_id')).order_by('-date').values('id')[:1]
+        queryset = Task.objects.filter(id__in=Subquery(latest_task_ids)).order_by('user_id')
+
+        return queryset
 
 
 
