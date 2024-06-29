@@ -75,27 +75,25 @@ class LoginUserView(GenericAPIView):
 
 
 class PasswordResetRequestView(GenericAPIView):
-    serializer_class=PasswordResetRequestSerializer
+    serializer_class = PasswordResetRequestSerializer
 
     def post(self, request):
-        serializer=self.serializer_class(data=request.data, context={'request':request})
+        serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
-        return Response({'message':'we have sent you a link to reset your password'}, status=status.HTTP_200_OK)
-
-
+        return Response({'message': 'Parolunuzu sıfırlamaq üçün sizə link göndərdik.'}, status=status.HTTP_200_OK)
 
 class PasswordResetConfirm(GenericAPIView):
     def get(self, request, uidb64, token):
         try:
-            user_id=smart_str(urlsafe_base64_decode(uidb64))
-            user=User.objects.get(id=user_id)
+            user_id = smart_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(id=user_id)
 
             if not PasswordResetTokenGenerator().check_token(user, token):
-                return Response({'message':'token is invalid or has expired'}, status=status.HTTP_401_UNAUTHORIZED)
-            return Response({'success':True, 'message':'credentials is valid', 'uidb64':uidb64, 'token':token}, status=status.HTTP_200_OK)
-
+                return Response({'message': 'Token etibarsızdır və ya vaxtı keçib'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'success': True, 'message': 'Etibarnamələr etibarlıdır', 'uidb64': uidb64, 'token': token}, status=status.HTTP_200_OK)
         except DjangoUnicodeDecodeError as identifier:
-            return Response({'message':'token is invalid or has expired'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'message': 'Token etibarsızdır və ya vaxtı keçib'}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 class SetNewPasswordView(GenericAPIView):
     serializer_class=SetNewPasswordSerializer
@@ -103,7 +101,7 @@ class SetNewPasswordView(GenericAPIView):
     def patch(self, request):
         serializer=self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        return Response({'success':True, 'message':"password reset is succesful"}, status=status.HTTP_200_OK)
+        return Response({'success':True, 'message':"Parolunuz uğurla yeniləndi."}, status=status.HTTP_200_OK)
 
 
 class TestingAuthenticatedReq(GenericAPIView):
