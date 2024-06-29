@@ -84,7 +84,9 @@ class PasswordResetRequestView(GenericAPIView):
         serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         
-        return Response({'message': 'OTP kodunu e-poçtunuza göndərdik.'}, status=status.HTTP_200_OK)
+        email = serializer.validated_data.get('email') 
+        
+        return Response({'message': 'OTP kodunu e-poçtunuza göndərdik.', 'email': email}, status=status.HTTP_200_OK)
 
     
 class PasswordResetConfirm(GenericAPIView):
@@ -107,13 +109,7 @@ class VerifyOTPView(GenericAPIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         
-        user = serializer.validated_data['user']
-        token = serializer.validated_data['token']
-
-        return Response({
-            'token': token,
-            'email': user.email
-        }, status=status.HTTP_200_OK)
+        return Response({'token': serializer.validated_data['token']}, status=status.HTTP_200_OK)
 
 
 class SetNewPasswordView(GenericAPIView):
