@@ -119,7 +119,7 @@ class ResendOtpView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         
         email = serializer.validated_data.get('email')
-
+        
         return Response({'message': 'Yeni OTP kodu e-poçtunuza göndərildi.'}, status=status.HTTP_200_OK)
 
 class SetNewPasswordView(GenericAPIView):
