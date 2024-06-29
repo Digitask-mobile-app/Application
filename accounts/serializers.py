@@ -170,6 +170,7 @@ class SetNewPasswordSerializer(serializers.Serializer):
         Token.objects.filter(user=user).delete()
 
         return user
+    
         
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework_simplejwt.exceptions import TokenError
