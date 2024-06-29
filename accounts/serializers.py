@@ -1,6 +1,6 @@
 import json
 from dataclasses import field
-from .models import User, Group
+from .models import User, OneTimePassword
 from services.serializers import GroupSerializer
 from rest_framework import serializers
 from string import ascii_lowercase, ascii_uppercase
@@ -14,6 +14,9 @@ from django.urls import reverse
 from .utils import send_normal_email
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
+from django.utils.crypto import get_random_string
+from rest_framework.authtoken.models import Token
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -81,6 +84,7 @@ class LoginSerializer(serializers.ModelSerializer):
         }
 
 
+
 class PasswordResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=255)
 
@@ -93,50 +97,81 @@ class PasswordResetRequestSerializer(serializers.Serializer):
             raise ValidationError("Bu e-poçt ünvanı ilə qeydiyyatdan keçilməyib.")
         
         user = User.objects.get(email=email)
-        uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
-        token = PasswordResetTokenGenerator().make_token(user)
-        request = self.context.get('request')
-        current_site = get_current_site(request).domain
-        relative_link = reverse('reset-password-confirm', kwargs={'uidb64': uidb64, 'token': token})
-        abslink = f"http://{current_site}{relative_link}"
-        print(abslink)
-        email_body = f"Salam {user.first_name}, parolunuzu sıfırlamaq üçün aşağıdakı linkdən istifadə edin: {abslink}"
+        
+        OneTimePassword.objects.filter(user=user).delete()
+        
+        otp = get_random_string(length=4, allowed_chars='0123456789') 
+        OneTimePassword.objects.create(user=user, otp=otp)  
+
+        email_body = f"Salam {user.first_name}, parolunuzu sıfırlamaq üçün aşağıdakı OTP kodunu istifadə edin: {otp}"
         data = {
-            'email_body': email_body, 
-            'email_subject': "Reset your Password", 
+            'email_body': email_body,
+            'email_subject': "Şifrəni sıfırlamaq üçün OTP kodu",
             'to_email': user.email
         }
-        send_normal_email(data)
+        send_mail(
+            data['email_subject'],
+            data['email_body'],
+            'no-reply@yourdomain.com', 
+            [data['to_email']],
+            fail_silently=False,
+        )
 
         return super().validate(attrs)
+    
+    
+    
+class VerifyOTPSerializer(serializers.Serializer):
+    otp = serializers.CharField()
 
+    def validate(self, data):
+        otp = data['otp']
+        try:
+            otp_record = OneTimePassword.objects.get(otp=otp)
+            user = otp_record.user
+            data['user'] = user
+        except OneTimePassword.DoesNotExist:
+            raise serializers.ValidationError('Invalid OTP.')
+
+        token, created = Token.objects.get_or_create(user=user)
+        data['token'] = token.key
+        otp_record.delete()
+
+        return data
 class SetNewPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=100, min_length=6, write_only=True)
     confirm_password = serializers.CharField(max_length=100, min_length=6, write_only=True)
-    uidb64 = serializers.CharField(min_length=1, write_only=True)
-    token = serializers.CharField(min_length=3, write_only=True)
+    token = serializers.CharField(write_only=True)  
 
     class Meta:
-        fields = ['password', 'confirm_password', 'uidb64', 'token']
+        fields = ['password', 'confirm_password', 'token']
 
     def validate(self, attrs):
-        try:
-            token = attrs.get('token')
-            uidb64 = attrs.get('uidb64')
-            password = attrs.get('password')
-            confirm_password = attrs.get('confirm_password')
+        token = attrs.get('token')
+        password = attrs.get('password')
+        confirm_password = attrs.get('confirm_password')
 
-            user_id = force_str(urlsafe_base64_decode(uidb64))
-            user = User.objects.get(id=user_id)
-            if not PasswordResetTokenGenerator().check_token(user, token):
-                raise AuthenticationFailed("Reset link is invalid or has expired", 401)
-            if password != confirm_password:
-                raise AuthenticationFailed("Passwords do not match")
-            user.set_password(password)
-            user.save()
-            return user
-        except Exception as e:
-            raise AuthenticationFailed("Link is invalid or has expired")
+        if password != confirm_password:
+            raise serializers.ValidationError("Passwords do not match")
+
+        try:
+            user = Token.objects.get(key=token).user
+        except Token.DoesNotExist:
+            raise serializers.ValidationError("Invalid or expired token")
+
+        attrs['user'] = user
+        return attrs
+
+    def save(self, **kwargs):
+        user = self.validated_data['user']
+        password = self.validated_data['password']
+
+        user.set_password(password)
+        user.save()
+
+        Token.objects.filter(user=user).delete()
+
+        return user
 
 
     
@@ -170,7 +205,7 @@ class LogoutUserSerializer(serializers.Serializer):
 
 
 class VerifyUserEmailSerializer(serializers.Serializer):
-    otp = serializers.CharField(max_length=6)
+    otp = serializers.CharField(max_length=4)
 
 class ProfileSerializer(serializers.ModelSerializer):
     group = GroupSerializer()

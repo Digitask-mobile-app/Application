@@ -3,7 +3,7 @@ from multiprocessing import context
 from django.shortcuts import render
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from .models import OneTimePassword
+from .models import OneTimePassword, User
 from .serializers import *
 from rest_framework import status, generics, permissions, viewsets
 from .utils import send_generated_otp_to_email
@@ -11,16 +11,19 @@ from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import smart_str, DjangoUnicodeDecodeError
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from .models import User
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from rest_framework.views import APIView
-from .models import User
 from .serializers import UserSerializer
 from .filters import UserFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from django.db.models import Q 
+
+from django.core.mail import send_mail
+from django.utils.crypto import get_random_string
+from django.db import IntegrityError
+
 
 
 class RegisterView(GenericAPIView):
@@ -80,8 +83,10 @@ class PasswordResetRequestView(GenericAPIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
-        return Response({'message': 'Parolunuzu sıfırlamaq üçün sizə link göndərdik.'}, status=status.HTTP_200_OK)
+        
+        return Response({'message': 'OTP kodunu e-poçtunuza göndərdik.'}, status=status.HTTP_200_OK)
 
+    
 class PasswordResetConfirm(GenericAPIView):
     def get(self, request, uidb64, token):
         try:
@@ -95,13 +100,31 @@ class PasswordResetConfirm(GenericAPIView):
             return Response({'message': 'Token etibarsızdır və ya vaxtı keçib'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-class SetNewPasswordView(GenericAPIView):
-    serializer_class=SetNewPasswordSerializer
+class VerifyOTPView(GenericAPIView):
+    serializer_class = VerifyOTPSerializer
 
-    def patch(self, request):
-        serializer=self.serializer_class(data=request.data)
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        return Response({'success':True, 'message':"Parolunuz uğurla yeniləndi."}, status=status.HTTP_200_OK)
+        
+        user = serializer.validated_data['user']
+        token = serializer.validated_data['token']
+
+        return Response({
+            'token': token,
+            'email': user.email
+        }, status=status.HTTP_200_OK)
+
+
+class SetNewPasswordView(GenericAPIView):
+    serializer_class = SetNewPasswordSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        
+        return Response({'message': 'Password has been reset successfully.'}, status=status.HTTP_200_OK)
 
 
 class TestingAuthenticatedReq(GenericAPIView):

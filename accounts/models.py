@@ -95,10 +95,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def is_tech_manager(self):
         return self.user_type == "tech_manager"
 
-    
 class OneTimePassword(models.Model):
     user=models.OneToOneField(User, on_delete=models.CASCADE)
-    otp=models.CharField(max_length=6)
+    otp=models.CharField(max_length=4)
 
     def __str__(self):
         return f"{self.user.first_name} - otp code"
