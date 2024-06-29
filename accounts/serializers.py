@@ -138,13 +138,11 @@ class VerifyOTPSerializer(serializers.Serializer):
         otp_record.delete()
 
         return data
+
 class SetNewPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=100, min_length=6, write_only=True)
     confirm_password = serializers.CharField(max_length=100, min_length=6, write_only=True)
-    token = serializers.CharField(write_only=True)  
-
-    class Meta:
-        fields = ['password', 'confirm_password', 'token']
+    token = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
         token = attrs.get('token')
@@ -172,9 +170,7 @@ class SetNewPasswordSerializer(serializers.Serializer):
         Token.objects.filter(user=user).delete()
 
         return user
-
-
-    
+        
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework_simplejwt.exceptions import TokenError
 
