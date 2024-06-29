@@ -111,6 +111,16 @@ class VerifyOTPView(GenericAPIView):
         
         return Response({'token': serializer.validated_data['token']}, status=status.HTTP_200_OK)
 
+class ResendOtpView(GenericAPIView):
+    serializer_class = PasswordResetRequestSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        
+        email = serializer.validated_data.get('email')
+
+        return Response({'message': 'Yeni OTP kodu e-poçtunuza göndərildi.'}, status=status.HTTP_200_OK)
 
 class SetNewPasswordView(GenericAPIView):
     serializer_class = SetNewPasswordSerializer
