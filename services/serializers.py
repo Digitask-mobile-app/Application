@@ -65,7 +65,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'user', 'full_name', 'task_type', 'registration_number',
             'contact_number', 'location', 'note', 'date', 'time', 'status',
-            'tv', 'voice', 'internet', 'services', 'first_name', 'last_name', 'phone','group'
+            'tv', 'voice', 'internet', 'services', 'first_name', 'last_name', 'phone','group',"is_tv", "is_voice", "is_internet"
         ]
 
     def get_services(self, obj):
