@@ -55,7 +55,6 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     tv = TVSerializer()
     internet = InternetSerializer()
     voice = VoiceSerializer()
-
     services = serializers.SerializerMethodField()
     first_name = serializers.SerializerMethodField()
     last_name = serializers.SerializerMethodField()
@@ -329,6 +328,9 @@ class TaskUpdateSerializer(serializers.ModelSerializer):
         return instance
     
 class UpdateTaskSerializer(serializers.ModelSerializer):
+    tv = TVSerializer()
+    internet = InternetSerializer()
+    voice = VoiceSerializer()
     services = serializers.SerializerMethodField()
     class Meta:
         model = Task
