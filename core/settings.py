@@ -70,10 +70,14 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    'channels',
     #myapps
     'accounts',
     "services",
 ]
+
+ASGI_APPLICATION = 'core.asgi.application'
+
 
 SITE_ID = 1
 

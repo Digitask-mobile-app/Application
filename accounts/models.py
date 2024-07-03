@@ -112,3 +112,6 @@ class Meeting(models.Model):
     def __str__(self):
         return f"{self.title}-{self.meeting_type}"
 
+class UserStatus(models.Model):
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE)
+    online_status = models.BooleanField(default=False)
