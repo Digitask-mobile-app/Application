@@ -53,7 +53,9 @@ CKEDITOR_CONFIGS = {
 SILENCED_SYSTEM_CHECKS = ['ckeditor.W001']
 
 INSTALLED_APPS = [
-    'modeltranslation',
+    'daphne',
+    'channels',
+    # 'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -70,22 +72,19 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
-    'channels',
     #myapps
     'accounts',
     "services",
 ]
 
+ASGI_APPLICATION = 'core.asgi.application'
+
 SITE_ID = 1
 
-ASGI_APPLICATION = 'core.asgi.application'
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': [('127.0.0.1', 6379)],
-        },
-    },
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
 }
 
 MIDDLEWARE = [
@@ -159,6 +158,9 @@ REST_FRAMEWORK={
         'rest_framework.filters.SearchFilter',
     ],
 }
+
+WSGI_APPLICATION = 'core.wsgi.application'
+
 
 
 GDAL_LIBRARY_PATH = 'C:\\Program Files\\GDAL\\gdalxxx.dll'

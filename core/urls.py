@@ -60,6 +60,10 @@ urlpatterns = [
         re_path(r'^rosetta/', include('rosetta.urls')),
 ]
 
+from . import routing
+
+urlpatterns += routing.websocket_urlpatterns
+
 
 urlpatterns += static(settings.MEDIA_URL, 
     document_root=settings.MEDIA_ROOT)
