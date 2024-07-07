@@ -97,7 +97,7 @@ LOGGING = {
         'file': {
             'level': 'ERROR',  # Sadece ERROR ve üstü seviyeleri kaydedecek
             'class': 'logging.FileHandler',
-            'filename': '/path/to/your/log/file.log',  # Log dosyasının yolu
+            'filename': '/channelErrors.log',  # Log dosyasının yolu
             'formatter': 'verbose',  # Kullanılacak format
             'mode': 'a',  # Log dosyası için yazma modu (append)
         },
