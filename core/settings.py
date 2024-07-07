@@ -78,7 +78,6 @@ INSTALLED_APPS = [
 ]
 
 ASGI_APPLICATION = 'core.asgi.application'
-WSGI_APPLICATION = 'core.wsgi.application'
 
 SITE_ID = 1
 
@@ -86,7 +85,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("135.181.42.192", 100), ('localhost', 5173)],
+            "hosts": [('127.0.0.1', 6379)],
         },
     },
 }
@@ -144,6 +143,7 @@ TEMPLATES = [
     },
 ]
 
+WSGI_APPLICATION = 'core.wsgi.application'
 AUTH_USER_MODEL='accounts.User'
 
 REST_FRAMEWORK={
@@ -164,6 +164,7 @@ REST_FRAMEWORK={
     ],
 }
 
+WSGI_APPLICATION = 'core.wsgi.application'
 
 
 
