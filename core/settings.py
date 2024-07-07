@@ -303,7 +303,8 @@ LOGGING = {
     "disable_existing_loggers": False,
     "handlers": {
         "console": {
-            "class": "logging.StreamHandler",
+            "class": "logging.FileHandler",
+            "filename": "/var/log/websocket.log",
             "formatter": "app",
         },
     },
@@ -315,9 +316,7 @@ LOGGING = {
             "datefmt": "%Y-%m-%d %H:%M:%S",
         },
     },
-    "loggers": {
-        "django": {"handlers": ["console"], "level": "INFO"},
-    },
+
 }
 import django
 django.setup()
