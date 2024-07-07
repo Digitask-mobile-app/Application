@@ -12,8 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
-import django
-django.setup()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -320,3 +319,5 @@ LOGGING = {
         "django": {"handlers": ["console"], "level": "INFO"},
     },
 }
+import django
+django.setup()
