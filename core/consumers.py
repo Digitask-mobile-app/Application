@@ -56,3 +56,9 @@ class StatusConsumer(WebsocketConsumer):
             'userId': event['user_id'],
             'status': event['status']
         }))
+
+    def receive(self, text_data=None, bytes_data=None):
+        pass
+
+    def send(self, text_data=None, bytes_data=None):
+        pass
