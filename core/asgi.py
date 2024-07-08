@@ -7,8 +7,6 @@ from channels.security.websocket import AllowedHostsOriginValidator
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 
-import django
-django.setup()
 django_asgi_app = get_asgi_application()
 
 application = ProtocolTypeRouter({

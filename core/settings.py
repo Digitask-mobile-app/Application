@@ -298,3 +298,6 @@ CORS_ALLOW_HEADERS = [
 ]
 
 
+
+import django
+django.setup()
