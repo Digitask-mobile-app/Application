@@ -91,37 +91,6 @@ CHANNEL_LAYERS = {
     },
 }
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'ERROR',  # Sadece ERROR ve üstü seviyeleri kaydedecek
-            'class': 'logging.FileHandler',
-            'filename': '/var/log/channelErrors.log',  # Log dosyasının yolu
-            'formatter': 'verbose',  # Kullanılacak format
-            'mode': 'a',  # Log dosyası için yazma modu (append)
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-        'channels': {
-            'handlers': ['file'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    },
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {message}',
-            'style': '{',
-        },
-    },
-}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
