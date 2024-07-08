@@ -24,37 +24,37 @@ class StatusConsumer(WebsocketConsumer):
             self.update_user_status(self.user_id, False)
             self.broadcast_status(self.user_id, 'offline')
 
-    # def update_user_status(self, user_id, online):
-    #     try:
-    #         user = User.objects.get(id=user_id)
-    #         user.is_online = online
-    #         user.save()
-    #     except User.DoesNotExist:
-    #         pass
+    def update_user_status(self, user_id, online):
+        try:
+            user = User.objects.get(id=user_id)
+            user.is_online = online
+            user.save()
+        except User.DoesNotExist:
+            pass
 
-    # def receive(self, text_data):
-    #     data = json.loads(text_data)
-    #     user_id = data.get('userId')
-    #     status = data.get('status')
+    def receive(self, text_data):
+        data = json.loads(text_data)
+        user_id = data.get('userId')
+        status = data.get('status')
 
-    #     if user_id and status:
-    #         self.broadcast_status(user_id, status)
+        if user_id and status:
+            self.broadcast_status(user_id, status)
 
-    # def broadcast_status(self, user_id, status):
-    #     channel_layer = get_channel_layer()
-    #     async_to_sync(channel_layer.group_send)(
-    #         'status_updates',
-    #         {
-    #             'type': 'user_status',
-    #             'user_id': user_id,
-    #             'status': status
-    #         }
-    #     )
+    def broadcast_status(self, user_id, status):
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            'status_updates',
+            {
+                'type': 'user_status',
+                'user_id': user_id,
+                'status': status
+            }
+        )
 
-    # def user_status(self, event):
-    #     self.send(text_data=json.dumps({
-    #         'userId': event['user_id'],
-    #         'status': event['status']
-    #     }))
+    def user_status(self, event):
+        self.send(text_data=json.dumps({
+            'userId': event['user_id'],
+            'status': event['status']
+        }))
 
     
