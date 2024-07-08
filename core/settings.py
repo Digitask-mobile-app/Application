@@ -298,23 +298,3 @@ CORS_ALLOW_HEADERS = [
 ]
 
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "file": {
-            'level': 'ERROR',
-            "class": "logging.FileHandler",
-            "filename": "/var/log/websocket.log",
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    },
-}
-import django
-django.setup()
