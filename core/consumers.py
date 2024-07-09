@@ -34,17 +34,17 @@ class StatusConsumer(WebsocketConsumer):
         except User.DoesNotExist:
             pass
 
-    def receive(self, text_data):
+    async def receive(self, text_data):
         data = json.loads(text_data)
         user_id = data.get('userId')
         status = data.get('status')
 
         if user_id and status:
-            self.broadcast_status(user_id, status)
-
-    def broadcast_status(self, user_id, status):
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
+            await self.broadcast_status(user_id, status)
+    
+    async def broadcast_status(self, user_id, status):
+        channel_layer = self.channel_layer  # self.channel_layer kullanımı
+        await channel_layer.group_send(
             'status_updates',
             {
                 'type': 'user_status',
