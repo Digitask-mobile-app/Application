@@ -62,7 +62,7 @@ urlpatterns = [
 
 from . import routing
 
-# urlpatterns += routing.websocket_urlpatterns
+urlpatterns += routing.websocket_urlpatterns
 
 
 urlpatterns += static(settings.MEDIA_URL, 
