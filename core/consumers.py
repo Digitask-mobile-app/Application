@@ -60,8 +60,8 @@ from asgiref.sync import sync_to_async
 #         }))
 
 class StatusConsumer(AsyncWebsocketConsumer):
-    def connect(self):
-        self.accept()
-    def disconnect(self, close_code):
-        pass  # Burada genellikle bağlantı sonlandırma işlemleri yapılır, ancak bu örnekte boş bırakıyoruz.
+    async def connect(self):
+        await self.accept()
 
+    async def disconnect(self, close_code):
+        pass 
