@@ -5,7 +5,7 @@ from channels.layers import get_channel_layer
 from django.contrib.auth import get_user_model
 from channels.generic.websocket import AsyncWebsocketConsumer
 User = get_user_model()
-from channels.db import database_sync_to_async
+
 
 from asgiref.sync import sync_to_async
 # class StatusConsumer(WebsocketConsumer):
@@ -59,7 +59,7 @@ from asgiref.sync import sync_to_async
 #             'status': event['status']
 #         }))
 
-class StatusConsumer(AsyncWebsocketConsumer):
+class StatusConsumer(WebsocketConsumer):
     def connect(self):
         self.accept()
     def disconnect(self, close_code):
