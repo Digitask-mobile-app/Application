@@ -7,7 +7,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 User = get_user_model()
 
 
-
+from asgiref.sync import sync_to_async
 # class StatusConsumer(WebsocketConsumer):
 #     online_users = {}
 
@@ -60,10 +60,10 @@ User = get_user_model()
 #         }))
 
 class StatusConsumer(AsyncWebsocketConsumer):
-    
+    @sync_to_async
     def connect(self):
         self.accept()
-    
+    @sync_to_async
     def disconnect(self, close_code):
         pass  # Burada genellikle bağlantı sonlandırma işlemleri yapılır, ancak bu örnekte boş bırakıyoruz.
 
