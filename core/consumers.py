@@ -58,7 +58,7 @@ from asgiref.sync import sync_to_async
 #             'userId': event['user_id'],
 #             'status': event['status']
 #         }))
-@database_sync_to_async
+
 class StatusConsumer(AsyncWebsocketConsumer):
     def connect(self):
         self.accept()
