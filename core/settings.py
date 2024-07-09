@@ -77,18 +77,7 @@ INSTALLED_APPS = [
     "services",
 ]
 
-ASGI_APPLICATION = 'core.asgi.application'
 
-SITE_ID = 1
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [('127.0.0.1', 6379)],
-        },
-    },
-}
 
 
 
@@ -105,6 +94,20 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware'
 ]
+
+
+ASGI_APPLICATION = 'core.asgi.application'
+
+SITE_ID = 1
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:5173',
