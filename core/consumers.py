@@ -59,19 +59,19 @@ from asgiref.sync import sync_to_async
 #             'status': event['status']
 #         }))
 
+
+
 class StatusConsumer(WebsocketConsumer):
     def connect(self):
         self.accept()
 
-    def disconnect(self, close_code):
-        pass  # Bağlantı sonlandırma işlemleri burada yapılabilir
-
     def receive(self, text_data):
-        # Gelen mesajı işleme örneği
         text_data_json = json.loads(text_data)
-        message = text_data_json['message']
+        message = text_data_json['client_message']
 
-        # Gelen mesajı geri gönderme
         self.send(text_data=json.dumps({
-            'message': message
+            'server_message': message
         }))
+
+    def disconnect(self, close_code):
+        pass
