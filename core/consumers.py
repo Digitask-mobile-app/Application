@@ -61,9 +61,9 @@ User = get_user_model()
 
 class StatusConsumer(AsyncWebsocketConsumer):
     
-    async def connect(self):
-        await self.accept()
+    def connect(self):
+        self.accept()
     
-    async def disconnect(self, close_code):
+    def disconnect(self, close_code):
         pass  # Burada genellikle bağlantı sonlandırma işlemleri yapılır, ancak bu örnekte boş bırakıyoruz.
 
