@@ -61,17 +61,19 @@ from asgiref.sync import sync_to_async
 
 
 
-class StatusConsumer(WebsocketConsumer):
-    def connect(self):
-        self.accept()
 
-    def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message = text_data_json['client_message']
 
-        self.send(text_data=json.dumps({
-            'server_message': message
-        }))
+from channels.consumer import AsyncConsumer
 
-    def disconnect(self, close_code):
-        pass
+class StatusConsumer(AsyncConsumer):
+
+    async def websocket_connect(self, event):
+        await self.send({
+            "type": "websocket.accept",
+        })
+
+    async def websocket_receive(self, event):
+        await self.send({
+            "type": "websocket.send",
+            "text": event["text"],
+        })
