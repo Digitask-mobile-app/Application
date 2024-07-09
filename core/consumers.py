@@ -7,30 +7,29 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 User = get_user_model()
 
 
-
-class StatusConsumer(WebsocketConsumer):
+class StatusConsumer(AsyncWebsocketConsumer):
     online_users = {}
 
-    def connect(self):
-        self.accept()
+    async def connect(self):
+        await self.accept()
 
         self.user_id = self.scope['user'].id if self.scope['user'].is_authenticated else None
         if self.user_id:
             StatusConsumer.online_users[self.user_id] = self.channel_name
-            self.update_user_status(self.user_id, True)
-            self.broadcast_status(self.user_id, 'online')
+            await self.update_user_status(self.user_id, True)
+            await self.broadcast_status(self.user_id, 'online')
 
-    def disconnect(self, close_code):
+    async def disconnect(self, close_code):
         if self.user_id in StatusConsumer.online_users:
             del StatusConsumer.online_users[self.user_id]
-            self.update_user_status(self.user_id, False)
-            self.broadcast_status(self.user_id, 'offline')
+            await self.update_user_status(self.user_id, False)
+            await self.broadcast_status(self.user_id, 'offline')
 
-    def update_user_status(self, user_id, online):
+    async def update_user_status(self, user_id, online):
         try:
-            user = User.objects.get(id=user_id)
+            user = await self.get_user(user_id)
             user.is_online = online
-            user.save()
+            await user.save()
         except User.DoesNotExist:
             pass
 
@@ -41,9 +40,9 @@ class StatusConsumer(WebsocketConsumer):
 
         if user_id and status:
             await self.broadcast_status(user_id, status)
-    
+
     async def broadcast_status(self, user_id, status):
-        channel_layer = self.channel_layer  # self.channel_layer kullanımı
+        channel_layer = self.channel_layer
         await channel_layer.group_send(
             'status_updates',
             {
@@ -53,10 +52,25 @@ class StatusConsumer(WebsocketConsumer):
             }
         )
 
-    def user_status(self, event):
-        self.send(text_data=json.dumps({
+    async def user_status(self, event):
+        await self.send(text_data=json.dumps({
             'userId': event['user_id'],
             'status': event['status']
         }))
 
-    
+    async def get_user(self, user_id):
+        try:
+            return await self.get_django_user_model().objects.get(id=user_id)
+        except User.DoesNotExist:
+            return None
+
+    def get_django_user_model(self):
+        # Django'nun User modelini döndürür
+        return User
+
+    async def get_django_user(self, user_id):
+        # Asenkron şekilde Django'nun User modelini getirir
+        try:
+            return await self.get_django_user_model().objects.get(id=user_id)
+        except User.DoesNotExist:
+            return None
