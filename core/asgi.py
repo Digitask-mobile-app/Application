@@ -10,12 +10,11 @@ os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
 
 application = ProtocolTypeRouter({
-    # "http": get_asgi_application(),
-    # "websocket": AllowedHostsOriginValidator(
-    #     AuthMiddlewareStack(
-    #         URLRouter(
-    #             core.routing.websocket_urlpatterns
-    #         )
-    #     )
-    # ),
+    "http": get_asgi_application(),
+    "websocket": 
+        AuthMiddlewareStack(
+            URLRouter(
+                core.routing.websocket_urlpatterns
+            )
+        ),
 })
