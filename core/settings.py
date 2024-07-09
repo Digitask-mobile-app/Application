@@ -96,7 +96,7 @@ MIDDLEWARE = [
 ]
 
 
-ASGI_APPLICATION = 'core.asgi.application'
+ASGI_APPLICATION = 'asgi.application'
 
 SITE_ID = 1
 
