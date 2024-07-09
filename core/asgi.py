@@ -7,7 +7,7 @@ from channels.security.websocket import AllowedHostsOriginValidator
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
-django_asgi_app = get_asgi_application()
+
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
