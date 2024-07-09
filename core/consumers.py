@@ -59,5 +59,9 @@ from asgiref.sync import sync_to_async
 #             'status': event['status']
 #         }))
 
-class StatusConsumer(AsyncWebsocketConsumer):
-    pass
+class StatusConsumer(SyncConsumer):
+    async def connect(self):
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        pass 
