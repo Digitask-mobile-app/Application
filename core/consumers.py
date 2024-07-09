@@ -1,11 +1,9 @@
-import json
-from channels.generic.websocket import WebsocketConsumer
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
-from django.contrib.auth import get_user_model
 from channels.generic.websocket import AsyncWebsocketConsumer
-User = get_user_model()
+from channels.db import database_sync_to_async
+import json
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 class StatusConsumer(AsyncWebsocketConsumer):
     online_users = {}
@@ -25,11 +23,12 @@ class StatusConsumer(AsyncWebsocketConsumer):
             await self.update_user_status(self.user_id, False)
             await self.broadcast_status(self.user_id, 'offline')
 
-    async def update_user_status(self, user_id, online):
+    @database_sync_to_async
+    def update_user_status(self, user_id, online):
         try:
-            user = await self.get_user(user_id)
+            user = User.objects.get(id=user_id)
             user.is_online = online
-            await user.save()
+            user.save()
         except User.DoesNotExist:
             pass
 
@@ -57,20 +56,3 @@ class StatusConsumer(AsyncWebsocketConsumer):
             'userId': event['user_id'],
             'status': event['status']
         }))
-
-    async def get_user(self, user_id):
-        try:
-            return await self.get_django_user_model().objects.get(id=user_id)
-        except User.DoesNotExist:
-            return None
-
-    def get_django_user_model(self):
-        # Django'nun User modelini döndürür
-        return User
-
-    async def get_django_user(self, user_id):
-        # Asenkron şekilde Django'nun User modelini getirir
-        try:
-            return await self.get_django_user_model().objects.get(id=user_id)
-        except User.DoesNotExist:
-            return None
