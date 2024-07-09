@@ -1,7 +1,7 @@
 import json
 from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
+# from asgiref.sync import async_to_sync
 from django.contrib.auth import get_user_model
 from channels.generic.websocket import AsyncWebsocketConsumer
 User = get_user_model()
@@ -60,10 +60,8 @@ from asgiref.sync import sync_to_async
 #         }))
 
 class StatusConsumer(AsyncWebsocketConsumer):
-    @sync_to_async
     def connect(self):
         self.accept()
-    @sync_to_async
     def disconnect(self, close_code):
         pass  # Burada genellikle bağlantı sonlandırma işlemleri yapılır, ancak bu örnekte boş bırakıyoruz.
 
