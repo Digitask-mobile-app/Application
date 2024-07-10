@@ -20,7 +20,7 @@ class UserAdmin(BaseUserAdmin):
             'fields': ('email', 'password1', 'password2'),
         }),
     )
-    list_display = ('email', 'first_name', 'last_name', 'phone', 'user_type', 'group', 'is_active', 'is_staff', 'is_superuser')
+    list_display = ('email','username', 'first_name', 'last_name', 'phone', 'user_type', 'group', 'is_active', 'is_staff', 'is_superuser')
     search_fields = ('email', 'first_name', 'last_name', 'phone')
     ordering = ('email',)
 
