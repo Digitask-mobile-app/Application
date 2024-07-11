@@ -188,7 +188,7 @@ class UserListView(generics.ListAPIView):
     search_fields = ['first_name', 'last_name']
 
     def get_queryset(self):
-        queryset = User.objects.filter(user_type__in=["technician", "plumber", "office_manager", "tech_manager"])
+        queryset = User.objects.filter(user_type__in=["texnik", "plumber", "ofis_menecer", "texnik_menecer"])
 
         search_term = self.request.query_params.get('search', None)
         if search_term:
