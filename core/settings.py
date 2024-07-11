@@ -77,18 +77,7 @@ INSTALLED_APPS = [
     "services",
 ]
 
-ASGI_APPLICATION = 'core.asgi.application'
 
-SITE_ID = 1
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [('127.0.0.1', 6379)],
-        },
-    },
-}
 
 
 
@@ -157,6 +146,7 @@ TEMPLATES = [
     },
 ]
 
+WSGI_APPLICATION = 'core.wsgi.application'
 AUTH_USER_MODEL='accounts.User'
 
 REST_FRAMEWORK={
@@ -177,6 +167,7 @@ REST_FRAMEWORK={
     ],
 }
 
+WSGI_APPLICATION = 'core.wsgi.application'
 
 
 
@@ -310,26 +301,6 @@ CORS_ALLOW_HEADERS = [
 ]
 
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "app",
-        },
-    },
-    "formatters": {
-        "app": {
-            "format": (
-                "%(asctime)s [%(levelname)-8s]" "(%(module)s.%(funcName)s) %(message)s"
-            ),
-            "datefmt": "%Y-%m-%d %H:%M:%S",
-        },
-    },
-    "loggers": {
-        "django": {"handlers": ["console"], "level": "INFO"},
-    },
-}
+
 import django
 django.setup()

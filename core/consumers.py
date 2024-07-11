@@ -3,7 +3,7 @@ from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
 # from asgiref.sync import async_to_sync
 from django.contrib.auth import get_user_model
-
+from channels.generic.websocket import AsyncWebsocketConsumer
 User = get_user_model()
 
 
@@ -12,7 +12,6 @@ class StatusConsumer(WebsocketConsumer):
     online_users = {}
 
     def connect(self):
-        self.user = get_user_model()
         self.accept()
 
         self.user_id = self.scope['user'].id if self.scope['user'].is_authenticated else None
@@ -29,10 +28,10 @@ class StatusConsumer(WebsocketConsumer):
 
     def update_user_status(self, user_id, online):
         try:
-            user = self.user.objects.get(id=user_id)
+            user = User.objects.get(id=user_id)
             user.is_online = online
             user.save()
-        except self.user.DoesNotExist:
+        except User.DoesNotExist:
             pass
 
     def receive(self, text_data):
@@ -59,7 +58,3 @@ class StatusConsumer(WebsocketConsumer):
             'userId': event['user_id'],
             'status': event['status']
         }))
-
-
-
-
