@@ -78,7 +78,6 @@ INSTALLED_APPS = [
 ]
 
 ASGI_APPLICATION = 'core.asgi.application'
-WSGI_APPLICATION = 'core.wsgi.application'
 
 SITE_ID = 1
 
@@ -86,10 +85,11 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("135.181.42.192", 100), ("135.181.42.192", 80), ('localhost', 5173), ('127.0.0.1', 8000)],
+            "hosts": [('127.0.0.1', 6379)],
         },
     },
 }
+
 
 
 MIDDLEWARE = [
@@ -105,6 +105,20 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware'
 ]
+
+
+ASGI_APPLICATION = 'core.asgi.application'
+
+SITE_ID = 1
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:5173',
@@ -317,3 +331,5 @@ LOGGING = {
         "django": {"handlers": ["console"], "level": "INFO"},
     },
 }
+import django
+django.setup()

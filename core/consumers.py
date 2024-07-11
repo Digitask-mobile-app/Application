@@ -1,9 +1,13 @@
 import json
 from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
+# from asgiref.sync import async_to_sync
 from django.contrib.auth import get_user_model
 
+User = get_user_model()
+
+
+from asgiref.sync import sync_to_async
 class StatusConsumer(WebsocketConsumer):
     online_users = {}
 
@@ -41,7 +45,7 @@ class StatusConsumer(WebsocketConsumer):
 
     def broadcast_status(self, user_id, status):
         channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
+        channel_layer.group_send(
             'status_updates',
             {
                 'type': 'user_status',
@@ -55,3 +59,7 @@ class StatusConsumer(WebsocketConsumer):
             'userId': event['user_id'],
             'status': event['status']
         }))
+
+
+
+

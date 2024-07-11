@@ -34,7 +34,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    username = models.CharField(max_length=30, unique=True)
+    username = models.CharField(max_length=30, unique=False)
     phone = models.CharField(max_length=15, validators=[validate_phone_number])
     user_type = models.CharField(max_length=20, choices=USER_TYPE)
     group = models.ForeignKey(Group, on_delete = models.CASCADE, blank=True, null=True)
@@ -62,7 +62,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELD = ['username']
+    # REQUIRED_FIELDS  = ['username']
 
     objects = UserManager()
 
