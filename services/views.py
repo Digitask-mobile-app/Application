@@ -43,13 +43,25 @@ class TaskListAPIView(generics.ListAPIView):
     filterset_class = StatusAndTaskFilter
     filter_backends = (DjangoFilterBackend,)
     permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
     def get_queryset(self):
         user = self.request.user
+
+        print(f"Authenticated User: {user}, User Type: {user.user_type}")
+
+        if not user.is_authenticated:
+            print("User is not authenticated.")
+            return Task.objects.none()  
+
         if user.user_type == 'texnik':
-            return Task.objects.filter(user=user, status='waiting').order_by('-created_at')
+            queryset = Task.objects.filter(user=user, status='waiting').order_by('-created_at')
         else:
-            return Task.objects.all().order_by('-created_at')
+            queryset = Task.objects.all().order_by('-created_at')
+
+        print(f"Queryset: {queryset}")
+
+        return queryset
 
     
 class UserTaskListView(APIView):

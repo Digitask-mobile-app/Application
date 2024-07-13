@@ -31,6 +31,7 @@ class TaskSerializer(serializers.ModelSerializer):
     first_name = serializers.SerializerMethodField()
     last_name = serializers.SerializerMethodField()
     email = serializers.SerializerMethodField()
+    user_type = serializers.SerializerMethodField()
 
     class Meta:
         model = Task
@@ -44,6 +45,10 @@ class TaskSerializer(serializers.ModelSerializer):
     
     def get_email(self, obj):
         return obj.user.email if obj.user else None
+    
+    def get_user_type(self, obj):  
+        return obj.user.user_type if obj.user else None
+
 
 class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
