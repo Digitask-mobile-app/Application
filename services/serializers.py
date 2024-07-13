@@ -291,7 +291,7 @@ class MainPageUserSerializer(serializers.ModelSerializer):
                 'problem_count': problem_count,
                 'connection_count': connection_count
             }
-        elif obj.user_type == 'admin':
+        elif obj.is_staff or obj.is_superuser: 
             tv_task_count = Task.objects.filter(is_tv=True).count()
             internet_task_count = Task.objects.filter(is_internet=True).count()
             voice_task_count = Task.objects.filter(is_voice=True).count()
