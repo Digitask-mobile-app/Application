@@ -29,6 +29,16 @@ class UserAdmin(BaseUserAdmin):
 
     change_password_link.short_description = 'Password Reset'
 
+    def get_fieldsets(self, request, obj=None):
+        if obj and obj.is_staff and obj.is_superuser:
+            return (
+                (None, {'fields': ('email', 'password')}),
+                ('Personal info', {'fields': ('first_name', 'last_name', 'phone')}),
+                ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+                (_('Important dates'), {'fields': ('last_login',)}),
+            )
+        return super().get_fieldsets(request, obj)
+
 
 admin.site.register(User, UserAdmin)
 admin.site.register(OneTimePassword)
