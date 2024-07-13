@@ -39,10 +39,17 @@ class TaskDetailView(RetrieveAPIView):
 
 
 class TaskListAPIView(generics.ListAPIView):
-    queryset = Task.objects.all().order_by('-created_at')
     serializer_class = TaskSerializer
     filterset_class = StatusAndTaskFilter
     filter_backends = (DjangoFilterBackend,)
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.user_type == 'texnik':
+            return Task.objects.filter(user=user, status='waiting').order_by('-created_at')
+        else:
+            return Task.objects.all().order_by('-created_at')
 
     
 class UserTaskListView(APIView):
