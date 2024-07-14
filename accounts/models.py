@@ -14,10 +14,10 @@ MEETING_TYPES = (
 
 
 USER_TYPE = (
-    ("texnik", "texnik"),
-    ("plumber", "plumber"),
-    ("ofis_menecer", "ofis_menecer"),
-    ("texnik_menecer", "texnik_menecer"),
+    ("Texnik", "Texnik"),
+    ("Plumber", "Plumber"),
+    ("Ofis menecer", "Ofis menecer"),
+    ("Texnik menecer", "Texnik menecer"),
 )
 
 AUTH_PROVIDERS ={'email':'email'}
@@ -82,19 +82,19 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     @property
     def is_texnik(self):
-        return self.user_type == "texnik"
+        return self.user_type == "Texnik"
 
     @property
     def is_plumber(self):
-        return self.user_type == "plumber"
+        return self.user_type == "Plumber"
     
     @property
     def is_ofis_menecer(self):
-        return self.user_type == "ofis_menecer"
+        return self.user_type == "Ofis menecer"
 
     @property
     def is_texnik_menecer(self):
-        return self.user_type == "texnik_menecer"
+        return self.user_type == "Texnik menecer"
 
 class OneTimePassword(models.Model):
     user=models.OneToOneField(User, on_delete=models.CASCADE)

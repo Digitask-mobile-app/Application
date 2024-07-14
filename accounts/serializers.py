@@ -72,7 +72,7 @@ class LoginSerializer(serializers.ModelSerializer):
         tokens = user.tokens()
         
         is_admin = False
-        if user.user_type == 'ofis_menecer' or user.user_type == 'texnik_menecer':
+        if user.user_type == 'Ofis menecer' or user.user_type == 'Texnik menecer':
             is_admin = True
 
         return {
