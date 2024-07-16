@@ -16,15 +16,53 @@ class InternetSerializer(serializers.ModelSerializer):
         model = Internet
         fields = '__all__'
 
+class InternetUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Internet
+        fields = '__all__'
+        extra_kwargs = {
+            'task': {'read_only': True},
+            'photo_modem': {'required': False},
+            'modem_SN': {'required': False},
+            'optical_cable': {'required': False},
+            'fastconnector': {'required': False},
+            'siqnal': {'required': False},
+        }        
+
 class TVSerializer(serializers.ModelSerializer):
     class Meta:
         model = TV
         fields = '__all__'
 
+class TVUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TV
+        fields = '__all__'
+        extra_kwargs = {
+            'task': {'read_only': True},
+            'photo_modem': {'required': False},
+            'modem_SN': {'required': False},
+            'f_connector': {'required': False},
+            'splitter': {'required': False},
+            'rg6_cable': {'required': False},
+        }
+
 class VoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Voice
         fields = '__all__'
+
+class VoiceUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Voice
+        fields = '__all__'
+        extra_kwargs = {
+            'task': {'read_only': True},
+            'photo_modem': {'required': False},
+            'modem_SN': {'required': False},
+            'home_number': {'required': False},
+            'password': {'required': False},
+        }
 
 class TaskSerializer(serializers.ModelSerializer):
     group = GroupSerializer(many=True)

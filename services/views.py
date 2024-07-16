@@ -164,17 +164,35 @@ class CreateTaskView(generics.CreateAPIView):
     queryset = Task.objects.all()
 
 
-class CreateUpdateTvView(generics.CreateAPIView,generics.UpdateAPIView):
-    serializer_class = TVSerializer
+class CreateUpdateTvView(generics.CreateAPIView, generics.UpdateAPIView):
     queryset = TV.objects.all()
 
-class CreateUpdateInternetView(generics.CreateAPIView,generics.UpdateAPIView):
-    serializer_class = InternetSerializer
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return TVSerializer
+        if self.request.method in ['PUT', 'PATCH']:
+            return TVUpdateSerializer
+        return super().get_serializer_class()
+
+class CreateUpdateInternetView(generics.CreateAPIView, generics.UpdateAPIView):
     queryset = Internet.objects.all()
 
-class CreateUpdateVoiceView(generics.CreateAPIView,generics.UpdateAPIView):
-    serializer_class = VoiceSerializer
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return InternetSerializer
+        if self.request.method in ['PUT', 'PATCH']:
+            return InternetUpdateSerializer
+        return super().get_serializer_class()
+
+class CreateUpdateVoiceView(generics.CreateAPIView, generics.UpdateAPIView):
     queryset = Voice.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return VoiceSerializer
+        if self.request.method in ['PUT', 'PATCH']:
+            return VoiceUpdateSerializer
+        return super().get_serializer_class()
    
 class UpdateTaskView(generics.UpdateAPIView):
     queryset = Task.objects.all()
