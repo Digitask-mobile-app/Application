@@ -1,17 +1,8 @@
-import json
-from dataclasses import field
 from .models import User, OneTimePassword, Group
 from services.serializers import GroupSerializer
 from rest_framework import serializers
-from string import ascii_lowercase, ascii_uppercase
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.utils.encoding import smart_str, force_str, smart_bytes
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.contrib.sites.shortcuts import get_current_site
-from django.urls import reverse
-from .utils import send_normal_email
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
@@ -31,7 +22,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         password=attrs.get('password', '')
         password2 =attrs.get('password2', '')
         if password !=password2:
-            raise serializers.ValidationError("passwords do not match")
+            raise serializers.ValidationError("Parollar uyğun gəlmir")
          
         return attrs
 
@@ -67,7 +58,7 @@ class LoginSerializer(serializers.ModelSerializer):
         user = authenticate(email=email, password=password)
 
         if not user:
-            raise AuthenticationFailed("Invalid credentials, try again.")
+            raise AuthenticationFailed("Etibarsız etimadnamələr, yenidən cəhd edin.")
 
         tokens = user.tokens()
         
@@ -150,12 +141,12 @@ class SetNewPasswordSerializer(serializers.Serializer):
         confirm_password = attrs.get('confirm_password')
 
         if password != confirm_password:
-            raise serializers.ValidationError("Passwords do not match")
+            raise serializers.ValidationError("Parollar uyğun gəlmir")
 
         try:
             user = Token.objects.get(key=token).user
         except Token.DoesNotExist:
-            raise serializers.ValidationError("Invalid or expired token")
+            raise serializers.ValidationError("Etibarsız və ya vaxtı keçmiş nişan")
 
         attrs['user'] = user
         return attrs
@@ -228,11 +219,9 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'phone', 'user_type', 'group']
+        fields = ['id', 'email', 'phone', 'user_type', 'group']
         extra_kwargs = {
             'email': {'required': False},
-            'first_name': {'required': False},
-            'last_name': {'required': False},
             'phone': {'required': False},
             'user_type': {'required': False},
             'group': {'required': False},
