@@ -216,21 +216,46 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         queryset=Group.objects.all(),
         required=False
     )
+    password = serializers.CharField(write_only=True, required=False)
+    password2 = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'phone', 'user_type', 'group']
+        fields = ['id', 'email', 'phone', 'user_type', 'username', 'group', 'password', 'password2']
         extra_kwargs = {
             'email': {'required': False},
             'phone': {'required': False},
             'user_type': {'required': False},
+            'username': {'required': False},
             'group': {'required': False},
+            'password': {'required': False},
+            'password2': {'required': False},
         }
-    
+
+    def validate(self, data):
+        password = data.get('password')
+        password2 = data.get('password2')
+
+        if password or password2:
+            if not password:
+                raise serializers.ValidationError({"password": "Bu sahə təkrar şifrə təmin edildikdə tələb olunur."})
+            if not password2:
+                raise serializers.ValidationError({"password2": "Parol təmin edildikdə bu sahə tələb olunur."})
+            if password != password2:
+                raise serializers.ValidationError({"password2": "İki parol sahəsi eyni olmalıdır."})
+
+        return data
+
     def update(self, instance, validated_data):
         group = validated_data.pop('group', None)
         if group is not None:
-            instance.group = group
+            instance.group_id = group.id 
+        else:
+            instance.group_id = None
+        password = validated_data.pop('password', None)
+        if password:
+            instance.set_password(password)
+
         return super().update(instance, validated_data)
 
 class PerformanceUserSerializer(serializers.ModelSerializer):
