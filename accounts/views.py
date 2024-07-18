@@ -198,3 +198,7 @@ class UserListView(generics.ListAPIView):
             )
 
         return queryset
+    
+class UpdateUserView(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UpdateUserSerializer

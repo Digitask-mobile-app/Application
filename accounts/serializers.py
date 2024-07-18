@@ -1,6 +1,6 @@
 import json
 from dataclasses import field
-from .models import User, OneTimePassword
+from .models import User, OneTimePassword, Group
 from services.serializers import GroupSerializer
 from rest_framework import serializers
 from string import ascii_lowercase, ascii_uppercase
@@ -218,7 +218,31 @@ class UserSerializer(serializers.ModelSerializer):
     group = GroupSerializer()
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'phone', 'user_type', 'group','is_staff']
+        fields = ['id', 'email', 'first_name', 'last_name', 'phone', 'user_type', 'group']
+
+class UpdateUserSerializer(serializers.ModelSerializer):
+    group = serializers.PrimaryKeyRelatedField(
+        queryset=Group.objects.all(),
+        required=False
+    )
+
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'first_name', 'last_name', 'phone', 'user_type', 'group']
+        extra_kwargs = {
+            'email': {'required': False},
+            'first_name': {'required': False},
+            'last_name': {'required': False},
+            'phone': {'required': False},
+            'user_type': {'required': False},
+            'group': {'required': False},
+        }
+    
+    def update(self, instance, validated_data):
+        group = validated_data.pop('group', None)
+        if group is not None:
+            instance.group = group
+        return super().update(instance, validated_data)
 
 class PerformanceUserSerializer(serializers.ModelSerializer):
     class Meta:
