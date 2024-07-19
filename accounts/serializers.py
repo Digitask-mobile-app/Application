@@ -210,7 +210,7 @@ class UserSerializer(serializers.ModelSerializer):
     group = GroupSerializer()
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'phone', 'user_type', 'group']
+        fields = ['id', 'email', 'first_name', 'last_name', 'phone', 'user_type', 'group', 'username']
 
 class UpdateUserSerializer(serializers.ModelSerializer):
     group = serializers.PrimaryKeyRelatedField(
