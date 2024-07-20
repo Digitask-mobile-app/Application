@@ -219,10 +219,12 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     )
     password = serializers.CharField(write_only=True, required=False)
     password2 = serializers.CharField(write_only=True, required=False)
+    groupName = serializers.CharField(required=False, allow_blank=True)
+    groupRegion = serializers.CharField(required=False, allow_blank=True)
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'phone', 'user_type', 'username', 'group', 'password', 'password2', 'first_name', 'last_name']
+        fields = ['id', 'email', 'phone', 'user_type', 'username', 'group', 'password', 'password2', 'first_name', 'last_name', 'groupName', 'groupRegion']
         extra_kwargs = {
             'email': {'required': False},
             'phone': {'required': False},
