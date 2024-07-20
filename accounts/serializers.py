@@ -235,6 +235,8 @@ class UpdateUserSerializer(serializers.ModelSerializer):
             'password2': {'required': False},
             'first_name': {'read_only': True},
             'last_name': {'read_only': True},
+            'groupName': {'read_only': True},
+            'groupRegion': {'read_only': True},
         }
 
     def validate(self, data):
