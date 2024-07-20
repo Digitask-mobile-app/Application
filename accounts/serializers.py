@@ -219,8 +219,8 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     )
     password = serializers.CharField(write_only=True, required=False)
     password2 = serializers.CharField(write_only=True, required=False)
-    groupName = serializers.CharField(required=False, allow_blank=True)
-    groupRegion = serializers.CharField(required=False, allow_blank=True)
+    groupName = serializers.SerializerMethodField()
+    groupRegion = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -256,14 +256,21 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         group = validated_data.pop('group', None)
         if group is not None:
-            instance.group_id = group.id 
+            instance.group = group
         else:
-            instance.group_id = None
+            instance.group = None
         password = validated_data.pop('password', None)
         if password:
             instance.set_password(password)
 
         return super().update(instance, validated_data)
+
+    def get_groupName(self, obj):
+        return obj.group.group if obj.group else None
+
+    def get_groupRegion(self, obj):
+        return obj.group.region if obj.group else None
+
 
 class PerformanceUserSerializer(serializers.ModelSerializer):
     class Meta:
