@@ -222,7 +222,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'phone', 'user_type', 'username', 'group', 'password', 'password2']
+        fields = ['id', 'email', 'phone', 'user_type', 'username', 'group', 'password', 'password2', 'first_name', 'last_name']
         extra_kwargs = {
             'email': {'required': False},
             'phone': {'required': False},
@@ -231,6 +231,8 @@ class UpdateUserSerializer(serializers.ModelSerializer):
             'group': {'required': False},
             'password': {'required': False},
             'password2': {'required': False},
+            'first_name': {'read_only': True},
+            'last_name': {'read_only': True},
         }
 
     def validate(self, data):
