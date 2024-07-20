@@ -213,28 +213,26 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'email', 'first_name', 'last_name', 'phone', 'user_type', 'group', 'username']
 
 class UpdateUserSerializer(serializers.ModelSerializer):
-    groupId = serializers.PrimaryKeyRelatedField(
+    group = serializers.PrimaryKeyRelatedField(
         queryset=Group.objects.all(),
         required=False
     )
-    group = GroupSerializer()
     password = serializers.CharField(write_only=True, required=False)
     password2 = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'phone', 'user_type', 'username', 'groupId', 'password', 'password2', 'first_name', 'last_name', 'group']
+        fields = ['id', 'email', 'phone', 'user_type', 'username', 'group', 'password', 'password2', 'first_name', 'last_name']
         extra_kwargs = {
             'email': {'required': False},
             'phone': {'required': False},
             'user_type': {'required': False},
             'username': {'required': False},
-            'groupId': {'required': False},
+            'group': {'required': False},
             'password': {'required': False},
             'password2': {'required': False},
             'first_name': {'read_only': True},
             'last_name': {'read_only': True},
-            'group': {'read_only': True},
         }
 
     def validate(self, data):
