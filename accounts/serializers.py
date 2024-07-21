@@ -213,30 +213,25 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'email', 'first_name', 'last_name', 'phone', 'user_type', 'group', 'username']
 
 class UpdateUserSerializer(serializers.ModelSerializer):
-    group = serializers.PrimaryKeyRelatedField(
-        queryset=Group.objects.all(),
-        required=False
-    )
+    group_id = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all(), write_only=True)
     password = serializers.CharField(write_only=True, required=False)
     password2 = serializers.CharField(write_only=True, required=False)
-    groupName = serializers.SerializerMethodField()
-    groupRegion = serializers.SerializerMethodField()
+    group = GroupSerializer(read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'phone', 'user_type', 'username', 'group', 'password', 'password2', 'first_name', 'last_name', 'groupName', 'groupRegion']
+        fields = ['id', 'email', 'phone', 'user_type', 'username', 'group', 'group_id', 'password', 'password2', 'first_name', 'last_name',]
         extra_kwargs = {
             'email': {'required': False},
             'phone': {'required': False},
             'user_type': {'required': False},
             'username': {'required': False},
-            'group': {'required': False},
+            'group_id': {'required': False},
             'password': {'required': False},
             'password2': {'required': False},
             'first_name': {'read_only': True},
             'last_name': {'read_only': True},
-            'groupName': {'read_only': True},
-            'groupRegion': {'read_only': True},
+            'group': {'read_only': True},
         }
 
     def validate(self, data):
@@ -247,22 +242,16 @@ class UpdateUserSerializer(serializers.ModelSerializer):
             if not password:
                 raise serializers.ValidationError({"password": "Bu sahə təkrar şifrə təmin edildikdə tələb olunur."})
             if not password2:
-                raise serializers.ValidationError({"password2": "Parol təmin edildikdə bu sahə tələb olunur."})
+                raise serializers.ValidationError({"password2": "Şifrə təmin edildikdə bu sahə tələb olunur."})
             if password != password2:
-                raise serializers.ValidationError({"password2": "İki parol sahəsi eyni olmalıdır."})
+                raise serializers.ValidationError({"password2": "İki şifrə sahəsi eyni olmalıdır."})
 
         return data
 
     def update(self, instance, validated_data):
-        group = validated_data.pop('group', None)
-        if group is not None:
+        group = validated_data.pop('group_id', None)
+        if group:
             instance.group = group
-        else:
-            instance.group = None
-        password = validated_data.pop('password', None)
-        if password:
-            instance.set_password(password)
-
         return super().update(instance, validated_data)
 
     def get_groupName(self, obj):
