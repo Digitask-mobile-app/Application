@@ -213,20 +213,24 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'email', 'first_name', 'last_name', 'phone', 'user_type', 'group', 'username']
 
 class UpdateUserSerializer(serializers.ModelSerializer):
-    group_id = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all(), write_only=True)
-    password = serializers.CharField(write_only=True, required=False)
-    password2 = serializers.CharField(write_only=True, required=False)
+    group_id = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all(), write_only=True, required=False, allow_null=True)
+    password = serializers.CharField(write_only=True, required=False, allow_blank=True, allow_null=True)
+    password2 = serializers.CharField(write_only=True, required=False, allow_blank=True, allow_null=True)
     group = GroupSerializer(read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'phone', 'user_type', 'username', 'group', 'group_id', 'password', 'password2', 'first_name', 'last_name',]
+        fields = [
+            'id', 'email', 'phone', 'user_type', 'username',
+            'group', 'group_id', 'password', 'password2',
+            'first_name', 'last_name'
+        ]
         extra_kwargs = {
             'email': {'required': False},
-            'phone': {'required': False},
-            'user_type': {'required': False},
-            'username': {'required': False},
-            'group_id': {'required': False},
+            'phone': {'required': False, 'allow_blank': True, 'allow_null': True},
+            'user_type': {'required': False, 'allow_blank': True, 'allow_null': True},
+            'username': {'required': False, 'allow_blank': True, 'allow_null': True},
+            'group_id': {'required': False, 'allow_null': True},
             'password': {'required': False},
             'password2': {'required': False},
             'first_name': {'read_only': True},
@@ -238,21 +242,29 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         password = data.get('password')
         password2 = data.get('password2')
 
-        if password or password2:
-            if not password:
-                raise serializers.ValidationError({"password": "Bu sahə təkrar şifrə təmin edildikdə tələb olunur."})
-            if not password2:
-                raise serializers.ValidationError({"password2": "Şifrə təmin edildikdə bu sahə tələb olunur."})
-            if password != password2:
-                raise serializers.ValidationError({"password2": "İki şifrə sahəsi eyni olmalıdır."})
+        if (password or password2) and not password:
+            raise serializers.ValidationError({"password": "Bu sahə təkrar şifrə təmin edildikdə tələb olunur."})
+        if (password or password2) and not password2:
+            raise serializers.ValidationError({"password2": "Şifrə təmin edildikdə bu sahə tələb olunur."})
+        if password and password2 and password != password2:
+            raise serializers.ValidationError({"password2": "İki şifrə sahəsi eyni olmalıdır."})
 
         return data
 
     def update(self, instance, validated_data):
         group = validated_data.pop('group_id', None)
-        if group:
+        if group is not None:
             instance.group = group
-        return super().update(instance, validated_data)
+        else:
+            instance.group = None 
+        password = validated_data.pop('password', None)
+        if password:
+            instance.set_password(password)  
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        
+        instance.save()
+        return instance
 
     def get_groupName(self, obj):
         return obj.group.group if obj.group else None
