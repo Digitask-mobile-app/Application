@@ -164,8 +164,17 @@ class PerformanceSerializer(serializers.ModelSerializer):
         return group_data
 
     def get_task_count(self, obj):
-        if obj.user:
-            task_counts = Task.objects.filter(user=obj.user).values('task_type').annotate(count=Count('id'))
+        user = obj.user
+        if user:
+            start_date = self.context['request'].query_params.get('start_date')
+            end_date = self.context['request'].query_params.get('end_date')
+            task_query = Task.objects.filter(user=user)
+            if start_date:
+                task_query = task_query.filter(date__gte=start_date)
+            if end_date:
+                task_query = task_query.filter(date__lte=end_date)
+
+            task_counts = task_query.values('task_type').annotate(count=Count('id'))
             total_count = sum([count['count'] for count in task_counts])
             connection_count = next((count['count'] for count in task_counts if count['task_type'] == 'connection'), 0)
             problem_count = next((count['count'] for count in task_counts if count['task_type'] == 'problem'), 0)
@@ -183,9 +192,19 @@ class PerformanceSerializer(serializers.ModelSerializer):
             }
 
     def get_dates(self, obj):
-        dates = Task.objects.filter(user=obj.user).order_by('date').values_list('date', flat=True)
-        return list(dates)
+        user = obj.user
+        if user:
+            start_date = self.context['request'].query_params.get('start_date')
+            end_date = self.context['request'].query_params.get('end_date')
+            task_query = Task.objects.filter(user=user).order_by('date')
+            if start_date:
+                task_query = task_query.filter(date__gte=start_date)
+            if end_date:
+                task_query = task_query.filter(date__lte=end_date)
 
+            dates = list(task_query.values_list('date', flat=True))
+            return dates
+        return []
 
 
     

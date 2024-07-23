@@ -69,11 +69,19 @@ class PerformanceListView(generics.ListAPIView):
     filter_backends = (DjangoFilterBackend,)
 
     def get_queryset(self):
-        latest_task_ids = Task.objects.filter(user_id=OuterRef('user_id')).order_by('-date').values('id')[:1]
+        start_date = self.request.query_params.get('start_date')
+        end_date = self.request.query_params.get('end_date')
+
+        task_query = Task.objects.all()
+        if start_date:
+            task_query = task_query.filter(date__gte=start_date)
+        if end_date:
+            task_query = task_query.filter(date__lte=end_date)
+
+        latest_task_ids = task_query.filter(user_id=OuterRef('user_id')).order_by('-date').values('id')[:1]
         queryset = Task.objects.filter(id__in=Subquery(latest_task_ids)).order_by('user_id')
 
         return queryset
-
 
 
 @receiver(pre_delete, sender=Item)
