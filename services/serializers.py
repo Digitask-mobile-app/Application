@@ -141,6 +141,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
 
 
 class PerformanceSerializer(serializers.ModelSerializer):
+    group = serializers.SerializerMethodField()
     task_count = serializers.SerializerMethodField()
     dates = serializers.SerializerMethodField()
 
