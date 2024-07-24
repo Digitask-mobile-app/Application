@@ -141,55 +141,71 @@ class TaskDetailSerializer(serializers.ModelSerializer):
 
 
 class PerformanceSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source='user.id')
+    user_type = serializers.CharField(source='user.user_type')
+    first_name = serializers.CharField(source='user.first_name')
+    last_name = serializers.CharField(source='user.last_name')
+    group = serializers.SerializerMethodField()
     task_count = serializers.SerializerMethodField()
     dates = serializers.SerializerMethodField()
 
     class Meta:
-        model = User
+        model = Task
         fields = ['id', 'user_type', 'first_name', 'last_name', 'group', 'task_count', 'dates']
 
     def get_group(self, obj):
         group_data = {}
-        if obj.group:
+        if obj.user and obj.user.group:
             group_data = {
-                'id': obj.group.id,
-                'group': obj.group.group,
-                'region': obj.group.region
+                'id': obj.user.group.id,
+                'group': obj.user.group.group,
+                'region': obj.user.group.region
             }
         return group_data
 
     def get_task_count(self, obj):
-        start_date = self.context['request'].query_params.get('start_date')
-        end_date = self.context['request'].query_params.get('end_date')
+        user = obj.user
+        if user:
+            start_date = self.context['request'].query_params.get('start_date')
+            end_date = self.context['request'].query_params.get('end_date')
+            task_query = Task.objects.filter(user=user)
+            if start_date:
+                task_query = task_query.filter(date__gte=start_date)
+            if end_date:
+                task_query = task_query.filter(date__lte=end_date)
 
-        task_query = Task.objects.filter(user=obj)
-        if start_date:
-            task_query = task_query.filter(date__gte=start_date)
-        if end_date:
-            task_query = task_query.filter(date__lte=end_date)
+            task_counts = task_query.values('task_type').annotate(count=Count('id'))
+            total_count = sum([count['count'] for count in task_counts])
+            connection_count = next((count['count'] for count in task_counts if count['task_type'] == 'connection'), 0)
+            problem_count = next((count['count'] for count in task_counts if count['task_type'] == 'problem'), 0)
 
-        task_counts = task_query.values('task_type').annotate(count=Count('id'))
-        total_count = sum(count['count'] for count in task_counts)
-        connection_count = next((count['count'] for count in task_counts if count['task_type'] == 'connection'), 0)
-        problem_count = next((count['count'] for count in task_counts if count['task_type'] == 'problem'), 0)
-
-        return {
-            'total': total_count,
-            'connection': connection_count,
-            'problem': problem_count
-        }
+            return {
+                'total': total_count,
+                'connection': connection_count,
+                'problem': problem_count
+            }
+        else:
+            return {
+                'total': 0,
+                'connection': 0,
+                'problem': 0
+            }
 
     def get_dates(self, obj):
-        start_date = self.context['request'].query_params.get('start_date')
-        end_date = self.context['request'].query_params.get('end_date')
-        task_query = Task.objects.filter(user=obj).order_by('date')
-        if start_date:
-            task_query = task_query.filter(date__gte=start_date)
-        if end_date:
-            task_query = task_query.filter(date__lte=end_date)
+        user = obj.user
+        if user:
+            start_date = self.context['request'].query_params.get('start_date')
+            end_date = self.context['request'].query_params.get('end_date')
+            task_query = Task.objects.filter(user=user).order_by('date')
+            if start_date:
+                task_query = task_query.filter(date__gte=start_date)
+            if end_date:
+                task_query = task_query.filter(date__lte=end_date)
 
-        dates = list(task_query.values_list('date', flat=True))
-        return dates
+            dates = list(task_query.values_list('date', flat=True))
+            return dates
+        return []
+
 
     
 class WarehouseSerializer(serializers.ModelSerializer):

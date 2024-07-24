@@ -1,6 +1,6 @@
 from .models import Task, Item, History
 from .serializers import *
-from .filters import StatusAndTaskFilter,UserFilter, WarehouseItemFilter
+from .filters import StatusAndTaskFilter,TaskFilter, WarehouseItemFilter
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import ListAPIView, RetrieveAPIView
@@ -65,20 +65,23 @@ class UserTaskListView(APIView):
 
 class PerformanceListView(generics.ListAPIView):
     serializer_class = PerformanceSerializer
-    filterset_class = UserFilter
+    filterset_class = TaskFilter
     filter_backends = (DjangoFilterBackend,)
 
     def get_queryset(self):
         start_date = self.request.query_params.get('start_date')
         end_date = self.request.query_params.get('end_date')
 
-        users = User.objects.all()
+        task_query = Task.objects.all()
+        if start_date:
+            task_query = task_query.filter(date__gte=start_date)
+        if end_date:
+            task_query = task_query.filter(date__lte=end_date)
 
-        user_filter = UserFilter(self.request.GET, queryset=users, request=self.request)
-        filtered_users = user_filter.qs
+        latest_task_ids = task_query.filter(user_id=OuterRef('user_id')).order_by('-date').values('id')[:1]
+        queryset = Task.objects.filter(id__in=Subquery(latest_task_ids)).order_by('user_id')
 
-        return filtered_users
-
+        return queryset
 
 
 @receiver(pre_delete, sender=Item)

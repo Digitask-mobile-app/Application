@@ -3,7 +3,6 @@ from .models import status_task, TASK_TYPES, Task, Item
 from django_filters import rest_framework as filters
 from django import forms
 from accounts.models import User
-from django.db.models import Q
 
 
 MONTH_CHOICES = [
@@ -50,7 +49,6 @@ class StatusAndTaskFilter(django_filters.FilterSet):
         return queryset
 
     
-
 class TaskFilter(django_filters.FilterSet):
     start_date = django_filters.DateFilter(field_name='date', lookup_expr='gte', label='Start Date', widget=forms.DateInput(attrs={'type': 'date'}))
     end_date = django_filters.DateFilter(field_name='date', lookup_expr='lte', label='End Date', widget=forms.DateInput(attrs={'type': 'date'}))
@@ -58,30 +56,6 @@ class TaskFilter(django_filters.FilterSet):
     class Meta:
         model = Task
         fields = ['start_date', 'end_date']
-
-class UserFilter(django_filters.FilterSet):
-    start_date = django_filters.DateFilter(method='filter_by_date', label='Start Date', widget=forms.DateInput(attrs={'type': 'date'}))
-    end_date = django_filters.DateFilter(method='filter_by_date', label='End Date', widget=forms.DateInput(attrs={'type': 'date'}))
-
-    class Meta:
-        model = User
-        fields = []
-
-    def filter_by_date(self, queryset, name, value):
-        start_date = self.request.GET.get('start_date')
-        end_date = self.request.GET.get('end_date')
-
-        if start_date and end_date:
-            tasks = Task.objects.filter(
-                Q(date__gte=start_date) & Q(date__lte=end_date)
-            )
-            task_user_ids = tasks.values_list('user_id', flat=True).distinct()
-
-            return queryset.filter(
-                Q(id__in=task_user_ids) | Q(task__isnull=True)
-            ).distinct()
-        
-        return queryset
 
 
 class WarehouseItemFilter(django_filters.FilterSet):
