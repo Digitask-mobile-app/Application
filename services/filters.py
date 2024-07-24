@@ -49,6 +49,7 @@ class StatusAndTaskFilter(django_filters.FilterSet):
         return queryset
 
     
+
 class TaskFilter(django_filters.FilterSet):
     start_date = django_filters.DateFilter(field_name='date', lookup_expr='gte', label='Start Date', widget=forms.DateInput(attrs={'type': 'date'}))
     end_date = django_filters.DateFilter(field_name='date', lookup_expr='lte', label='End Date', widget=forms.DateInput(attrs={'type': 'date'}))
@@ -56,6 +57,29 @@ class TaskFilter(django_filters.FilterSet):
     class Meta:
         model = Task
         fields = ['start_date', 'end_date']
+
+class UserFilter(django_filters.FilterSet):
+    start_date = django_filters.DateFilter(method='filter_by_date', label='Start Date', widget=forms.DateInput(attrs={'type': 'date'}))
+    end_date = django_filters.DateFilter(method='filter_by_date', label='End Date', widget=forms.DateInput(attrs={'type': 'date'}))
+
+    class Meta:
+        model = User
+        fields = []
+
+    def filter_by_date(self, queryset, name, value):
+        start_date = self.request.GET.get('start_date')
+        end_date = self.request.GET.get('end_date')
+
+        task_ids = Task.objects.filter(date__gte=start_date, date__lte=end_date).values_list('user_id', flat=True).distinct()
+
+        if start_date and end_date:
+            return queryset.filter(id__in=task_ids)
+        elif start_date:
+            return queryset.filter(id__in=task_ids)
+        elif end_date:
+            return queryset.filter(id__in=task_ids)
+        return queryset
+
 
 
 class WarehouseItemFilter(django_filters.FilterSet):
