@@ -17,7 +17,8 @@ from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.views import View
 from django.db.models import Subquery, OuterRef
-
+from rest_framework.decorators import api_view
+import datetime
 
 class CreateTaskView(generics.CreateAPIView):
     serializer_class = TaskDetailSerializer
@@ -212,6 +213,32 @@ class UpdateTaskView(generics.UpdateAPIView):
 
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
+
+
+@api_view(['GET'])
+def month_year_choices(request):
+    min_year = Task.objects.aggregate(min_year=Min('date__year'))['min_year']
+    current_year = datetime.now().year
+    if min_year is None:
+        min_year = current_year 
+
+    years = list(range(min_year, current_year + 1))
+    months = [
+        {'id': 1, 'name': 'Yanvar'},
+        {'id': 2, 'name': 'Fevral'},
+        {'id': 3, 'name': 'Mart'},
+        {'id': 4, 'name': 'Aprel'},
+        {'id': 5, 'name': 'May'},
+        {'id': 6, 'name': 'İyun'},
+        {'id': 7, 'name': 'İyul'},
+        {'id': 8, 'name': 'Avqust'},
+        {'id': 9, 'name': 'Sentyabr'},
+        {'id': 10, 'name': 'Oktyabr'},
+        {'id': 11, 'name': 'Noyabr'},
+        {'id': 12, 'name': 'Dekabr'}
+    ]
+
+    return Response({'years': years, 'months': months})
 
 # @csrf_exempt
 # def export_item(request, id):
