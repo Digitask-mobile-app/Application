@@ -4,7 +4,7 @@ from django_filters import rest_framework as filters
 from django import forms
 from accounts.models import User
 from datetime import datetime
-from django.db.models import Min, Max
+from django.db.models import Min
 
 
 def get_year_choices():

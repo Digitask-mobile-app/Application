@@ -19,6 +19,7 @@ from django.views import View
 from django.db.models import Subquery, OuterRef
 from rest_framework.decorators import api_view
 import datetime
+from django.db.models import Min
 
 class CreateTaskView(generics.CreateAPIView):
     serializer_class = TaskDetailSerializer
