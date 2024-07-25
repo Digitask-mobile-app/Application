@@ -3,7 +3,16 @@ from .models import status_task, TASK_TYPES, Task, Item
 from django_filters import rest_framework as filters
 from django import forms
 from accounts.models import User
-import datetime
+from datetime import datetime
+from django.db.models import Min, Max
+
+
+def get_year_choices():
+    min_year = Task.objects.aggregate(min_year=Min('date__year'))['min_year']
+    current_year = datetime.now().year
+    if min_year is None:
+        min_year = current_year 
+    return [(year, str(year)) for year in range(min_year, current_year + 1)]
 
 MONTH_CHOICES = [
     (1, 'Yanvar'),
@@ -20,27 +29,11 @@ MONTH_CHOICES = [
     (12, 'Dekabr'),
 ]
 
-from django.db.models import Min, Max
-
-def get_year_choices():
-    years = Task.objects.aggregate(
-        min_year=Min('date__year'),
-        max_year=Max('date__year')
-    )
-    min_year = years['min_year']
-    max_year = years['max_year']
-    if min_year and max_year:
-        return [(year, str(year)) for year in range(min_year, max_year + 1)]
-    else:
-        current_year = datetime.now().year
-        return [(current_year, str(current_year))]
-
-
 class StatusAndTaskFilter(django_filters.FilterSet):
     status = django_filters.MultipleChoiceFilter(choices=status_task, field_name='status')
     task_type = django_filters.ChoiceFilter(choices=TASK_TYPES, field_name='task_type')
     month = django_filters.ChoiceFilter(choices=MONTH_CHOICES, method='filter_by_month', field_name='date')
-    year = django_filters.ChoiceFilter(choices=get_year_choices(), method='filter_by_year', field_name='year')
+    year = django_filters.ChoiceFilter(choices=get_year_choices(), method='filter_by_year', field_name='date')
 
     class Meta:
         model = Task
@@ -67,8 +60,6 @@ class StatusAndTaskFilter(django_filters.FilterSet):
                 return combined_queryset
             
         return queryset
-
-    
 
 class TaskFilter(django_filters.FilterSet):
     start_date = django_filters.DateFilter(field_name='date', lookup_expr='gte', label='Start Date', widget=forms.DateInput(attrs={'type': 'date'}))
