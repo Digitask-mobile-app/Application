@@ -176,14 +176,16 @@ class CreateTvView(generics.CreateAPIView):
 class UpdateTvView(generics.UpdateAPIView):
     queryset = TV.objects.all()
     serializer_class = TVUpdateSerializer
+    http_method_names = ['patch']
 
 class CreateInternetView(generics.CreateAPIView):
     queryset = Internet.objects.all()
     serializer_class = InternetSerializer
 
-class CreateInternetView(generics.UpdateAPIView):
+class UpdateInternetView(generics.UpdateAPIView):
     queryset = Internet.objects.all()
     serializer_class = InternetUpdateSerializer
+    http_method_names = ['patch']
 
 class CreateVoiceView(generics.CreateAPIView):
     queryset = Voice.objects.all()
@@ -192,6 +194,8 @@ class CreateVoiceView(generics.CreateAPIView):
 class UpdateVoiceView(generics.UpdateAPIView):
     queryset = Voice.objects.all()
     serializer_class = VoiceUpdateSerializer
+    http_method_names = ['patch']
+
    
 class UpdateTaskView(generics.UpdateAPIView):
     queryset = Task.objects.all()

@@ -24,7 +24,7 @@ urlpatterns = [
     path('update_tv/<int:pk>/', views.UpdateTvView.as_view(), name='update_tv'),
 
     path('create_internet/', views.CreateInternetView.as_view(), name='creat_internet'),
-    path('update_internet/<int:pk>/', views.CreateInternetView.as_view(), name='update_internet'),
+    path('update_internet/<int:pk>/', views.UpdateInternetView.as_view(), name='update_internet'),
 
     path('create_voice/', views.CreateVoiceView.as_view(), name='creat_voice'),
     path('update_voice/<int:pk>/', views.UpdateVoiceView.as_view(), name='update_voice'),
