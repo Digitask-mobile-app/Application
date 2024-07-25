@@ -64,28 +64,28 @@ class Task(Status):
 
 class Internet(models.Model):
     task = models.OneToOneField(Task, on_delete=models.CASCADE, related_name='internet')
-    photo_modem = models.ImageField(upload_to='internet/')
-    modem_SN = models.CharField(max_length=100)
-    optical_cable = models.CharField(max_length=100)
-    fastconnector = models.CharField(max_length=100)
-    siqnal = models.CharField(max_length=100)
+    photo_modem = models.ImageField(upload_to='internet/',null=True,blank=True)
+    modem_SN = models.CharField(max_length=100,null=True,blank=True)
+    optical_cable = models.CharField(max_length=100,null=True,blank=True)
+    fastconnector = models.CharField(max_length=100,null=True,blank=True)
+    siqnal = models.CharField(max_length=100,null=True,blank=True)
 
 
 class TV(models.Model):
     task = models.OneToOneField(Task, on_delete=models.CASCADE, related_name='tv')
-    photo_modem = models.ImageField(upload_to='tv/')
-    modem_SN = models.CharField(max_length=100)
-    rg6_cable = models.CharField(max_length=100)
-    f_connector = models.CharField(max_length=100)
-    splitter = models.CharField(max_length=100)
+    photo_modem = models.ImageField(upload_to='tv/',null=True,blank=True)
+    modem_SN = models.CharField(max_length=100,null=True,blank=True)
+    rg6_cable = models.CharField(max_length=100,null=True,blank=True)
+    f_connector = models.CharField(max_length=100,null=True,blank=True)
+    splitter = models.CharField(max_length=100,null=True,blank=True)
 
 
 class Voice(models.Model):
     task = models.OneToOneField(Task, on_delete=models.CASCADE, related_name='voice')
-    photo_modem = models.ImageField(upload_to='voice/')
-    modem_SN = models.CharField(max_length=100)
-    home_number = models.CharField(max_length=100)
-    password = models.CharField(max_length=100)
+    photo_modem = models.ImageField(upload_to='voice/',null=True,blank=True)
+    modem_SN = models.CharField(max_length=100,null=True,blank=True)
+    home_number = models.CharField(max_length=100,null=True,blank=True)
+    password = models.CharField(max_length=100,null=True,blank=True)
 
 
 class PlumberTask(models.Model):
