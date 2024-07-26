@@ -211,96 +211,17 @@ class ItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class HistorySerializer(serializers.ModelSerializer):
-    warehouse = serializers.SerializerMethodField()
-    equipment_name = serializers.SerializerMethodField()
-    brand = serializers.SerializerMethodField()
-    model = serializers.SerializerMethodField()
-    serial_number = serializers.SerializerMethodField()
-    number = serializers.SerializerMethodField()
-    size_length = serializers.SerializerMethodField()
-    mac = serializers.SerializerMethodField()
-    port_number = serializers.SerializerMethodField()
-
     class Meta:
         model = History
-        fields = ['id', 'warehouse', 'equipment_name', 'brand', 'model', 'serial_number', 'number', 'mac', 'port_number', 'size_length', 'action', 'timestamp']
+        fields = '__all__'
 
-    def create(self, validated_data):
-        validated_data['action'] = 'export'
-        instance = super().create(validated_data)
-
-        try:
-            warehouse_item = instance.warehouse_item
-            if warehouse_item.number > 0:
-                warehouse_item.number -= 1
-                warehouse_item.save()
-
-            instance.number = validated_data['number']
-            instance.save()
-
-        except Exception as e:
-            pass
-
-        return instance
-
-    def get_warehouse(self, obj):
-        try:
-            warehouse_item = obj.warehouse_item
-            warehouse_data = {
-                'name': warehouse_item.warehouse.name,
-                'region': warehouse_item.warehouse.region
-            }
-            return warehouse_data
-        except AttributeError:
-            return "Deleted"
-    
-    def get_equipment_name(self, obj):
-        try:
-            return obj.warehouse_item.equipment_name
-        except AttributeError:
-            return "Deleted"
-
-    def get_brand(self, obj):
-        try:
-            return obj.warehouse_item.brand
-        except AttributeError:
-            return "Deleted"
-
-    def get_model(self, obj):
-        try:
-            return obj.warehouse_item.model
-        except AttributeError:
-            return "Deleted"
-
-    def get_serial_number(self, obj):
-        try:
-            return obj.warehouse_item.serial_number
-        except AttributeError:
-            return "Deleted"
-
-    def get_number(self, obj):
-        try:
-            return obj.number  
-        except AttributeError:
-            return "Deleted"
-
-    def get_size_length(self, obj):
-        try:
-            return obj.warehouse_item.size_length
-        except AttributeError:
-            return "Deleted"
-        
-    def get_port_number(self, obj):
-        try:
-            return obj.warehouse_item.port_number
-        except AttributeError:
-            return "Deleted"
-        
-    def get_mac(self, obj):
-        try:
-            return obj.warehouse_item.mac
-        except AttributeError:
-            return "Deleted"
+class DecrementItemSerializer(serializers.Serializer):
+    item_id = serializers.IntegerField()
+    company = serializers.CharField(max_length=255)
+    authorized_person = serializers.CharField(max_length=255)
+    number = serializers.IntegerField()
+    texnik_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(user_type='Texnik'))
+    date = serializers.DateField()
 
 class CreatingMeetingSerializer(serializers.ModelSerializer):
     class Meta:

@@ -17,7 +17,7 @@ from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.views import View
 from django.db.models import Subquery, OuterRef
-
+from accounts.serializers import UserSerializer
 
 class CreateTaskView(generics.CreateAPIView):
     serializer_class = TaskDetailSerializer
@@ -109,27 +109,39 @@ class WarehouseListView(ListAPIView):
     queryset = Warehouse.objects.all()
     serializer_class = WarehouseSerializer
 
-class ItemExportView(generics.DestroyAPIView):
-    queryset = Item.objects.all()
-    serializer_class = WarehouseItemSerializer
-    lookup_field = 'id'
+class DecrementItemView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = DecrementItemSerializer
 
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        item_id = serializer.validated_data['item_id']
+        company = serializer.validated_data['company']
+        authorized_person = serializer.validated_data['authorized_person']
+        number = serializer.validated_data['number']
+        texnik_user = serializer.validated_data['texnik_user']
+        date = serializer.validated_data['date']
+        
         try:
-            with transaction.atomic():
-                deleted_instance = instance
-                History.objects.create(
-                    warehouse_item=deleted_instance,
-                    action='export'
-                )
-                warehouse_item = Item.objects.get(id=instance.id)
-                warehouse_item.number -= 1
-                warehouse_item.save()
-                instance.delete()
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+            item = Item.objects.get(id=item_id)
+            item.decrement(number, company, authorized_person, request.user, texnik_user, date)
+
+            latest_history = History.objects.filter(item=item).order_by('-date').first()
+            history_serializer = HistorySerializer(latest_history)
+            user_serializer = UserSerializer(request.user) 
+
+            return Response({
+                "message": "Element uğurla azaldıldı.",
+                "request_user": user_serializer.data, 
+                "history": history_serializer.data
+            }, status=status.HTTP_200_OK)
+
+        except Item.DoesNotExist:
+            return Response({"error": "Element tapılmadı."}, status=status.HTTP_404_NOT_FOUND)
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
 class HistoryListView(APIView):
     def get(self, request):

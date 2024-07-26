@@ -91,38 +91,4 @@ class ItemAdmin(admin.ModelAdmin):
     list_display = ('warehouse', 'equipment_name', 'brand', 'model', 'serial_number', 'number', 'size_length', 'mac', 'port_number')
     search_fields = ('warehouse', 'equipment_name', 'brand', 'model', 'serial_number')
 
-@admin.register(History)
-class HistoryAdmin(admin.ModelAdmin):
-    list_display = (
-        'get_warehouse',
-        'get_equipment_name', 
-        'get_brand', 
-        'get_model', 
-        'get_serial_number', 
-        'get_mac',
-        'get_port_number',
-        'action', 
-        'timestamp'
-    )
-    search_fields = (
-        'warehouse_item__warehouse',
-        'warehouse_item__equipment_name', 
-        'warehouse_item__brand', 
-        'warehouse_item__model', 
-        'warehouse_item__serial_number', 
-        'warehouse_item__mac',
-        'warehouse_item__port_number',
-        'action'
-    )
-    readonly_fields = (
-        'warehouse_item', 
-        'get_warehouse',
-        'get_equipment_name', 
-        'get_brand', 
-        'get_model', 
-        'get_serial_number', 
-        'get_number', 
-        'get_size_length',
-        'get_mac',
-        'get_port_number',
-    )
+admin.site.register(History)

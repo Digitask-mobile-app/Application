@@ -5,6 +5,8 @@ from django.db.models import ProtectedError
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.utils import timezone
+from django.conf import settings
+
 
 
 TASK_TYPES = (
@@ -126,53 +128,34 @@ class Item(models.Model):
     
     objects = ItemManager()
 
-    def delete(self, *args, **kwargs):
-        if self.number > 0:
-            self.number -= 1
+    def decrement(self, number, company, authorized_person, user, texnik_user, date):
+        if self.number >= number:
+            self.number -= number
+            if self.number == 0:
+                self.deleted = True
             self.save()
-        if self.number == 0:
-            super().delete(*args, **kwargs)
+            
+            History.objects.create(
+                item=self,
+                company=company,
+                authorized_person=authorized_person,
+                number=number,
+                performed_by=user,
+                texnik_user=texnik_user,
+                date=date
+            )
+        else:
+            raise ValueError("Azaltmaq üçün kifayət qədər element yoxdur")
 
 
 class History(models.Model):
-    ACTION_CHOICES = [
-        ('import', 'Import'),
-        ('export', 'Export')
-    ]
-    warehouse_item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    action = models.CharField(max_length=6, choices=ACTION_CHOICES)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    number = models.PositiveIntegerField(default=0) 
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    company = models.CharField(max_length=255)
+    authorized_person = models.CharField(max_length=255)
+    number = models.PositiveIntegerField()
+    performed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='performed_actions')
+    texnik_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='texnik_actions')
+    date = models.DateField()
 
     def __str__(self):
-        if self.warehouse_item:
-            return f"{self.get_action_display()} - {self.warehouse_item.equipment_name} - {self.timestamp}"
-        else:
-            return f"{self.get_action_display()} - Deleted Warehouse Item - {self.timestamp}"
-
-    def get_warehouse(self):
-        return self.warehouse_item.warehouse if self.warehouse_item else "Deleted"
-    
-    def get_equipment_name(self):
-        return self.warehouse_item.equipment_name if self.warehouse_item else "Deleted"
-
-    def get_brand(self):
-        return self.warehouse_item.brand if self.warehouse_item else "Deleted"
-
-    def get_model(self):
-        return self.warehouse_item.model if self.warehouse_item else "Deleted"
-
-    def get_serial_number(self):
-        return self.warehouse_item.serial_number if self.warehouse_item else "Deleted"
-
-    def get_number(self):
-        return self.number if self.warehouse_item else "Deleted"
-
-    def get_size_length(self):
-        return self.warehouse_item.size_length if self.warehouse_item else "Deleted"
-
-    def get_mac(self):
-        return self.warehouse_item.mac if self.warehouse_item else "Deleted"
-    
-    def get_port_number(self):
-        return self.warehouse_item.port_number if self.warehouse_item else "Deleted"
+        return f"{self.item} - {self.date}"
