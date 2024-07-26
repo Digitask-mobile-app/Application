@@ -140,7 +140,6 @@ class Item(models.Model):
                 company=company,
                 authorized_person=authorized_person,
                 number=number,
-                performed_by=user,
                 texnik_user=texnik_user,
                 date=date
             )
@@ -153,7 +152,6 @@ class History(models.Model):
     company = models.CharField(max_length=255)
     authorized_person = models.CharField(max_length=255)
     number = models.PositiveIntegerField()
-    performed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='performed_actions')
     texnik_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='texnik_actions')
     date = models.DateField()
 
