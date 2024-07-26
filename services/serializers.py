@@ -221,7 +221,7 @@ class DecrementItemSerializer(serializers.Serializer):
     authorized_person = serializers.CharField(max_length=255)
     number = serializers.IntegerField()
     texnik_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(user_type='Texnik'))
-    # date = serializers.DateField()
+    date = serializers.DateField()
 
 class CreatingMeetingSerializer(serializers.ModelSerializer):
     class Meta:
