@@ -154,7 +154,7 @@ class History(models.Model):
     authorized_person = models.CharField(max_length=255)
     number = models.PositiveIntegerField()
     texnik_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='texnik_actions')
-    date = models.DateField(date.today)
+    date = models.DateField()
 
     def __str__(self):
         return f"{self.item}"
