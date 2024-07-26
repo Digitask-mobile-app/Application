@@ -122,11 +122,11 @@ class DecrementItemView(generics.GenericAPIView):
         authorized_person = serializer.validated_data['authorized_person']
         number = serializer.validated_data['number']
         texnik_user = serializer.validated_data['texnik_user']
-        # date = serializer.validated_data['date']
+        date = serializer.validated_data['date']
         
         try:
             item = Item.objects.get(id=item_id)
-            item.decrement(number, company, authorized_person, request.user, texnik_user,)
+            item.decrement(number, company, authorized_person, request.user, texnik_user, date)
 
             latest_history = History.objects.filter(item=item).order_by('-date').first()
             history_serializer = HistorySerializer(latest_history)
