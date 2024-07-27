@@ -201,6 +201,12 @@ class DecrementItemSerializer(serializers.Serializer):
     texnik_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(user_type='Texnik'))
     date = serializers.DateField()
 
+class TexnikUserSerializer(serializers.ModelSerializer):
+    group= GroupSerializer()
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'group']
+
 class CreatingMeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meeting

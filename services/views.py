@@ -143,6 +143,11 @@ class DecrementItemView(generics.GenericAPIView):
         except ValueError as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
+class TexnikUserListView(generics.ListAPIView):
+    queryset = User.objects.filter(user_type='Texnik')
+    serializer_class = TexnikUserSerializer
+    permission_classes = [IsAuthenticated]
+
 class HistoryListView(APIView):
     def get(self, request):
         history_items = History.objects.all()
