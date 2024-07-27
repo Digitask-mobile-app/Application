@@ -88,7 +88,7 @@ admin.site.register(Task,TaskAdmin)
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ('warehouse', 'equipment_name', 'brand', 'model', 'serial_number', 'number', 'size_length', 'mac', 'port_number')
+    list_display = ('warehouse', 'equipment_name', 'brand', 'model', 'serial_number', 'number', 'size_length', 'mac', 'port_number', 'date')
     search_fields = ('warehouse', 'equipment_name', 'brand', 'model', 'serial_number')
 
 admin.site.register(History)

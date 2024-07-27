@@ -121,6 +121,7 @@ class Item(models.Model):
     serial_number = models.CharField(max_length=255, unique=True)
     number = models.PositiveIntegerField()
     size_length = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateField(auto_now_add=True)
     deleted = models.BooleanField(default=False)
 
     def __str__(self):
