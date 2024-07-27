@@ -138,6 +138,7 @@ class Item(models.Model):
             History.objects.create(
                 item=self,
                 item_warehouse=self.warehouse,
+                
                 item_equipment_name=self.equipment_name,
                 item_brand=self.brand,
                 item_model=self.model,
