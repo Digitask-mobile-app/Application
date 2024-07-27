@@ -230,6 +230,11 @@ class UpdateTaskView(generics.UpdateAPIView):
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
+
+class MeetingsApiView(generics.ListAPIView):
+    queryset = Meeting.objects.all()
+    serializer_class = MeetingSerializer
+
 # @csrf_exempt
 # def export_item(request, id):
 #     if request.method == 'DELETE':

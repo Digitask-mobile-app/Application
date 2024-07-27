@@ -29,4 +29,5 @@ urlpatterns = [
     path('update_voice/<int:pk>/', views.UpdateVoiceView.as_view(), name='update_voice'),
     path('mainpage/', views.MainPageView.as_view(), name='mainpage'),
     path('task/<int:pk>/update/', views.UpdateTaskView.as_view(), name='update-task'),
+    path('meetings/',views.MeetingsApiView.as_view(), name='meetings'),
 ]
