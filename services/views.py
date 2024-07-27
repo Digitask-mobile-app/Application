@@ -118,14 +118,15 @@ class DecrementItemView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         
         item_id = serializer.validated_data['item_id']
-        company = serializer.validated_data['company']
-        authorized_person = serializer.validated_data['authorized_person']
+        company = serializer.validated_data.get('company', '')
+        authorized_person = serializer.validated_data.get('authorized_person', '')
         number = serializer.validated_data['number']
-        texnik_user = serializer.validated_data['texnik_user']
+        texnik_user_id = serializer.validated_data['texnik_user']
         date = serializer.validated_data['date']
         
         try:
             item = Item.objects.get(id=item_id)
+            texnik_user = User.objects.get(id=texnik_user_id)
             item.decrement(number, company, authorized_person, request.user, texnik_user, date)
 
             latest_history = History.objects.filter(item=item).order_by('-date').first()
@@ -140,6 +141,8 @@ class DecrementItemView(generics.GenericAPIView):
 
         except Item.DoesNotExist:
             return Response({"error": "Element tapılmadı."}, status=status.HTTP_404_NOT_FOUND)
+        except User.DoesNotExist:
+            return Response({"error": "Texnik user tapılmadı."}, status=status.HTTP_404_NOT_FOUND)
         except ValueError as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     

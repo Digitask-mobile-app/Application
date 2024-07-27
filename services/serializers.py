@@ -198,7 +198,7 @@ class DecrementItemSerializer(serializers.Serializer):
     company = serializers.CharField(max_length=255)
     authorized_person = serializers.CharField(max_length=255)
     number = serializers.IntegerField()
-    texnik_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(user_type='Texnik'))
+    texnik_user = serializers.IntegerField()
     date = serializers.DateField()
 
 class TexnikUserSerializer(serializers.ModelSerializer):
