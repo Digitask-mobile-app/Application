@@ -137,6 +137,14 @@ class Item(models.Model):
             
             History.objects.create(
                 item=self,
+                item_warehouse=self.warehouse,
+                item_equipment_name=self.equipment_name,
+                item_brand=self.brand,
+                item_model=self.model,
+                item_mac=self.mac,
+                item_port_number=self.port_number,
+                item_serial_number=self.serial_number,
+                item_size_length=self.size_length,
                 company=company,
                 authorized_person=authorized_person,
                 number=number,
@@ -146,10 +154,17 @@ class Item(models.Model):
         else:
             raise ValueError("Azaltmaq üçün kifayət qədər element yoxdur")
 
-from datetime import date
 
 class History(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    item_warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
+    item_equipment_name = models.CharField(max_length=255)
+    item_brand = models.CharField(max_length=255)
+    item_model = models.CharField(max_length=255)
+    item_mac = models.CharField(max_length=255)
+    item_port_number = models.PositiveIntegerField()
+    item_serial_number = models.CharField(max_length=255)
+    item_size_length = models.DecimalField(max_digits=10, decimal_places=2)
     company = models.CharField(max_length=255)
     authorized_person = models.CharField(max_length=255)
     number = models.PositiveIntegerField()
