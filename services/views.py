@@ -1,6 +1,6 @@
 from .models import Task, Item, History
 from .serializers import *
-from .filters import StatusAndTaskFilter,UserFilter, WarehouseItemFilter
+from .filters import StatusAndTaskFilter,UserFilter, WarehouseItemFilter, HistoryFilter
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import ListAPIView, RetrieveAPIView
@@ -49,6 +49,7 @@ class UserTaskListView(APIView):
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
+    
 
     def get_queryset(self):
         user = self.request.user
@@ -148,11 +149,11 @@ class TexnikUserListView(generics.ListAPIView):
     serializer_class = TexnikUserSerializer
     permission_classes = [IsAuthenticated]
 
-class HistoryListView(APIView):
-    def get(self, request):
-        history_items = History.objects.all()
-        serializer = HistorySerializer(history_items, many=True)
-        return Response(serializer.data)
+class HistoryListView(generics.ListAPIView):
+    queryset = History.objects.all()
+    serializer_class = HistorySerializer
+    filterset_class = HistoryFilter
+    filter_backends = [DjangoFilterBackend]
     
 class TaskUpdateAPIView(generics.UpdateAPIView):
     queryset = Task.objects.all()

@@ -1,10 +1,11 @@
 import django_filters
-from .models import status_task, TASK_TYPES, Task, Item
+from .models import status_task, TASK_TYPES, Task, Item, History
 from django_filters import rest_framework as filters
 from django import forms
 from accounts.models import User
 from datetime import datetime
 from django.db.models import Min
+from django_filters import DateFilter
 
 
 def get_year_choices():
@@ -95,7 +96,19 @@ class UserFilter(django_filters.FilterSet):
 
 class WarehouseItemFilter(django_filters.FilterSet):
     name = django_filters.CharFilter(field_name='equipment_name', lookup_expr='icontains')
+    start_date = DateFilter(field_name='date', lookup_expr='gte', label='Start Date')
+    end_date = DateFilter(field_name='date', lookup_expr='lte', label='End Date')
+    region = django_filters.CharFilter(field_name='warehouse__region', lookup_expr='icontains', label='Region')
 
     class Meta:
         model = Item
-        fields = ['name']
+        fields = ['name', 'start_date', 'end_date', 'region']
+
+class HistoryFilter(django_filters.FilterSet):
+    start_date = DateFilter(field_name='date', lookup_expr='gte', label='Start date')
+    end_date = DateFilter(field_name='date', lookup_expr='lte', label='End date')
+    region = django_filters.CharFilter(field_name='item_warehouse__region', lookup_expr='icontains', label='Region')
+
+    class Meta:
+        model = History
+        fields = ['start_date', 'end_date', 'region']
