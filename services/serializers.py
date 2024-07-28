@@ -188,11 +188,7 @@ class ItemSerializer(serializers.ModelSerializer):
         model = Item
         fields = '__all__'
 
-class HistorySerializer(serializers.ModelSerializer):
-    item_warehouse = WarehouseSerializer()
-    class Meta:
-        model = History
-        fields = '__all__'
+
 
 class DecrementItemSerializer(serializers.Serializer):
     item_id = serializers.IntegerField()
@@ -207,6 +203,13 @@ class TexnikUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name', 'group']
+        
+class HistorySerializer(serializers.ModelSerializer):
+    item_warehouse = WarehouseSerializer()
+    texnik_user = TexnikUserSerializer()
+    class Meta:
+        model = History
+        fields = '__all__'
 
 class CreatingMeetingSerializer(serializers.ModelSerializer):
     class Meta:
