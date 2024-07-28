@@ -205,7 +205,7 @@ class HistorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class WarehouseItemSerializer(serializers.ModelSerializer):
-    warehouse = WarehouseSerializer()
+    warehouse = WarehouseSerializer() 
     created_by = ItemUserSerializer()
     class Meta:
         model = Item
