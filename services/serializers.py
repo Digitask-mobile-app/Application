@@ -176,23 +176,12 @@ class WarehouseSerializer(serializers.ModelSerializer):
         model = Warehouse
         fields = '__all__'
 
-
-class WarehouseItemSerializer(serializers.ModelSerializer):
-    warehouse = WarehouseSerializer()
-    class Meta:
-        model = Item
-        fields = '__all__'
-
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = '__all__'
 
-class HistorySerializer(serializers.ModelSerializer):
-    item_warehouse = WarehouseSerializer()
-    class Meta:
-        model = History
-        fields = '__all__'
+
 
 class DecrementItemSerializer(serializers.Serializer):
     item_id = serializers.IntegerField()
@@ -202,11 +191,25 @@ class DecrementItemSerializer(serializers.Serializer):
     texnik_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(user_type='Texnik'))
     date = serializers.DateField()
 
-class TexnikUserSerializer(serializers.ModelSerializer):
+class ItemUserSerializer(serializers.ModelSerializer):
     group= GroupSerializer()
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name', 'group']
+        
+class HistorySerializer(serializers.ModelSerializer):
+    item_warehouse = WarehouseSerializer()
+    texnik_user = ItemUserSerializer()
+    class Meta:
+        model = History
+        fields = '__all__'
+
+class WarehouseItemSerializer(serializers.ModelSerializer):
+    warehouse = WarehouseSerializer()
+    created_by = ItemUserSerializer()
+    class Meta:
+        model = Item
+        fields = '__all__'
 
 class CreatingMeetingSerializer(serializers.ModelSerializer):
     class Meta:

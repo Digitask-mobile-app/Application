@@ -123,13 +123,14 @@ class Item(models.Model):
     size_length = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateField(auto_now_add=True)
     deleted = models.BooleanField(default=False)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.equipment_name} - {self.serial_number}"
     
     objects = ItemManager()
 
-    def decrement(self, number, company, authorized_person, user, texnik_user, date):
+    def decrement(self, number, company, authorized_person, texnik_user, date):
         if self.number >= number:
             self.number -= number
             if self.number == 0:
@@ -150,10 +151,12 @@ class Item(models.Model):
                 authorized_person=authorized_person,
                 number=number,
                 texnik_user=texnik_user,
-                date=date
+                date=date,
+                item_created_by=self.created_by
             )
         else:
             raise ValueError("Azaltmaq üçün kifayət qədər element yoxdur")
+
 
 
 class History(models.Model):
@@ -171,6 +174,7 @@ class History(models.Model):
     number = models.PositiveIntegerField()
     texnik_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='texnik_actions')
     date = models.DateField()
+    item_created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_items')
 
     def __str__(self):
         return f"{self.item}"

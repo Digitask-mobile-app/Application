@@ -80,8 +80,6 @@ class PerformanceListView(generics.ListAPIView):
 
         return filtered_users
 
-
-
 @receiver(pre_delete, sender=Item)
 def warehouse_pre_delete(sender, instance, **kwargs):
     History.objects.create(
@@ -146,7 +144,7 @@ class DecrementItemView(generics.GenericAPIView):
     
 class TexnikUserListView(generics.ListAPIView):
     queryset = User.objects.filter(user_type='Texnik')
-    serializer_class = TexnikUserSerializer
+    serializer_class = ItemUserSerializer
     permission_classes = [IsAuthenticated]
 
 class HistoryListView(generics.ListAPIView):
