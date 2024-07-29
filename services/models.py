@@ -1,12 +1,10 @@
-from django.db import models, transaction
+from django.db import models
 from accounts.models import User,Group
 # from django.contrib.gis.db import models
-from django.db.models import ProtectedError
-from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.utils import timezone
 from django.conf import settings
-
+from datetime import date
 
 
 TASK_TYPES = (
@@ -169,11 +167,11 @@ class History(models.Model):
     item_port_number = models.PositiveIntegerField()
     item_serial_number = models.CharField(max_length=255)
     item_size_length = models.DecimalField(max_digits=10, decimal_places=2)
-    company = models.CharField(max_length=255)
-    authorized_person = models.CharField(max_length=255)
+    company = models.CharField(max_length=255, blank=True, null=True)
+    authorized_person = models.CharField(max_length=255, blank=True, null=True)
     number = models.PositiveIntegerField()
-    texnik_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='texnik_actions')
-    date = models.DateField()
+    texnik_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='texnik_actions', blank=True, null=True)
+    date = models.DateField(default=date.today)
     item_created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_items')
 
     def __str__(self):

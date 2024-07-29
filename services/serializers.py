@@ -4,7 +4,7 @@ from accounts.models import User,Group,Meeting
 from django.db.models import Q
 from .filters import TaskFilter
 from django.db.models import Count
-
+from datetime import date
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
@@ -183,11 +183,21 @@ class ItemSerializer(serializers.ModelSerializer):
 
 class DecrementItemSerializer(serializers.Serializer):
     item_id = serializers.IntegerField()
-    company = serializers.CharField(max_length=255)
-    authorized_person = serializers.CharField(max_length=255)
+    company = serializers.CharField(max_length=255, required=False)
+    authorized_person = serializers.CharField(max_length=255, required=False)
     number = serializers.IntegerField()
-    texnik_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(user_type='Texnik'))
-    date = serializers.DateField()
+    texnik_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(user_type='Texnik'), required=False)
+    date = serializers.DateField(default=date.today)
+
+    def validate(self, data):
+        company = data.get('company')
+        authorized_person = data.get('authorized_person')
+        texnik_user = data.get('texnik_user')
+        
+        if not (company or authorized_person or texnik_user):
+            raise serializers.ValidationError("At least one of 'company', 'authorized_person', or 'texnik_user' must be provided.")
+        
+        return data
 
 class ItemUserSerializer(serializers.ModelSerializer):
     group= GroupSerializer()
