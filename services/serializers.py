@@ -183,10 +183,10 @@ class ItemSerializer(serializers.ModelSerializer):
 
 class DecrementItemSerializer(serializers.Serializer):
     item_id = serializers.IntegerField()
-    company = serializers.CharField(max_length=255, required=False)
-    authorized_person = serializers.CharField(max_length=255, required=False)
+    company = serializers.CharField(max_length=255, required=False, allow_blank=True)
+    authorized_person = serializers.CharField(max_length=255, required=False, allow_blank=True)
     number = serializers.IntegerField()
-    texnik_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(user_type='Texnik'), required=False)
+    texnik_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(user_type='Texnik'), required=False, allow_null=True)
     date = serializers.DateTimeField(default=date.today)
 
     def validate(self, data):
