@@ -130,7 +130,7 @@ class Item(models.Model):
     
     objects = ItemManager()
 
-    def decrement(self, number, company, authorized_person, texnik_user, date):
+    def decrement(self, number, company, authorized_person, user, texnik_user, date):
         if self.number >= number:
             self.number -= number
             if self.number == 0:
