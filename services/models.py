@@ -150,7 +150,7 @@ class Item(models.Model):
                 number=number,
                 texnik_user=texnik_user,
                 date=date,
-                item_created_by=self.created_by
+                item_created_by=user
             )
         else:
             raise ValueError("Azaltmaq üçün kifayət qədər element yoxdur")
