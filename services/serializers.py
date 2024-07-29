@@ -121,11 +121,10 @@ class TaskDetailSerializer(serializers.ModelSerializer):
 class PerformanceSerializer(serializers.ModelSerializer):
     group = serializers.SerializerMethodField()
     task_count = serializers.SerializerMethodField()
-    dates = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'user_type', 'first_name', 'last_name', 'group', 'task_count', 'dates']
+        fields = ['id', 'user_type', 'first_name', 'last_name', 'group', 'task_count']
 
     def get_group(self, obj):
         group_data = {}
@@ -157,18 +156,6 @@ class PerformanceSerializer(serializers.ModelSerializer):
             'connection': connection_count,
             'problem': problem_count
         }
-
-    def get_dates(self, obj):
-        start_date = self.context['request'].query_params.get('start_date')
-        end_date = self.context['request'].query_params.get('end_date')
-        task_query = Task.objects.filter(user=obj).order_by('date')
-        if start_date:
-            task_query = task_query.filter(date__gte=start_date)
-        if end_date:
-            task_query = task_query.filter(date__lte=end_date)
-
-        dates = list(task_query.values_list('date', flat=True))
-        return dates
 
     
 class WarehouseSerializer(serializers.ModelSerializer):
