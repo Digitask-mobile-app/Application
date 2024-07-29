@@ -141,7 +141,7 @@ class PerformanceSerializer(serializers.ModelSerializer):
         end_date = self.context['request'].query_params.get('end_date')
 
         task_query = Task.objects.filter(user=obj)
-
+     
         if start_date:
             try:
                 start_date = datetime.strptime(start_date, '%Y-%m-%d').date()

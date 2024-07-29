@@ -66,19 +66,9 @@ class UserTaskListView(APIView):
 
 class PerformanceListView(generics.ListAPIView):
     serializer_class = PerformanceSerializer
-    filterset_class = UserFilter
     filter_backends = (DjangoFilterBackend,)
+    queryset = User.objects.all()
 
-    def get_queryset(self):
-        start_date = self.request.query_params.get('start_date')
-        end_date = self.request.query_params.get('end_date')
-
-        users = User.objects.all()
-
-        user_filter = UserFilter(self.request.GET, queryset=users, request=self.request)
-        filtered_users = user_filter.qs
-
-        return filtered_users
 
 @receiver(pre_delete, sender=Item)
 def warehouse_pre_delete(sender, instance, **kwargs):
