@@ -116,7 +116,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
             print(f"Error getting phone: {e}")
             return None
 
-
+from datetime import datetime
 
 class PerformanceSerializer(serializers.ModelSerializer):
     group = serializers.SerializerMethodField()
@@ -141,10 +141,20 @@ class PerformanceSerializer(serializers.ModelSerializer):
         end_date = self.context['request'].query_params.get('end_date')
 
         task_query = Task.objects.filter(user=obj)
+
         if start_date:
-            task_query = task_query.filter(date__gte=start_date)
+            try:
+                start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+                task_query = task_query.filter(date__gte=start_date)
+            except ValueError:
+                raise serializers.ValidationError("Invalid start_date format. Use YYYY-MM-DD.")
+        
         if end_date:
-            task_query = task_query.filter(date__lte=end_date)
+            try:
+                end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+                task_query = task_query.filter(date__lte=end_date)
+            except ValueError:
+                raise serializers.ValidationError("Invalid end_date format. Use YYYY-MM-DD.")
 
         task_counts = task_query.values('task_type').annotate(count=Count('id'))
         total_count = sum([count['count'] for count in task_counts])
@@ -156,6 +166,7 @@ class PerformanceSerializer(serializers.ModelSerializer):
             'connection': connection_count,
             'problem': problem_count
         }
+
 
     
 class WarehouseSerializer(serializers.ModelSerializer):

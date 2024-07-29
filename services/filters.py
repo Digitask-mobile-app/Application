@@ -6,7 +6,7 @@ from accounts.models import User
 from datetime import datetime
 from django.db.models import Min
 from django_filters import DateFilter
-
+from rest_framework import serializers
 
 def get_year_choices():
     min_year = Task.objects.aggregate(min_year=Min('date__year'))['min_year']
@@ -82,15 +82,25 @@ class UserFilter(django_filters.FilterSet):
         start_date = self.request.GET.get('start_date')
         end_date = self.request.GET.get('end_date')
 
-        task_ids = Task.objects.filter(date__gte=start_date, date__lte=end_date).values_list('user_id', flat=True).distinct()
+        task_ids = Task.objects.all()
 
-        if start_date and end_date:
-            return queryset.filter(id__in=task_ids)
-        elif start_date:
-            return queryset.filter(id__in=task_ids)
-        elif end_date:
-            return queryset.filter(id__in=task_ids)
-        return queryset
+        if start_date:
+            try:
+                start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+                task_ids = task_ids.filter(date__gte=start_date)
+            except ValueError:
+                raise serializers.ValidationError("Invalid start_date format. Use YYYY-MM-DD.")
+        
+        if end_date:
+            try:
+                end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+                task_ids = task_ids.filter(date__lte=end_date)
+            except ValueError:
+                raise serializers.ValidationError("Invalid end_date format. Use YYYY-MM-DD.")
+
+        task_ids = task_ids.values_list('user_id', flat=True).distinct()
+
+        return queryset.filter(id__in=task_ids)
 
 
 
