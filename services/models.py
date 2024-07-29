@@ -171,7 +171,7 @@ class History(models.Model):
     authorized_person = models.CharField(max_length=255, blank=True, null=True)
     number = models.PositiveIntegerField()
     texnik_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='texnik_actions', blank=True, null=True)
-    date = models.DateField(default=date.today)
+    date = models.DateTimeField(default=date.today)
     item_created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_items')
 
     def __str__(self):

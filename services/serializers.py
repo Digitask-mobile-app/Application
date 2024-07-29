@@ -187,7 +187,7 @@ class DecrementItemSerializer(serializers.Serializer):
     authorized_person = serializers.CharField(max_length=255, required=False)
     number = serializers.IntegerField()
     texnik_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(user_type='Texnik'), required=False)
-    date = serializers.DateField(default=date.today)
+    date = serializers.DateTimeField(default=date.today)
 
     def validate(self, data):
         company = data.get('company')
