@@ -167,8 +167,6 @@ class PerformanceSerializer(serializers.ModelSerializer):
             'problem': problem_count
         }
 
-
-    
 class WarehouseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Warehouse
@@ -178,8 +176,6 @@ class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = '__all__'
-
-
 
 class DecrementItemSerializer(serializers.Serializer):
     item_id = serializers.IntegerField()
@@ -204,10 +200,17 @@ class ItemUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name', 'group']
+
+class UserHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name']
         
 class HistorySerializer(serializers.ModelSerializer):
     item_warehouse = WarehouseSerializer()
     texnik_user = ItemUserSerializer()
+    item_created_by = UserHistorySerializer(read_only=True)
+    
     class Meta:
         model = History
         fields = '__all__'
