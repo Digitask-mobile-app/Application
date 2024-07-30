@@ -171,6 +171,11 @@ class CreateMeetingView(generics.CreateAPIView):
     serializer_class = CreatingMeetingSerializer
     queryset = Meeting.objects.all()  
 
+class MeetingDetailView(generics.RetrieveAPIView):
+    queryset = Meeting.objects.all()
+    serializer_class = MeetingDetailSerializer
+    lookup_field = 'id'
+
 class TaskDeleteAPIView(APIView):
     def delete(self, request, id):
         try:

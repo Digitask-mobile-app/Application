@@ -238,6 +238,12 @@ class MeetingSerializer(serializers.ModelSerializer):
         model = Meeting
         exclude = ['participants']
 
+class MeetingDetailSerializer(serializers.ModelSerializer):
+    participants = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = Meeting
+        fields = '__all__'
 
 class MainPageUserSerializer(serializers.ModelSerializer):
     group = GroupSerializer()
