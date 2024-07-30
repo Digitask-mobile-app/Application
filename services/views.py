@@ -99,16 +99,12 @@ def warehouse_pre_delete(sender, instance, **kwargs):
 class ItemImportView(generics.CreateAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
+        if not self.request.user.is_authenticated:
+            raise ValueError("İstifadəçinin autentifikasiyası yoxdur.")
         serializer.save(created_by=self.request.user)
-
-    def create(self, request, *args, **kwargs):
-        response = super().create(request, *args, **kwargs)
-        if response.status_code == status.HTTP_201_CREATED:
-            warehouse_item = Item.objects.get(id=response.data['id'])
-            warehouse_item.save()
-        return response
 
 class ItemListView(ListAPIView):
     queryset = Item.objects.all()
