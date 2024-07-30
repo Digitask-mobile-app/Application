@@ -157,14 +157,17 @@ class PerformanceSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("Invalid end_date format. Use YYYY-MM-DD.")
 
         task_counts = task_query.values('task_type').annotate(count=Count('id'))
-        total_count = sum([count['count'] for count in task_counts])
-        connection_count = next((count['count'] for count in task_counts if count['task_type'] == 'connection'), 0)
-        problem_count = next((count['count'] for count in task_counts if count['task_type'] == 'problem'), 0)
+        
+        counts_dict = {count['task_type']: count['count'] for count in task_counts}
+        
+        sorted_counts = sorted(counts_dict.items(), key=lambda x: x[1], reverse=True)
+        
+        sorted_task_types, sorted_task_counts = zip(*sorted_counts) if sorted_counts else ([], [])
 
         return {
-            'total': total_count,
-            'connection': connection_count,
-            'problem': problem_count
+            'total': sum(sorted_task_counts),
+            'connection': sorted_task_counts[sorted_task_types.index('connection')] if 'connection' in sorted_task_types else 0,
+            'problem': sorted_task_counts[sorted_task_types.index('problem')] if 'problem' in sorted_task_types else 0
         }
 
 class WarehouseSerializer(serializers.ModelSerializer):
@@ -205,7 +208,7 @@ class UserHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name']
-        
+
 class HistorySerializer(serializers.ModelSerializer):
     item_warehouse = WarehouseSerializer()
     texnik_user = ItemUserSerializer()
