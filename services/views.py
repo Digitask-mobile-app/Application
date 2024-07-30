@@ -67,7 +67,26 @@ class UserTaskListView(APIView):
 class PerformanceListView(generics.ListAPIView):
     serializer_class = PerformanceSerializer
     filter_backends = (DjangoFilterBackend,)
-    queryset = User.objects.all()
+
+    def get_queryset(self):
+        queryset = User.objects.all()
+
+        users_with_totals = []
+
+        for user in queryset:
+            context = {'request': self.request}
+            
+            serializer = PerformanceSerializer(user, context=context)
+            task_count = serializer.data['task_count']
+            
+            total = task_count['total']
+            users_with_totals.append((user, total))
+        
+        sorted_users = sorted(users_with_totals, key=lambda x: x[1], reverse=True)
+        
+        sorted_queryset = [user for user, _ in sorted_users]
+        
+        return sorted_queryset
 
 
 @receiver(pre_delete, sender=Item)

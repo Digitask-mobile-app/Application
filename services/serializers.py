@@ -157,19 +157,19 @@ class PerformanceSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("Invalid end_date format. Use YYYY-MM-DD.")
 
         task_counts = task_query.values('task_type').annotate(count=Count('id'))
-
-        sorted_counts = sorted(task_counts, key=lambda x: x['count'], reverse=True)
-
-        sorted_task_counts = {}
-        for count in sorted_counts:
-            sorted_task_counts[count['task_type']] = count['count']
+        
+        counts_dict = {count['task_type']: count['count'] for count in task_counts}
+        
+        sorted_counts = sorted(counts_dict.items(), key=lambda x: x[1], reverse=True)
+        
+        sorted_task_types, sorted_task_counts = zip(*sorted_counts) if sorted_counts else ([], [])
 
         return {
-            'total': sum(sorted_task_counts.values()),
-            'connection': sorted_task_counts.get('connection', 0),
-            'problem': sorted_task_counts.get('problem', 0)
+            'total': sum(sorted_task_counts),
+            'connection': sorted_task_counts[sorted_task_types.index('connection')] if 'connection' in sorted_task_types else 0,
+            'problem': sorted_task_counts[sorted_task_types.index('problem')] if 'problem' in sorted_task_types else 0
         }
-
+    
 class WarehouseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Warehouse
