@@ -242,12 +242,12 @@ class MeetingSerializer(serializers.ModelSerializer):
 class MainPageUserSerializer(serializers.ModelSerializer):
     group = GroupSerializer()
     task_details = serializers.SerializerMethodField()
-    ongoing_tasks = serializers.SerializerMethodField()
+    completed_tasks = serializers.SerializerMethodField()
     meetings = MeetingSerializer(many=True)
 
     class Meta: 
         model = User
-        fields = ('first_name', 'last_name', 'group', 'user_type', 'is_staff', 'is_superuser', 'task_details', 'ongoing_tasks', 'meetings')
+        fields = ('first_name', 'last_name', 'group', 'user_type', 'is_staff', 'is_superuser', 'task_details', 'completed_tasks', 'meetings')
 
     def get_task_details(self, obj):
         if obj.user_type == 'Texnik' or obj.user_type == 'Plumber':
@@ -282,12 +282,12 @@ class MainPageUserSerializer(serializers.ModelSerializer):
             }
         return response
 
-    def get_ongoing_tasks(self, obj):
+    def get_completed_tasks(self, obj):
         if obj.user_type == 'Texnik' or obj.user_type == 'Plumber':
-            ongoing_tasks = Task.objects.filter(user=obj, status__in=['started', 'inprogress'])
+            completed_tasks = Task.objects.filter(user=obj, status__in=['completed'])
         else:
-            ongoing_tasks = Task.objects.filter(status__in=['started', 'inprogress'])
-        data = TaskSerializer(ongoing_tasks, many=True).data
+            completed_tasks = Task.objects.filter(status__in=['completed'])
+        data = TaskSerializer(completed_tasks, many=True).data
         return data
 
 
