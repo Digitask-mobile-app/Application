@@ -115,6 +115,7 @@ class ItemListView(ListAPIView):
 class WarehouseListView(ListAPIView):
     queryset = Warehouse.objects.all()
     serializer_class = WarehouseSerializer
+    
 
 class DecrementItemView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
@@ -156,7 +157,7 @@ class TexnikUserListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
 class HistoryListView(generics.ListAPIView):
-    queryset = History.objects.all()
+    queryset = History.objects.all().order_by('-date')
     serializer_class = HistorySerializer
     filterset_class = HistoryFilter
     filter_backends = [DjangoFilterBackend]
