@@ -100,6 +100,9 @@ class ItemImportView(generics.CreateAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
         if response.status_code == status.HTTP_201_CREATED:

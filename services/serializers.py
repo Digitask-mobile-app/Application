@@ -179,6 +179,7 @@ class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = '__all__'
+        read_only_fields = ['created_by']
 
 class DecrementItemSerializer(serializers.Serializer):
     item_id = serializers.IntegerField()
