@@ -200,7 +200,7 @@ class VerifyUserEmailSerializer(serializers.Serializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     groupData = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all(), required=False) 
-    group = GroupSerializer()
+    group = GroupSerializer(read_only=True)
 
     class Meta:
         model = User
