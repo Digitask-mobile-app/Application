@@ -4,7 +4,6 @@ from .managers import UserManager
 from django.contrib.auth.models import Group, Permission
 from rest_framework_simplejwt.tokens import RefreshToken
 from .validators import validate_phone_number
-from datetime import timedelta
 
 MEETING_TYPES = (
     ('Şənlik', 'Şənlik'),
@@ -45,7 +44,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
     is_online = models.BooleanField(default=False)
-    remember_me = models.BooleanField(default=False)
     group = models.ForeignKey(
         Group,
         verbose_name=('groups'),
@@ -68,13 +66,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    def tokens(self, remember_me=False):    
+    def tokens(self):    
         refresh = RefreshToken.for_user(self)
-        if remember_me:
-            refresh.set_exp(lifetime=timedelta(days=30))  
         return {
-            "refresh": str(refresh),
-            "access": str(refresh.access_token)
+            "refresh":str(refresh),
+            "access":str(refresh.access_token)
         }
 
     def __str__(self):

@@ -171,10 +171,9 @@ def update_auto_increment():
     with connection.cursor() as cursor:
         cursor.execute("UPDATE sqlite_sequence SET seq = (SELECT MAX(id) FROM myapp_task) WHERE name = 'myapp_task'")
 
-class ProfileView(generics.UpdateAPIView):
+class ProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
-    http_method_names = ['patch']
 
     def get_object(self):
         return self.request.user
