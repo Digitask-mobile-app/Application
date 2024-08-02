@@ -73,9 +73,25 @@ class LoginUserView(GenericAPIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        data = serializer.validated_data
+        
+        remember_me = data.get('remember_me', False)
 
-
+        access_token = data.get('access_token')
+        refresh_token = data.get('refresh_token')
+        
+        if not remember_me:
+            request.session.set_expiry(0)
+            request.session.modified = True
+        
+        response_data = {
+            'access_token': access_token,
+            'refresh_token': refresh_token,
+            'user_type': data.get('user_type'),
+            'is_admin': data.get('is_admin'),
+            'remember_me':data.get('remember_me'),
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
 
 class PasswordResetRequestView(GenericAPIView):
     serializer_class = PasswordResetRequestSerializer
@@ -171,9 +187,10 @@ def update_auto_increment():
     with connection.cursor() as cursor:
         cursor.execute("UPDATE sqlite_sequence SET seq = (SELECT MAX(id) FROM myapp_task) WHERE name = 'myapp_task'")
 
-class ProfileView(generics.RetrieveUpdateAPIView):
+class ProfileView(generics.UpdateAPIView):
     serializer_class = ProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
+    http_method_names = ['patch']
 
     def get_object(self):
         return self.request.user
