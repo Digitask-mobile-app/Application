@@ -1,11 +1,9 @@
 from django.db import models
 from accounts.models import User,Group
 # from django.contrib.gis.db import models
-from django.dispatch import receiver
 from django.utils import timezone
 from django.conf import settings
-from datetime import date
-
+from datetime import datetime
 
 TASK_TYPES = (
     ('connection', 'connection'),
@@ -128,15 +126,36 @@ class Item(models.Model):
     
     objects = ItemManager()
 
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None  
+        super().save(*args, **kwargs)
+        
+        if is_new:
+            full_name = f"{self.created_by.first_name} {self.created_by.last_name}"
+            HistoryIncrement.objects.create(
+                item_warehouse=self.warehouse,
+                item_equipment_name=self.equipment_name,
+                item_brand=self.brand,
+                item_model=self.model,
+                item_mac=self.mac,
+                item_port_number=self.port_number,
+                item_serial_number=self.serial_number,
+                item_size_length=self.size_length,
+                product_provider=full_name,
+                number=self.number,
+                date=self.date,
+                item_created_by=self.created_by
+            )
+
     def decrement(self, number, company, authorized_person, user, texnik_user, date):
         if self.number >= number:
             self.number -= number
             if self.number == 0:
-                self.deleted = True
-            self.save()
-            
+                self.delete()
+            else:
+                self.save()
+
             History.objects.create(
-                item=self,
                 item_warehouse=self.warehouse,
                 item_equipment_name=self.equipment_name,
                 item_brand=self.brand,
@@ -155,10 +174,27 @@ class Item(models.Model):
         else:
             raise ValueError("Azaltmaq üçün kifayət qədər element yoxdur")
 
+    def increment(self, number, product_provider, user, date):
+        self.number += number
+        self.save()
+
+        HistoryIncrement.objects.create(
+            item_warehouse=self.warehouse,
+            item_equipment_name=self.equipment_name,
+            item_brand=self.brand,
+            item_model=self.model,
+            item_mac=self.mac,
+            item_port_number=self.port_number,
+            item_serial_number=self.serial_number,
+            item_size_length=self.size_length,
+            product_provider=product_provider,
+            number=self.number,
+            date=date,
+            item_created_by=user
+        )
 
 
 class History(models.Model):
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
     item_warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     item_equipment_name = models.CharField(max_length=255)
     item_brand = models.CharField(max_length=255)
@@ -171,8 +207,25 @@ class History(models.Model):
     authorized_person = models.CharField(max_length=255, blank=True, null=True)
     number = models.PositiveIntegerField()
     texnik_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='texnik_actions', blank=True, null=True)
-    date = models.DateTimeField(default=date.today)
+    date = models.DateTimeField(default=datetime.now)
     item_created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_items')
 
     def __str__(self):
-        return f"{self.item}"
+        return f"{self.item_equipment_name}"
+
+class HistoryIncrement(models.Model):
+    item_warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
+    item_equipment_name = models.CharField(max_length=255)
+    item_brand = models.CharField(max_length=255)
+    item_model = models.CharField(max_length=255)
+    item_mac = models.CharField(max_length=255)
+    item_port_number = models.PositiveIntegerField()
+    item_serial_number = models.CharField(max_length=255)
+    item_size_length = models.DecimalField(max_digits=10, decimal_places=2)
+    product_provider = models.CharField(max_length=255, blank=True, null=True)
+    number = models.PositiveIntegerField()
+    date = models.DateTimeField(default=datetime.now)
+    item_created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_increment_items')
+
+    def __str__(self):
+        return f"{self.item_equipment_name} - {self.item_serial_number} - artırıldı"

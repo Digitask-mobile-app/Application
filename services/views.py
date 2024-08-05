@@ -1,6 +1,6 @@
 from .models import Task, Item, History
 from .serializers import *
-from .filters import StatusAndTaskFilter,UserFilter, WarehouseItemFilter, HistoryFilter
+from .filters import StatusAndTaskFilter, WarehouseItemFilter, HistoryFilter, IncrementHistoryFilter
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import ListAPIView, RetrieveAPIView
@@ -10,13 +10,6 @@ from accounts.models import User
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.db import transaction
-from django.db.models.signals import pre_delete
-from django.dispatch import receiver
-from django.views import View
-from django.db.models import Subquery, OuterRef
 from accounts.serializers import UserSerializer
 
 class CreateTaskView(generics.CreateAPIView):
@@ -89,12 +82,12 @@ class PerformanceListView(generics.ListAPIView):
         return sorted_queryset
 
 
-@receiver(pre_delete, sender=Item)
-def warehouse_pre_delete(sender, instance, **kwargs):
-    History.objects.create(
-        warehouse_item=instance,
-        action='export'
-    )
+# @receiver(pre_delete, sender=Item)
+# def warehouse_pre_delete(sender, instance, **kwargs):
+#     History.objects.create(
+#         item=instance,
+#         action='export'
+#     )
     
 class ItemImportView(generics.CreateAPIView):
     queryset = Item.objects.all()
@@ -136,21 +129,48 @@ class DecrementItemView(generics.GenericAPIView):
             item = Item.objects.get(id=item_id)
             item.decrement(number, company, authorized_person, request.user, texnik_user, date)
 
-            latest_history = History.objects.filter(item=item).order_by('-date').first()
-            history_serializer = HistorySerializer(latest_history)
+            # latest_history = History.objects.filter(item=item).order_by('-date').first()
+            # history_serializer = HistorySerializer(latest_history)
             user_serializer = UserSerializer(request.user) 
 
             return Response({
                 "message": "Element uğurla azaldıldı.",
                 "request_user": user_serializer.data, 
-                "history": history_serializer.data
+                # "history": history_serializer.data
             }, status=status.HTTP_200_OK)
 
         except Item.DoesNotExist:
             return Response({"error": "Element tapılmadı."}, status=status.HTTP_404_NOT_FOUND)
         except ValueError as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    
+
+class IncrementItemView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = IncrementItemSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        item_id = serializer.validated_data['item_id']
+        product_provider = serializer.validated_data['product_provider']
+        number = serializer.validated_data['number']
+        date = serializer.validated_data['date']
+        
+        try:
+            item = Item.objects.get(id=item_id)
+            item.increment(number, product_provider, request.user, date)
+
+            return Response({
+                "message": "Element uğurla artırıldı."
+            }, status=status.HTTP_200_OK)
+
+        except Item.DoesNotExist:
+            return Response({"error": "Element tapılmadı."}, status=status.HTTP_404_NOT_FOUND)
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class TexnikUserListView(generics.ListAPIView):
     queryset = User.objects.filter(user_type='Texnik')
     serializer_class = ItemUserSerializer
@@ -160,6 +180,12 @@ class HistoryListView(generics.ListAPIView):
     queryset = History.objects.all().order_by('-date')
     serializer_class = HistorySerializer
     filterset_class = HistoryFilter
+    filter_backends = [DjangoFilterBackend]
+
+class HistoryIncrementListView(generics.ListAPIView):
+    queryset = HistoryIncrement.objects.all().order_by('-date')
+    serializer_class = HistoryIncrementSerializer
+    filterset_class = IncrementHistoryFilter
     filter_backends = [DjangoFilterBackend]
     
 class TaskUpdateAPIView(generics.UpdateAPIView):

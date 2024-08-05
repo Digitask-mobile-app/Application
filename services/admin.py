@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Task, Internet, Voice, TV, PlumberTask, Item, History, ItemManager, Warehouse
+from .models import Task, Internet, Voice, TV, PlumberTask, Item, History, Warehouse, HistoryIncrement
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import get_language
@@ -92,3 +92,4 @@ class ItemAdmin(admin.ModelAdmin):
     search_fields = ('warehouse', 'equipment_name', 'brand', 'model', 'serial_number')
 
 admin.site.register(History)
+admin.site.register(HistoryIncrement)

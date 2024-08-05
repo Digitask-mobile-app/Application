@@ -1,5 +1,5 @@
 from rest_framework import serializers, viewsets
-from .models import Task, Internet, Voice, TV, Item, History, Warehouse
+from .models import Task, Internet, Voice, TV, Item, History, Warehouse, HistoryIncrement
 from accounts.models import User,Group,Meeting
 from django.db.models import Q
 from .filters import TaskFilter
@@ -199,6 +199,7 @@ class DecrementItemSerializer(serializers.Serializer):
         
         return data
 
+
 class ItemUserSerializer(serializers.ModelSerializer):
     group= GroupSerializer()
     class Meta:
@@ -218,6 +219,26 @@ class HistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = History
         fields = '__all__'
+
+class HistoryIncrementSerializer(serializers.ModelSerializer):
+    item_warehouse = WarehouseSerializer()
+    item_created_by = UserHistorySerializer(read_only=True)
+    
+    class Meta:
+        model = HistoryIncrement
+        fields = '__all__'
+
+class IncrementItemSerializer(serializers.Serializer):
+    item_id = serializers.IntegerField()
+    product_provider = serializers.CharField(max_length=255, required=True)
+    number = serializers.IntegerField()
+    date = serializers.DateTimeField(default=datetime.now)
+
+    def validate(self, data):
+        if data['number'] <= 0:
+            raise serializers.ValidationError("The increment number must be positive.")
+        return data
+
 
 class WarehouseItemSerializer(serializers.ModelSerializer):
     warehouse = WarehouseSerializer() 
