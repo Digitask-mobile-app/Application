@@ -4,7 +4,7 @@ from channels.layers import get_channel_layer
 # from asgiref.sync import async_to_sync
 from django.contrib.auth import get_user_model
 from channels.generic.websocket import AsyncWebsocketConsumer
-User = get_user_model()
+from accounts.models import User
 
 
 from asgiref.sync import sync_to_async
