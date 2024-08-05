@@ -188,7 +188,7 @@ class Item(models.Model):
             item_serial_number=self.serial_number,
             item_size_length=self.size_length,
             product_provider=product_provider,
-            number=self.number,
+            number=number,
             date=date,
             item_created_by=user
         )
