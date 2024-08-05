@@ -1,9 +1,6 @@
 import json
 from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
-# from asgiref.sync import async_to_sync
-from django.contrib.auth import get_user_model
-from channels.generic.websocket import AsyncWebsocketConsumer
 from accounts.models import User
 
 class StatusConsumer(WebsocketConsumer):
@@ -11,7 +8,6 @@ class StatusConsumer(WebsocketConsumer):
 
     def connect(self):
         self.accept()
-
         self.user_id = self.scope['user'].id if self.scope['user'].is_authenticated else None
         if self.user_id:
             StatusConsumer.online_users[self.user_id] = self.channel_name
