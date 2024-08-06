@@ -10,9 +10,15 @@ class StatusConsumer(WebsocketConsumer):
         self.accept()
         self.user_id = self.scope['user'].id if self.scope['user'].is_authenticated else None
         if self.user_id:
+            channel_layer = get_channel_layer()
+            channel_layer.group_add(
+                'status_updates',  # Grup adı
+                self.channel_name  # Bu WebSocket bağlantısının benzersiz kanalı
+            )
             StatusConsumer.online_users[self.user_id] = self.channel_name
             self.update_user_status(self.user_id, True)
             self.broadcast_status(self.user_id, 'online')
+            
 
     def disconnect(self, close_code):
         if self.user_id in StatusConsumer.online_users:
