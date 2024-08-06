@@ -41,7 +41,6 @@ class StatusConsumer(WebsocketConsumer):
         channel_layer.group_send(
             'status_updates',
             {
-                'type': 'user_status',
                 'user_id': user_id,
                 'status': status
             }
