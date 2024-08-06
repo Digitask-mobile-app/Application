@@ -11,7 +11,6 @@ class StatusConsumer(WebsocketConsumer):
         self.user_id = self.scope['user'].id if self.scope['user'].is_authenticated else None
         if self.user_id:
             channel_layer = get_channel_layer()
-            
             channel_layer.group_add(
                 'status_updates',  
                 self.channel_name  
