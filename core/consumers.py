@@ -2,7 +2,7 @@ import json
 from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
 # from accounts.models import User
-
+from accounts.models import User
 class StatusConsumer(WebsocketConsumer):
     online_users = {}
 
@@ -21,7 +21,7 @@ class StatusConsumer(WebsocketConsumer):
             self.broadcast_status(self.user_id, 'offline')
 
     def update_user_status(self, user_id, online):
-        from accounts.models import User
+
         try:
             
             user = User.objects.get(id=user_id)
