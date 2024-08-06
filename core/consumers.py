@@ -36,16 +36,16 @@ class StatusConsumer(WebsocketConsumer):
         if user_id and status:
             self.broadcast_status(user_id, status)
 
-    def broadcast_status(self, user_id, status):
-        channel_layer = get_channel_layer()
-        channel_layer.group_send(
-            'status_updates',
-            {
-                'type': 'user_status',
-                'user_id': user_id,
-                'status': status
-            }
-        )
+    # def broadcast_status(self, user_id, status):
+    #     channel_layer = get_channel_layer()
+    #     channel_layer.group_send(
+    #         'status_updates',
+    #         {
+    #             'type': 'user_status',
+    #             'user_id': user_id,
+    #             'status': status
+    #         }
+    #     )
 
     def user_status(self, event):
         self.send(text_data=json.dumps({
