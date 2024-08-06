@@ -9,19 +9,30 @@ class StatusConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
         self.user_id = self.scope['user'].id if self.scope['user'].is_authenticated else None
-        print('1')
-        # if self.user_id:
-        print('2')
-        channel_layer = get_channel_layer()
-        await channel_layer.group_add(
-            'status_updates',  
-            self.channel_name  
-        )
-        print('3')
-        StatusConsumer.online_users[self.user_id] = self.channel_name
-        await self.update_user_status(self.user_id, True)
-        print('4')
-        await self.broadcast_status(self.user_id, 'online')
+        # print('1')
+        # # if self.user_id:
+        # print('2')
+        # channel_layer = get_channel_layer()
+        # await channel_layer.group_add(
+        #     'status_updates',  
+        #     self.channel_name  
+        # )
+        # print('3')
+        # StatusConsumer.online_users[self.user_id] = self.channel_name
+        # await self.update_user_status(self.user_id, True)
+        # print('4')
+        # await self.broadcast_status(self.user_id, 'online')
+
+        if self.user_id:
+            channel_layer = get_channel_layer()
+            await channel_layer.group_add(
+                'status_updates',  
+                self.channel_name  
+            )
+
+            StatusConsumer.online_users[self.user_id] = self.channel_name
+            await self.update_user_status(self.user_id, True)
+            await self.broadcast_status(self.user_id, 'online')
 
     async def disconnect(self, close_code):
         if self.user_id in StatusConsumer.online_users:
@@ -29,12 +40,12 @@ class StatusConsumer(AsyncWebsocketConsumer):
             await self.update_user_status(self.user_id, False)
             await self.broadcast_status(self.user_id, 'offline')
 
-    def update_user_status(self, user_id, online):
+    async def update_user_status(self, user_id, online):
         from accounts.models import User
         try:
-            user = User.objects.get(id=user_id)
+            user = await sync_to_async(User.objects.get)(id=user_id)
             user.is_online = online
-            user.save()
+            await sync_to_async(user.save)()
         except User.DoesNotExist:
             pass
 
