@@ -20,13 +20,15 @@ class StatusConsumer(WebsocketConsumer):
             self.update_user_status(self.user_id, False)
             self.broadcast_status(self.user_id, 'offline')
 
-    # def update_user_status(self, user_id, online):
-    #     try:
-    #         user = User.objects.get(id=user_id)
-    #         user.is_online = online
-    #         user.save()
-    #     except User.DoesNotExist:
-    #         pass
+    def update_user_status(self, user_id, online):
+        from accounts.models import User
+        try:
+            
+            user = User.objects.get(id=user_id)
+            user.is_online = online
+            user.save()
+        except User.DoesNotExist:
+            pass
 
     def receive(self, text_data):
         data = json.loads(text_data)
