@@ -10,19 +10,18 @@ class StatusConsumer(AsyncWebsocketConsumer):
         await self.accept()
         self.user_id = self.scope['user'].id if self.scope['user'].is_authenticated else None
         print('1')
-    
-        print('2')
-        channel_layer = get_channel_layer()
-        await channel_layer.group_add(
-            'status_updates',  
-            self.channel_name  
-        )
-        print('3')
-        StatusConsumer.online_users[self.user_id] = self.channel_name
-        await self.update_user_status(self.user_id, True)
-        print('4')
-        await self.broadcast_status(self.user_id, 'online')
-        print('5')
+        if self.user_id:
+            print('2')
+            channel_layer = get_channel_layer()
+            await channel_layer.group_add(
+                'status_updates',  
+                self.channel_name  
+            )
+            print('3')
+            StatusConsumer.online_users[self.user_id] = self.channel_name
+            await self.update_user_status(self.user_id, True)
+            print('4')
+            await self.broadcast_status(self.user_id, 'online')
 
     async def disconnect(self, close_code):
         if self.user_id in StatusConsumer.online_users:
