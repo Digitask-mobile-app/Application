@@ -1,7 +1,7 @@
 import json
 from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
-# from accounts.models import User
+from asgiref.sync import async_to_sync
 
 class StatusConsumer(WebsocketConsumer):
     online_users = {}
@@ -11,6 +11,7 @@ class StatusConsumer(WebsocketConsumer):
         self.user_id = self.scope['user'].id if self.scope['user'].is_authenticated else None
         if self.user_id:
             channel_layer = get_channel_layer()
+            
             channel_layer.group_add(
                 'status_updates',  
                 self.channel_name  
