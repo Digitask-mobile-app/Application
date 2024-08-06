@@ -60,7 +60,7 @@ urlpatterns = [
         re_path(r'^rosetta/', include('rosetta.urls')),
 ]
 
-from . import routing
+from core import routing
 
 urlpatterns += routing.websocket_urlpatterns
 
