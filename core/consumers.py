@@ -2,7 +2,6 @@ import json
 from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
 from accounts.models import User
-from asgiref.sync import async_to_sync
 
 class StatusConsumer(WebsocketConsumer):
     online_users = {}
@@ -14,22 +13,12 @@ class StatusConsumer(WebsocketConsumer):
             StatusConsumer.online_users[self.user_id] = self.channel_name
             self.update_user_status(self.user_id, True)
             self.broadcast_status(self.user_id, 'online')
-            
-            # Kanalı gruba ekleyin
-            async_to_sync(self.channel_layer.group_add)(
-                "status_updates", self.channel_name
-            )
 
     def disconnect(self, close_code):
         if self.user_id in StatusConsumer.online_users:
             del StatusConsumer.online_users[self.user_id]
             self.update_user_status(self.user_id, False)
             self.broadcast_status(self.user_id, 'offline')
-
-            # Kanalı gruptan çıkarın
-            async_to_sync(self.channel_layer.group_discard)(
-                "status_updates", self.channel_name
-            )
 
     def update_user_status(self, user_id, online):
         try:
@@ -49,7 +38,7 @@ class StatusConsumer(WebsocketConsumer):
 
     def broadcast_status(self, user_id, status):
         channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
+        channel_layer.group_send(
             'status_updates',
             {
                 'type': 'user_status',
