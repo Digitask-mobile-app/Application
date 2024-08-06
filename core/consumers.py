@@ -25,7 +25,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
             await self.update_user_status(self.user_id, False)
             await self.broadcast_status(self.user_id, 'offline')
 
-    async def update_user_status(self, user_id, online):
+    def update_user_status(self, user_id, online):
         from accounts.models import User
         try:
             user = User.objects.get(id=user_id)
