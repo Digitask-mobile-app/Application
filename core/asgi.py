@@ -16,14 +16,14 @@ django_asgi_app = get_asgi_application()
 
 @database_sync_to_async
 def get_user_from_token(token):
+    from rest_framework_simplejwt.tokens import AccessToken
     from django.contrib.auth.models import AnonymousUser
-    from rest_framework.authtoken.models import Token
+    from accounts.models import User
     try:
-        print(token)
-        usertoken = Token.objects.get(key=token)
-        print(usertoken)
-        return usertoken.user
-    except Token.DoesNotExist:
+        token = AccessToken(token)
+        user_id = token['user_id']
+        return User.objects.get(id=user_id)
+    except (AccessToken.Error, User.DoesNotExist):
         return AnonymousUser()
 
 class TokenAuthMiddleware:
