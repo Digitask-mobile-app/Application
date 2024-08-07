@@ -38,12 +38,15 @@ class StatusConsumer(AsyncWebsocketConsumer):
             pass
 
     async def receive(self, text_data):
+        print(f"Received WebSocket message: {text_data}")
         data = json.loads(text_data)
         user_id = data.get('userId')
         status = data.get('status')
 
         if user_id and status:
             await self.broadcast_status(user_id, status)
+        else:
+            print(f"Invalid message received: {text_data}")
 
     async def broadcast_status(self, user_id, status):
         channel_layer = get_channel_layer()
@@ -55,6 +58,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
                 'status': status
             }
         )
+        print(f"Broadcasting status: {status} user: {user_id}")
 
     async def user_status(self, event):
         await self.send(text_data=json.dumps({
