@@ -76,9 +76,14 @@ from channels.layers import get_channel_layer
 
 class StatusConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        from urllib.parse import parse_qs
         await self.accept()
-        user = self.scope['user']
-        print(user)
+        query_string = self.scope.get("query_string", b"").decode()
+        query_params = parse_qs(query_string)
+        
+        # Email parametresini al
+        email = query_params.get("email", [None])[0]
+        print(email,'--------------------------------')
         print("WebSocket connection accepted.")
 
     async def disconnect(self, close_code):
