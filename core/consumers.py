@@ -94,6 +94,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(
                 "status",
                 {
+                    "type": "chat.message",
                     "text": 'text_data',
                 },
             )
