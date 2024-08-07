@@ -116,4 +116,13 @@ class StatusConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'message': message
         }))
+        channel_layer = get_channel_layer()
+        message[0]='0'
+        await channel_layer.group_send(
+            "status",
+            {
+                "type": "send_message",
+                "message": message
+            }
+        )
         
