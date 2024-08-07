@@ -75,6 +75,7 @@ from channels.layers import get_channel_layer
 
 
 class StatusConsumer(AsyncWebsocketConsumer):
+    online_users = {}
     async def connect(self):
         from urllib.parse import parse_qs
         await self.accept()
@@ -82,7 +83,22 @@ class StatusConsumer(AsyncWebsocketConsumer):
         query_params = parse_qs(query_string)
         email = query_params.get("email", [None])[0]
 
+        user = self.scope['user']
+     
+        channel_layer = get_channel_layer()
+        await channel_layer.group_add(
+            "status",
+            self.channel_name
+        )
+        StatusConsumer.online_users[user.id] = self.channel_name
+        await self.broadcast_message(user.id, 'online')
+
     async def disconnect(self, close_code):
+        channel_layer = get_channel_layer()
+        await channel_layer.group_discard(
+            "status",
+            self.channel_name
+        )
         print("WebSocket connection closed.")
 
     async def receive(self, text_data):
