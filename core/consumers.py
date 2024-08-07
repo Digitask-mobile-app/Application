@@ -139,6 +139,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
 
         data = json.loads(text_data)
+        print(data)
         message = data.get('message', 'Bu ne ucun var bilmirem')
         await self.broadcast_message(message)
      
