@@ -121,7 +121,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
             "status",
             {
                 "type": "send_message",
-                "message": message
+                "message": 'message'
             }
         )
         
