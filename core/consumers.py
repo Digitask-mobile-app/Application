@@ -61,3 +61,4 @@ class StatusConsumer(AsyncWebsocketConsumer):
             'userId': event['user_id'],
             'status': event['status']
         }))
+        print(f"Status: {event['status']} user: {event['user_id']}")
