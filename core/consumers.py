@@ -86,6 +86,8 @@ class StatusConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         print(f"Received WebSocket message: {text_data}")
+        user = self.scope['user']
+        print(user)
         data = json.loads(text_data)
         message = data.get('message', 'No message received')
 
