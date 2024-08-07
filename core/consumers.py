@@ -108,15 +108,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         message = data.get('message', 'Bu ne ucun var bilmirem')
         data = json.loads(text_data)
-        message_type = data.get('type')
-  
 
-        # Mesaj türüne göre uygun handler metodunu çağır
-        if message_type == 'broadcast':
-            print(message_type)
-        else:
-            print(f"Unknown message type: {message_type}")
-        # Broadcast the received message to all WebSocket connections
         await self.broadcast_message(message)
 
     async def broadcast_message(self, message):
