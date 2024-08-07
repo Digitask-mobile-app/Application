@@ -86,7 +86,8 @@ def get_user_from_token(token):
 class StatusConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
-        print(self.scope["user"].username)
+        user = self.scope['user']
+        print(user)
         print("WebSocket connection accepted.")
 
     async def disconnect(self, close_code):
