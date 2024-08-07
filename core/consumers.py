@@ -118,10 +118,12 @@ class StatusConsumer(AsyncWebsocketConsumer):
         }))
         channel_layer = get_channel_layer()
         await channel_layer.group_send(
-            "status",
+            'status',
             {
-                "type": "send_message",
-                "message": 'message'
+                'type': 'new.message',
+                'data': {
+                    'text': 'some_text'
+                }
             }
         )
         
