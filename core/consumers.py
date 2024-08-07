@@ -141,11 +141,10 @@ class StatusConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         location = data.get('location', {})
         if location is not None:
-
+            user = self.scope['user']
             latitude = location.get('latitude')
             longitude = location.get('longitude')
-            print(latitude,longitude)
-            print(data)
+            await self.update_user_location(user,latitude,longitude)
         message = data.get('message', 'Bu ne ucun var bilmirem')
         await self.broadcast_message(message)
      
@@ -159,4 +158,10 @@ class StatusConsumer(AsyncWebsocketConsumer):
     def update_user_status(self, user, is_online):
         user.is_online = is_online
         user.timestamp = timezone.now()
+        user.save()
+
+    @database_sync_to_async
+    def update_user_location(self,user,latitude,longitude):
+        user.latitude = latitude
+        user.longitude = longitude
         user.save()
