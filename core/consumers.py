@@ -111,7 +111,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
         await self.accept()
         user = self.scope['user']
         await self.update_user_status(user, True)
-
+        print(user.email + ' email istifadeci qosuldu')
         channel_layer = get_channel_layer()
         await channel_layer.group_add(
             "status",
@@ -129,6 +129,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         user = self.scope['user']
+        print(user.email + ' email istifadeci terk etdi')
         await self.update_user_status(user, False)
         channel_layer = get_channel_layer()
         await channel_layer.group_discard(
@@ -164,5 +165,5 @@ class StatusConsumer(AsyncWebsocketConsumer):
     def update_user_location(self,user,latitude,longitude):
         user.latitude = latitude
         user.longitude = longitude
-        print('user location')
+        print('user location ------------------ ')
         user.save()
