@@ -44,6 +44,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
     is_online = models.BooleanField(default=False)
+    latitude = models.FloatField(null=True,blank=True)
+    longitude = models.FloatField(null=True,blank=True)
+
     group = models.ForeignKey(
         Group,
         verbose_name=('groups'),
