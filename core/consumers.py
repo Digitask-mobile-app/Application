@@ -91,6 +91,6 @@ class StatusConsumer(AsyncWebsocketConsumer):
 
     async def broadcast_message(self, message):
         await self.send(text_data=json.dumps({
-            'message': message
+            'message': message+'111'
         }))
         print(f"Broadcasting message: {message}")
