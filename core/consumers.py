@@ -91,10 +91,9 @@ class StatusConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         StatusConsumer.online_users[user.id] = self.channel_name
-        await channel_layer.group_send(
+        await self.channel_layer.group_send(
                 "status",
                 {
-                    "type": "chat.message",
                     "text": 'text_data',
                 },
             )
