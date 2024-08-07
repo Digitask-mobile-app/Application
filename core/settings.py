@@ -82,6 +82,7 @@ INSTALLED_APPS = [
 
 
 MIDDLEWARE = [
+    'tokenAuthMiddleware'
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'services.middleware.languages.SetDefaultLangMiddleware',

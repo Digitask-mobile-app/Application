@@ -5,7 +5,7 @@ from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator
 from channels.sessions import SessionMiddlewareStack
 from .routing import websocket_urlpatterns
-from tokenAuthMiddleware import TokenAuthMiddleWare
+from core.tokenAuthMiddleware import TokenAuthMiddleWare
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 
 django_asgi_app = get_asgi_application()
