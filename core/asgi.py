@@ -19,8 +19,10 @@ def get_user_from_token(token):
     from django.contrib.auth.models import AnonymousUser
     from rest_framework.authtoken.models import Token
     try:
-        token = Token.objects.get(key=token)
-        return token.user
+        print(token)
+        usertoken = Token.objects.get(key=token)
+        print(usertoken)
+        return usertoken.user
     except Token.DoesNotExist:
         return AnonymousUser()
 
