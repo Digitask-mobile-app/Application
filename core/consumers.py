@@ -9,7 +9,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
         self.user_id = self.scope['user'].id if self.scope['user'].is_authenticated else None
-
+        print(self.id,self.user)
         if self.user_id:
             channel_layer = get_channel_layer()
             await channel_layer.group_add(
