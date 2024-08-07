@@ -65,6 +65,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
             }
         )
         print(f"Broadcasting status: {status} user: {user_id}")
+        
 
     async def user_status(self, event):
         await self.send(text_data=json.dumps({
@@ -72,3 +73,4 @@ class StatusConsumer(AsyncWebsocketConsumer):
             'status': event['status']
         }))
         print(f"Status: {event['status']} user: {event['user_id']}")
+        
