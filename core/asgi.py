@@ -32,13 +32,9 @@ class TokenAuthMiddleware:
 
     async def __call__(self, scope, receive, send):
         query_string = scope.get("query_string", b"").decode()
-        print(f"Raw query string++++++++++++: {query_string}")
         query_params = parse_qs(query_string)
         token = query_params.get("token", [None])[0]
-        print(f"Token received: {token}")
-
         scope["user"] = await get_user_from_token(token)
-        print(scope["user"],'9999999999999999999')
         return await self.inner(scope, receive, send)
 
 application = ProtocolTypeRouter({

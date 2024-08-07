@@ -80,11 +80,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
         await self.accept()
         query_string = self.scope.get("query_string", b"").decode()
         query_params = parse_qs(query_string)
-        
-        # Email parametresini al
         email = query_params.get("email", [None])[0]
-        print(email,'--------------------------------')
-        print("WebSocket connection accepted.")
 
     async def disconnect(self, close_code):
         print("WebSocket connection closed.")
@@ -92,9 +88,9 @@ class StatusConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         print(f"Received WebSocket message: {text_data}")
         user = self.scope['user']
-        print(user)
+        print(user,'user------------------------')
         data = json.loads(text_data)
-        message = data.get('message', 'No message received')
+        message = data.get('message', f'Ugurla qosuldunuz: {user.email}')
 
         # Broadcast the received message to all WebSocket connections
         await self.broadcast_message(message)
@@ -103,4 +99,4 @@ class StatusConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'message': message+'111'
         }))
-        print(f"Broadcasting message: {message}")
+        
