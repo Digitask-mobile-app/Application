@@ -90,13 +90,14 @@ class StatusConsumer(AsyncWebsocketConsumer):
         user = self.scope['user']
         print(user,'user------------------------')
         data = json.loads(text_data)
-        message = data.get('message', f'Ugurla qosuldunuz: {user.email}')
+        message = data.get('message', 'Bu ne ucun var bilmirem')
 
         # Broadcast the received message to all WebSocket connections
         await self.broadcast_message(message)
 
     async def broadcast_message(self, message):
+        user = self.scope['user']
         await self.send(text_data=json.dumps({
-            'message': message+'222'
+            'message': message+user.email
         }))
         
