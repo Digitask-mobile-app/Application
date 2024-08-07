@@ -168,5 +168,5 @@ class StatusConsumer(AsyncWebsocketConsumer):
     def update_user_location(self,user,latitude,longitude):
         user.latitude = latitude
         user.longitude = longitude
-        print('user location ------------------ ',user.latitude)
+        print('user location ------------------ ')
         user.save()
