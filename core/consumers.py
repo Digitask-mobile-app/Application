@@ -111,7 +111,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
         await self.accept()
         user = self.scope['user']
         await self.update_user_status(user, True)
-        
+
         channel_layer = get_channel_layer()
         await channel_layer.group_add(
             "status",
@@ -121,7 +121,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
                 "status",
                 {
                     "type": "broadcast_message",
-                    user.email:user.status ,
+                    user.email:user.is_online ,
                 },
             )
         
