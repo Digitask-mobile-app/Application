@@ -1,9 +1,8 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import get_channel_layer
-from channels.db import database_sync_to_async
-import jwt
-from django.conf import settings
+
+
 # class StatusConsumer(AsyncWebsocketConsumer):
 #     online_users = {}
 
@@ -74,14 +73,6 @@ from django.conf import settings
 #         }))
 #         print(f"Status: {event['status']} user: {event['user_id']}")
 
-def get_user_from_token(token):
-    from accounts.models import User
-    try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-        user = User.objects.get(id=payload['user_id'])
-        return user
-    except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, User.DoesNotExist):
-        return None
 
 class StatusConsumer(AsyncWebsocketConsumer):
     async def connect(self):

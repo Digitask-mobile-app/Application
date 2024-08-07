@@ -5,7 +5,7 @@ from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator
 from channels.sessions import SessionMiddlewareStack
 from .routing import websocket_urlpatterns
-from rest_framework.authtoken.models import Token
+
 from urllib.parse import parse_qs
 from channels.db import database_sync_to_async
 from django.contrib.auth.models import AnonymousUser
@@ -16,6 +16,7 @@ django_asgi_app = get_asgi_application()
 
 @database_sync_to_async
 def get_user_from_token(token_string):
+    from rest_framework.authtoken.models import Token
     try:
         token = Token.objects.get(key=token_string)
         return token.user
