@@ -15,11 +15,11 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 django_asgi_app = get_asgi_application()
 
 @database_sync_to_async
-def get_user_from_token(token_string):
+def get_user_from_token(token):
     from django.contrib.auth.models import AnonymousUser
     from rest_framework.authtoken.models import Token
     try:
-        token = Token.objects.get(key=token_string)
+        token = Token.objects.get(key=token)
         return token.user
     except Token.DoesNotExist:
         return AnonymousUser()
