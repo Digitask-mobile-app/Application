@@ -1,7 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import get_channel_layer
-import redis
+from django.utils import timezone
 
 # class StatusConsumer(AsyncWebsocketConsumer):
 #     online_users = {}
@@ -72,55 +72,81 @@ import redis
 #             'status': event['status']
 #         }))
 #         print(f"Status: {event['status']} user: {event['user_id']}")
-redis_instance = redis.StrictRedis(host='localhost', port=6379, db=0)
+
+# How to take arg from ws url ------------------------------------
+
+# query_string = self.scope.get("query_string", b"").decode()
+# query_params = parse_qs(query_string)
+# email = query_params.get("email", [None])[0]
+
+#------------------------------------------------------
+
+#-----------------------------------------------
+#group_senddeki typeda ise saldigimiz functionun adini yaziriq
+
+#channel_layer = get_channel_layer()
+#        await channel_layer.group_add(
+#            "status",
+#            self.channel_name
+#        )
+
+#---------------------------------
+#        user = self.scope['user'] useri goturmek ucun
+#--------------------------------------------
+
+#  await self.channel_layer.group_send(
+#                 "status",
+#                 {
+#                     "type": "broadcast_message",
+#                     "text": 'text_data',
+#                 },
+#             )
+
+#group_send ---------------------------------------
 
 class StatusConsumer(AsyncWebsocketConsumer):
     online_users = {}
-    async def connect(self):
-        from urllib.parse import parse_qs
-        await self.accept()
-        query_string = self.scope.get("query_string", b"").decode()
-        query_params = parse_qs(query_string)
-        email = query_params.get("email", [None])[0]
 
+    async def connect(self):
+        await self.accept()
         user = self.scope['user']
-        
+        user.is_online = True
+        user.timestamp = timezone.now()
+        user.save()
         channel_layer = get_channel_layer()
         await channel_layer.group_add(
             "status",
             self.channel_name
         )
-        StatusConsumer.online_users[user.id] = self.channel_name
         await self.channel_layer.group_send(
                 "status",
                 {
                     "type": "broadcast_message",
-                    "text": 'text_data',
+                    user.email:user.status ,
                 },
             )
+        
         await self.broadcast_message({user.id:'online'})
 
     async def disconnect(self, close_code):
+        user = self.scope['user']
+        user.is_online = False
+        user.timestamp = timezone.now()
+        user.save()
         channel_layer = get_channel_layer()
         await channel_layer.group_discard(
             "status",
             self.channel_name
         )
-        print("WebSocket connection closed.")
 
     async def receive(self, text_data):
-        print(f"Received WebSocket message: {text_data}")
-        user = self.scope['user']
-        print(user,'user------------------------')
+
         data = json.loads(text_data)
         message = data.get('message', 'Bu ne ucun var bilmirem')
-        data = json.loads(text_data)
-        
         await self.broadcast_message(message)
      
 
     async def broadcast_message(self, message):
-        user = self.scope['user']
         await self.send(text_data=json.dumps({
             'message': message
         }))
