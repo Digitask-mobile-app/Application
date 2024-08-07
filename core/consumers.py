@@ -140,10 +140,12 @@ class StatusConsumer(AsyncWebsocketConsumer):
 
         data = json.loads(text_data)
         location = data.get('location', {})
-        latitude = location.get('latitude')
-        longitude = location.get('longitude')
-        print(latitude,longitude)
-        print(data)
+        if location is not None:
+
+            latitude = location.get('latitude')
+            longitude = location.get('longitude')
+            print(latitude,longitude)
+            print(data)
         message = data.get('message', 'Bu ne ucun var bilmirem')
         await self.broadcast_message(message)
      
