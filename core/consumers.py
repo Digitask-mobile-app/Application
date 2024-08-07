@@ -13,19 +13,22 @@ class StatusConsumer(AsyncWebsocketConsumer):
         if self.user_id:
             channel_layer = get_channel_layer()
             await channel_layer.group_add(
-                'status_updates',  
-                self.channel_name  
+                'status_updates',
+                self.channel_name
             )
-
             StatusConsumer.online_users[self.user_id] = self.channel_name
             await self.update_user_status(self.user_id, True)
             await self.broadcast_status(self.user_id, 'online')
+            print(f"User {self.user_id} connected and status set to online.")
+        else:
+            print("Unauthenticated user tried to connect.")
 
     async def disconnect(self, close_code):
         if self.user_id in StatusConsumer.online_users:
             del StatusConsumer.online_users[self.user_id]
             await self.update_user_status(self.user_id, False)
             await self.broadcast_status(self.user_id, 'offline')
+            print(f"User {self.user_id} disconnected and status set to offline.")
 
     @database_sync_to_async
     def update_user_status(self, user_id, online):
@@ -35,7 +38,10 @@ class StatusConsumer(AsyncWebsocketConsumer):
             user.is_online = online
             user.save()
         except User.DoesNotExist:
-            pass
+            print(f"User with ID {user_id} does not exist.")
+        except Exception as e:
+            print(f"Error updating user status: {e}")
+
 
     async def receive(self, text_data):
         print(f"Received WebSocket message: {text_data}")
