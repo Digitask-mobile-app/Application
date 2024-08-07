@@ -36,7 +36,7 @@ class TokenAuthMiddleware:
         query_params = parse_qs(query_string)
         token = query_params.get("token", [None])[0]
         print(f"Token received: {token}")
-        print(get_user_from_token(token))
+        print(get_user_from_token(token),'0000000000')
         scope["user"] = await get_user_from_token(token)
         return await self.inner(scope, receive, send)
 
