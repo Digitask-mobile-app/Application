@@ -2,7 +2,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import get_channel_layer
 from django.utils import timezone
-
+from channels.db import database_sync_to_async
 # class StatusConsumer(AsyncWebsocketConsumer):
 #     online_users = {}
 
@@ -110,9 +110,8 @@ class StatusConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
         user = self.scope['user']
-        user.is_online = True
-        user.timestamp = timezone.now()
-        user.save()
+        await self.update_user_status(user, True)
+        
         channel_layer = get_channel_layer()
         await channel_layer.group_add(
             "status",
@@ -130,9 +129,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         user = self.scope['user']
-        user.is_online = False
-        user.timestamp = timezone.now()
-        user.save()
+        await self.update_user_status(user, False)
         channel_layer = get_channel_layer()
         await channel_layer.group_discard(
             "status",
@@ -151,3 +148,8 @@ class StatusConsumer(AsyncWebsocketConsumer):
             'message': message
         }))
     
+    @database_sync_to_async
+    def update_user_status(self, user, is_online):
+        user.is_online = is_online
+        user.timestamp = timezone.now()
+        user.save()
