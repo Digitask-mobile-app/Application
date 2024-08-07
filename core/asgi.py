@@ -8,7 +8,7 @@ from .routing import websocket_urlpatterns
 
 from urllib.parse import parse_qs
 from channels.db import database_sync_to_async
-from django.contrib.auth.models import AnonymousUser
+
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 
@@ -16,6 +16,7 @@ django_asgi_app = get_asgi_application()
 
 @database_sync_to_async
 def get_user_from_token(token_string):
+    from django.contrib.auth.models import AnonymousUser
     from rest_framework.authtoken.models import Token
     try:
         token = Token.objects.get(key=token_string)
