@@ -91,6 +91,13 @@ class StatusConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         StatusConsumer.online_users[user.id] = self.channel_name
+        await self.channel_layer.group_send(
+                "status",
+                {
+                    "type": "chat.message",
+                    "text": 'text_data',
+                },
+            )
         await self.broadcast_message({user.id:'online'})
 
     async def disconnect(self, close_code):
@@ -110,23 +117,11 @@ class StatusConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         
         await self.broadcast_message(message)
-        self.channel_layer.group_send(
-                "status",
-                {
-                    "type": "chat.message",
-                    "text": text_data,
-                },
-            )
+     
 
     async def broadcast_message(self, message):
         user = self.scope['user']
         await self.send(text_data=json.dumps({
             'message': message
         }))
-        self.channel_layer.group_send(
-                "status",
-                {
-                    "type": "chat.message",
-                    "text": 'text_data',
-                },
-            )
+    
