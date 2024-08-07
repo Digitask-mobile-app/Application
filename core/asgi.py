@@ -23,7 +23,7 @@ def get_user_from_token(token):
         token = AccessToken(token)
         user_id = token['user_id']
         return User.objects.get(id=user_id)
-    except (AccessToken, User.DoesNotExist):
+    except:
         return AnonymousUser()
 
 class TokenAuthMiddleware:
