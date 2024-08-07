@@ -31,7 +31,7 @@ class TokenAuthMiddleware:
         self.inner = inner
 
     async def __call__(self, scope, receive, send):
-        query_string = scope.get("query_string", b"").decode()
+        query_string = self.scope.get("query_string", b"").decode()
         query_params = parse_qs(query_string)
         token = query_params.get("token", [None])[0]
         print(f"Token received: {token}")
