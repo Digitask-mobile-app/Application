@@ -114,6 +114,6 @@ class StatusConsumer(AsyncWebsocketConsumer):
     async def broadcast_message(self, message):
         user = self.scope['user']
         await self.send(text_data=json.dumps({
-            'message': message+user.email
+            'message': message
         }))
         
