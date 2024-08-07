@@ -1,7 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import get_channel_layer
-
+import redis
 
 # class StatusConsumer(AsyncWebsocketConsumer):
 #     online_users = {}
@@ -72,7 +72,7 @@ from channels.layers import get_channel_layer
 #             'status': event['status']
 #         }))
 #         print(f"Status: {event['status']} user: {event['user_id']}")
-
+redis_instance = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 class StatusConsumer(AsyncWebsocketConsumer):
     online_users = {}
@@ -84,7 +84,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
         email = query_params.get("email", [None])[0]
 
         user = self.scope['user']
-     
+        
         channel_layer = get_channel_layer()
         await channel_layer.group_add(
             "status",
