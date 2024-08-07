@@ -91,7 +91,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         StatusConsumer.online_users[user.id] = self.channel_name
-        await self.broadcast_message(user.id, 'online')
+        await self.broadcast_message({user.id:'online'})
 
     async def disconnect(self, close_code):
         channel_layer = get_channel_layer()
