@@ -110,11 +110,13 @@ from asgiref.sync import async_to_sync
 class UserListConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
+        print('connected userlist')
 
     async def disconnect(self, close_code):
-        pass
+        print('disconnected userlist')
 
     async def send_users(self, message):
+        print('sendusers')
         await self.send(text_data=json.dumps({
             'message': message
         }))
@@ -124,6 +126,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
 def user_status_update(sender, instance, **kwargs):
     if kwargs.get('update_fields') and 'is_online' in kwargs['update_fields']:
         online_users = 'accounts.User'.objects.all().values('username', 'is_online')
+        print(online_users)
         async_to_sync(UserListConsumer.send_users)({'data': online_users})
 
 class StatusConsumer(AsyncWebsocketConsumer):
@@ -167,6 +170,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
 
         data = json.loads(text_data)
+        print(data)
         location = data.get('location', {})
         if location is not None:
             print(location,'222222222222222222222222222222222222')
