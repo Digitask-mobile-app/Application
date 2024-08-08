@@ -114,7 +114,8 @@ class UserListConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         print('disconnected userlist')
 
-    async def send_users(self, message):
+    async def send_users(self, event):
+        message = event['message']
         print('sendusers')
         await self.send(text_data=json.dumps({
             'message': message

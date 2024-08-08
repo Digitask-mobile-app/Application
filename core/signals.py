@@ -8,9 +8,6 @@ import json
 @receiver(post_save, sender=User)
 def user_status_update(sender, instance, **kwargs):
     from core.consumers import UserListConsumer
-    print('yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy')
-    print(kwargs,'-----------------------------------------------')
-    print(kwargs.get('updated_fields'))
     channel_layer = get_channel_layer()
 
     async_to_sync(channel_layer.group_send)(
