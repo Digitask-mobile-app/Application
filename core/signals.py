@@ -19,7 +19,7 @@ def user_status_update(sender, instance, **kwargs):
     async_to_sync(channel_layer.group_send)(
             'status',  # WebSocket grubu
             {
-         # Consumer metodunu belirtir
+                'type': 'send.users',  # Consumer metodunu belirtir
                 'message': {'data': 'group send workinggggggggggggggggggggggggggggggg'}
             }
         )
