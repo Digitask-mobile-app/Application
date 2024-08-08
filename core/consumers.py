@@ -138,7 +138,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
         while self.keep_sending:
             user_list = await self.get_online_users()
             await self.send_users(user_list)
-            await asyncio.sleep(3)
+            await asyncio.sleep(10)
 
     async def receive(self, text_data):
         data = json.loads(text_data)
