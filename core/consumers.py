@@ -115,6 +115,9 @@ class UserListConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         await self.accept()
+        self.keep_sending = True
+        user_list = await self.get_online_users()
+        await self.send_users(user_list)
         print('connected userlist')
 
     async def disconnect(self, close_code):
@@ -123,6 +126,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
             "status",
             self.channel_name
         )
+        self.keep_sending = False
         print('disconnected userlist')
 
     async def send_users(self, message):
