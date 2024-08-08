@@ -15,8 +15,8 @@ def send_users_custom(self, event):
 def user_status_update(sender, instance, **kwargs):
     from core.consumers import UserListConsumer
     channel_layer = get_channel_layer()
-
-    async_to_sync(UserListConsumer.send_users)({'message': 'online_users'})
+    message = {'message':'message'}
+    async_to_sync(UserListConsumer.send_users)({message})
     print('group message senttttttttttttttttttt')
     if kwargs.get('update_fields') and 'is_online' in kwargs['update_fields']:
         online_users = User.objects.all().values('username', 'is_online')
