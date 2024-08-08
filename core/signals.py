@@ -7,6 +7,7 @@ from accounts.models import User
 def user_status_update(sender, instance, **kwargs):
     from core.consumers import UserListConsumer
     print('yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy')
+    print(kwargs,'-----------------------------------------------')
     if kwargs.get('update_fields') and 'is_online' in kwargs['update_fields']:
         online_users = User.objects.all().values('username', 'is_online')
         print(online_users)
