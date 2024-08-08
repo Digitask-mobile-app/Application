@@ -132,8 +132,9 @@ class StatusConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         user = self.scope['user']
-        print(user.email + ' email istifadeci terk etdi')
+        
         if user.is_authenticated:
+            print(user.email + ' email istifadeci terk etdi')
             await self.update_user_status(user, False)
         channel_layer = get_channel_layer()
         await channel_layer.group_discard(
