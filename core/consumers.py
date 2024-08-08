@@ -3,7 +3,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import get_channel_layer
 from django.utils import timezone
 from channels.db import database_sync_to_async
-
+import asyncio
 
 # class StatusConsumer(AsyncWebsocketConsumer):
 #     online_users = {}
@@ -116,8 +116,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
         )
         await self.accept()
         self.keep_sending = True
-        user_list = await self.get_online_users()
-        await self.send_users(user_list)
+        asyncio.create_task(self.send_online_users_periodically())
         print('connected userlist')
 
     async def disconnect(self, close_code):
@@ -134,6 +133,12 @@ class UserListConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'message': message
         }))
+
+    async def send_online_users_periodically(self):
+        while self.keep_sending:
+            user_list = await self.get_online_users()
+            await self.send_users(user_list)
+            await asyncio.sleep(10)
 
     async def receive(self, text_data):
         data = json.loads(text_data)
