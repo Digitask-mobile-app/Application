@@ -9,8 +9,8 @@ def user_status_update(sender, instance, **kwargs):
     print('yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy')
     print(kwargs,'-----------------------------------------------')
     print(kwargs.get('updated_fields'))
-    async_to_sync(UserListConsumer.send_users)({'data': 'data'})
+    async_to_sync(UserListConsumer.send_users)({'message': 'data'})
     if kwargs.get('update_fields') and 'is_online' in kwargs['update_fields']:
         online_users = User.objects.all().values('username', 'is_online')
         print(online_users)
-        async_to_sync(UserListConsumer.send_users)({'data': online_users})
+        async_to_sync(UserListConsumer.send_users)({'message': online_users})
