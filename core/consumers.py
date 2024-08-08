@@ -106,6 +106,7 @@ from channels.db import database_sync_to_async
 
 #group_send ---------------------------------------
 
+
 class UserListConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         channel_layer = get_channel_layer()
@@ -139,6 +140,9 @@ class UserListConsumer(AsyncWebsocketConsumer):
     def get_online_users(self):
         from accounts.models import User
         return list(User.objects.filter(is_online=True).values('id', 'username'))
+
+
+
 
 
 class StatusConsumer(AsyncWebsocketConsumer):
