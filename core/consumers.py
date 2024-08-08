@@ -114,7 +114,6 @@ class UserListConsumer(AsyncWebsocketConsumer):
             "status",
             self.channel_name
         )
-
         await self.accept()
         print('connected userlist')
 
@@ -134,6 +133,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         data = json.loads(text_data)
+        print('riciverrrrrrrrr worksssssssssss')
         user_list = await self.get_online_users()
         await self.send_users(user_list)
 
@@ -181,12 +181,9 @@ class StatusConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
 
         data = json.loads(text_data)
-        print(data,'oooooooooooooooooooooooooooooooooooo')
         user = self.scope['user']
         location = data.get('location', {})
-        if location is not None and user.is_authenticated:
-            print(location,'ooooooooooooooooooooooooooooooooooo')
-            
+        if location is not None and user.is_authenticated:       
             latitude = location.get('latitude')
             longitude = location.get('longitude')
             await self.update_user_location(user,latitude,longitude)
@@ -211,5 +208,4 @@ class StatusConsumer(AsyncWebsocketConsumer):
     def update_user_location(self,user,latitude,longitude):
         user.latitude = latitude
         user.longitude = longitude
-        print('user location ------------------ ')
         user.save()
