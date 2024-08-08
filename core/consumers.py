@@ -119,11 +119,11 @@ class UserListConsumer(AsyncWebsocketConsumer):
             'message': message
         }))
 
-from accounts.models import User
-@receiver(post_save, sender=User)
+
+@receiver(post_save, sender='accounts.User')
 def user_status_update(sender, instance, **kwargs):
     if kwargs.get('update_fields') and 'is_online' in kwargs['update_fields']:
-        online_users = User.objects.all().values('username', 'is_online')
+        online_users = 'accounts.User'.objects.all().values('username', 'is_online')
         async_to_sync(UserListConsumer.send_users)({'data': online_users})
 
 class StatusConsumer(AsyncWebsocketConsumer):
