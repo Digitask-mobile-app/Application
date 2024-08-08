@@ -110,15 +110,17 @@ class StatusConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
         user = self.scope['user']
-        if user.is_authenticated:
-            await self.update_user_status(user, True)
-        print(user.email + ' email istifadeci qosuldu')
         channel_layer = get_channel_layer()
         await channel_layer.group_add(
             "status",
             self.channel_name
         )
-        await self.channel_layer.group_send(
+
+        if user.is_authenticated:
+            await self.update_user_status(user, True)
+            print(user.email + ' email istifadeci qosuldu')
+        
+            await self.channel_layer.group_send(
                 "status",
                 {
                     "type": "broadcast_message",
