@@ -154,7 +154,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(
                 "status",
                 {
-                    "type": "broadcast.smessage",
+                    "type": "broadcast.message",
                     user.email:user.is_online ,
                 },
             )
