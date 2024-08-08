@@ -6,6 +6,7 @@ from accounts import User
 @receiver(post_save, sender=User)
 def user_status_update(sender, instance, **kwargs):
     from consumers import UserListConsumer
+    print('yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy')
     if kwargs.get('update_fields') and 'is_online' in kwargs['update_fields']:
         online_users = User.objects.all().values('username', 'is_online')
         print(online_users)
