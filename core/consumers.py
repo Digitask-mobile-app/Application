@@ -3,6 +3,9 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import get_channel_layer
 from django.utils import timezone
 from channels.db import database_sync_to_async
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from asgiref.sync import async_to_sync
 # class StatusConsumer(AsyncWebsocketConsumer):
 #     online_users = {}
 
@@ -103,6 +106,25 @@ from channels.db import database_sync_to_async
 #             )
 
 #group_send ---------------------------------------
+
+class UserListConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        pass
+
+    async def send_users(self, message):
+        await self.send(text_data=json.dumps({
+            'message': message
+        }))
+
+from accounts.models import User
+@receiver(post_save, sender=User)
+def user_status_update(sender, instance, **kwargs):
+    if kwargs.get('update_fields') and 'is_online' in kwargs['update_fields']:
+        online_users = User.objects.all().values('username', 'is_online')
+        async_to_sync(UserListConsumer.send_users)({'data': online_users})
 
 class StatusConsumer(AsyncWebsocketConsumer):
     online_users = {}
