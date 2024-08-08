@@ -16,14 +16,14 @@ def user_status_update(sender, instance, **kwargs):
     from core.consumers import UserListConsumer
     channel_layer = get_channel_layer()
 
-    # async_to_sync(channel_layer.group_send)(
-    #         'status',  # WebSocket grubu
-    #         {
-    #             'type': 'send.users',  # Consumer metodunu belirtir
-    #             'message': {'data': 'group send workinggggggggggggggggggggggggggggggg'}
-    #         }
-    #     )
-    # print('group message senttttttttttttttttttt')
+    async_to_sync(channel_layer.group_send)(
+            'status',  # WebSocket grubu
+            {
+                'type': 'UserListConsumer.send_users',  # Consumer metodunu belirtir
+                'message': {'data': 'group send workinggggggggggggggggggggggggggggggg'}
+            }
+        )
+    print('group message senttttttttttttttttttt')
     # if kwargs.get('update_fields') and 'is_online' in kwargs['update_fields']:
     #     online_users = User.objects.all().values('username', 'is_online')
     #     print(online_users)
