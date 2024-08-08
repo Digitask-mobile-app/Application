@@ -165,10 +165,11 @@ class StatusConsumer(AsyncWebsocketConsumer):
 
         data = json.loads(text_data)
         print(data,'oooooooooooooooooooooooooooooooooooo')
+        user = self.scope['user']
         location = data.get('location', {})
-        if location is not None:
+        if location is not None and user.is_authenticated:
             print(location,'ooooooooooooooooooooooooooooooooooo')
-            user = self.scope['user']
+            
             latitude = location.get('latitude')
             longitude = location.get('longitude')
             await self.update_user_location(user,latitude,longitude)
