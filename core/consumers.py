@@ -108,10 +108,21 @@ from channels.db import database_sync_to_async
 
 class UserListConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        channel_layer = get_channel_layer()
+        await channel_layer.group_add(
+            "status",
+            self.channel_name
+        )
+
         await self.accept()
         print('connected userlist')
 
     async def disconnect(self, close_code):
+        channel_layer = get_channel_layer()
+        await channel_layer.group_discard(
+            "status",
+            self.channel_name
+        )
         print('disconnected userlist')
 
     async def send_users(self, event):

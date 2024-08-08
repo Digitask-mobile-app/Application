@@ -5,6 +5,12 @@ from accounts.models import User
 from channels.layers import get_channel_layer
 import json
 
+def send_users_custom(self, event):
+        message = event['message']
+        self.send(text_data=json.dumps({
+            'message': message
+        }))
+
 @receiver(post_save, sender=User)
 def user_status_update(sender, instance, **kwargs):
     from core.consumers import UserListConsumer
@@ -13,7 +19,7 @@ def user_status_update(sender, instance, **kwargs):
     async_to_sync(channel_layer.group_send)(
             'status',  # WebSocket grubu
             {
-                'type': 'send_users',  # Consumer metodunu belirtir
+                'type': 'send_users_custom',  # Consumer metodunu belirtir
                 'message': {'data': 'group send workinggggggggggggggggggggggggggggggg'}
             }
         )
@@ -23,7 +29,3 @@ def user_status_update(sender, instance, **kwargs):
         print(online_users)
         async_to_sync(UserListConsumer.send_users)({'message': online_users})
 
-def send_users_custom(self, message):
-        self.send(text_data=json.dumps({
-            'message': message
-        }))
