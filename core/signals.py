@@ -1,7 +1,7 @@
 from django.dispatch import receiver
 from asgiref.sync import async_to_sync
 from django.db.models.signals import post_save
-from accounts import User
+from accounts.models import User
 
 @receiver(post_save, sender=User)
 def user_status_update(sender, instance, **kwargs):
