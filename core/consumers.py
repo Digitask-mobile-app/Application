@@ -170,7 +170,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
 
         data = json.loads(text_data)
-        print(data)
+        print(data,'==========================')
         location = data.get('location', {})
         if location is not None:
             print(location,'222222222222222222222222222222222222')
