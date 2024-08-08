@@ -11,13 +11,13 @@ def user_status_update(sender, instance, **kwargs):
     print(kwargs.get('updated_fields'))
     channel_layer = get_channel_layer()
 
-    async_to_sync(channel_layer.group_send)(
-            'status',  # WebSocket grubu
-            {
-                'type': 'send_users',  # Consumer metodunu belirtir
-                'message': {'data': 'group send workinggggggggggggggggggggggggggggggg'}
-            }
-        )
+    # async_to_sync(channel_layer.group_send)(
+    #         'status',  # WebSocket grubu
+    #         {
+    #             'type': 'send_users',  # Consumer metodunu belirtir
+    #             'message': {'data': 'group send workinggggggggggggggggggggggggggggggg'}
+    #         }
+    #     )
     print('group message senttttttttttttttttttt')
     if kwargs.get('update_fields') and 'is_online' in kwargs['update_fields']:
         online_users = User.objects.all().values('username', 'is_online')
