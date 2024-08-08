@@ -125,14 +125,20 @@ class UserListConsumer(AsyncWebsocketConsumer):
         )
         print('disconnected userlist')
 
-    async def send_users(self, event):
-        message = event['message']
-        print('sendusers')
+    async def send_users(self, message):
         await self.send(text_data=json.dumps({
             'message': message
         }))
 
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+        user_list = await self.get_online_users()
+        await self.send_users(user_list)
 
+    @database_sync_to_async
+    def get_online_users(self):
+        from accounts.models import User
+        return list(User.objects.filter(is_online=True).values('id', 'username'))
 
 
 class StatusConsumer(AsyncWebsocketConsumer):
