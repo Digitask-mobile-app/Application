@@ -160,14 +160,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
         if user.is_authenticated:
             await self.update_user_status(user, True)
             print(user.email + ' email istifadeci qosuldu')
-        
-            await self.channel_layer.group_send(
-                "status",
-                {
-                    "type": "broadcast_message",
-                    user.email:user.is_online ,
-                },
-            )
+
         
         await self.broadcast_message({user.id:'online'})
 
