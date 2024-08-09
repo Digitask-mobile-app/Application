@@ -182,15 +182,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
         if user.is_authenticated:
             await self.update_user_status(user, True)
             print(user.email + ' email istifadeci qosuldu')
-            print('---------------------------------------------------------------------------')
-            await self.channel_layer.group_send(
-                "status",
-                {
-                    "type": "status_message",  # Handler olarak kullanılacak tür
-                    "message": {'------------------------------------------------': '----------------------------------------------'},
-                },
-            )
-        print('---------------------------------------------------------------------------')
+            
         await self.broadcast_message({user.id:'online'})
         
         
@@ -215,6 +207,15 @@ class StatusConsumer(AsyncWebsocketConsumer):
             latitude = location.get('latitude')
             longitude = location.get('longitude')
             print(latitude,longitude)
+            print('---------------------------------------------------------------------------')
+            await self.channel_layer.group_send(
+                "status",
+                {
+                    "type": "status_message",  # Handler olarak kullanılacak tür
+                    "message": {'------------------------------------------------': '----------------------------------------------'},
+                },
+            )
+            print('---------------------------------------------------------------------------')
             print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
             await self.channel_layer.group_send(
                 "status",
