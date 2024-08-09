@@ -207,24 +207,26 @@ class StatusConsumer(AsyncWebsocketConsumer):
             latitude = location.get('latitude')
             longitude = location.get('longitude')
             print(latitude,longitude)
-            print('---------------------------------------------------------------------------')
-            await self.channel_layer.group_send(
-                "status",
-                {
-                    "type": "status_message",  # Handler olarak kullanılacak tür
-                    "message": {'------------------------------------------------': '----------------------------------------------'},
-                },
-            )
-            print('---------------------------------------------------------------------------')
-            print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-            await self.channel_layer.group_send(
-                "status",
-                {
-                    "type": "status_message2",
-                    "message": {'++++++++++++++++++++++++++++++++++++++++++':'+++++++++++++++++++++++++++++++++='},
-                },
-            )
-            print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+            if data.get('type') == 'check_ready':
+                
+                print('---------------------------------------------------------------------------')
+                await self.channel_layer.group_send(
+                    "status",
+                    {
+                        "type": "status_message",  # Handler olarak kullanılacak tür
+                        "message": {'------------------------------------------------': '----------------------------------------------'},
+                    },
+                )
+                print('---------------------------------------------------------------------------')
+                print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+                await self.channel_layer.group_send(
+                    "status",
+                    {
+                        "type": "status_message2",
+                        "message": {'++++++++++++++++++++++++++++++++++++++++++':'+++++++++++++++++++++++++++++++++='},
+                    },
+                )
+                print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
             await self.update_user_location(user,latitude,longitude)
         else:
             print('location yoxdur')
