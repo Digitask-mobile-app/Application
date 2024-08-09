@@ -196,6 +196,13 @@ class StatusConsumer(AsyncWebsocketConsumer):
             latitude = location.get('latitude')
             longitude = location.get('longitude')
             print(latitude,longitude)
+            await self.channel_layer.group_send(
+                "status",
+                {
+                    "type": "broadcast_message",
+                    "text": 'text_data',
+                },
+            )
             await self.update_user_location(user,latitude,longitude)
         else:
             print('location yoxdur')
