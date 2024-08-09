@@ -182,7 +182,13 @@ class StatusConsumer(AsyncWebsocketConsumer):
         if user.is_authenticated:
             await self.update_user_status(user, True)
             print(user.email + ' email istifadeci qosuldu')
-
+            await self.channel_layer.group_send(
+                "status",
+                {
+                    "type": "status_message",  # Handler olarak kullanılacak tür
+                    "message": {'------------------------------------------------': 'online'},
+                },
+            )
         
         await self.broadcast_message({user.id:'online'})
         
@@ -221,6 +227,12 @@ class StatusConsumer(AsyncWebsocketConsumer):
         message = data.get('message', 'Bu ne ucun var bilmirem')
         await self.broadcast_message(message)
      
+
+    async def status_message(self, event):
+        message = event['message']
+        await self.send(text_data=json.dumps({
+            'message': message
+        }))
 
     async def broadcast_message(self, message):
         await self.send(text_data=json.dumps({
