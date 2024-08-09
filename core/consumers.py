@@ -136,19 +136,19 @@ class UserListConsumer(AsyncWebsocketConsumer):
             user_list = await self.get_online_users()
             await self.send_users(user_list)
             print('group message sent')
-            
-            print('group message sent2')
-            await asyncio.sleep(10)
-
-    async def send_users(self, message):
-        print('ws222222222222222222222222222222')
-        await self.channel_layer.group_send(
+            await self.channel_layer.group_send(
                 "status",
                 {
                     "type": "send_users",
                     "text": 'text_data',
                 },
             )
+            print('group message sent2')
+            await asyncio.sleep(10)
+
+    async def send_users(self, message):
+        print('ws222222222222222222222222222222')
+        
         await self.send(text_data=json.dumps({
             'message': message
         }))
