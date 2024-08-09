@@ -142,19 +142,20 @@ class UserListConsumer(AsyncWebsocketConsumer):
                         "message": user_list,
                     },
                 )
+            print('userlist -------------------------------------------------')
             await asyncio.sleep(10)
 
 
     async def receive(self, text_data):
         data = json.loads(text_data)
         
-        print('receiving dataaaaaaaaaaaaaaaaaaaaaaaaa')
+        print('receiving dataaaaaaaaaaaaaaaaaaaaaaaaa--------------------------')
         user_list = await self.get_online_users()
         await self.send_users(user_list)
         
 
     async def send_users(self, message):
-        print('sending usersssssssssss')
+        print('sending usersssssssssss-----------------------')
         
         await self.send(text_data=json.dumps({
             'message': message
@@ -169,7 +170,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_online_users(self):
         from accounts.models import User
-        print('getting online userssssssssss')
+        print('getting online userssssssssss-----------------------------')
         return list(User.objects.filter(is_online=True).values('id', 'email'))
 
 
@@ -190,7 +191,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
        
         if user.is_authenticated:
             await self.update_user_status(user, True)
-            print(user.email + ' email istifadeci qosuldu')
+            print(user.email + ' email istifadeci qosuldu ++++++++++++++++++++++++++++++++++')
             
         await self.broadcast_message({user.id:'online'})
         
@@ -199,7 +200,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
         user = self.scope['user']
         
         if user.is_authenticated:
-            print(user.email + ' email istifadeci terk etdi')
+            print(user.email + ' email istifadeci terk etdi ++++++++++++++++++++++++++++++++++')
             await self.update_user_status(user, False)
         channel_layer = get_channel_layer()
         await channel_layer.group_discard(
@@ -215,7 +216,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
         if location is not None and user.is_authenticated:       
             latitude = location.get('latitude')
             longitude = location.get('longitude')
-            print(latitude,longitude)
+            print(latitude,longitude,'++++++++++++++++++++++++++++++++++++++++++++++')
            
             await self.update_user_location(user,latitude,longitude)
         else:
