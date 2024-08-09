@@ -149,6 +149,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         data = json.loads(text_data)
+        print('---------------------------------------------------------------------------')
         await self.channel_layer.group_send(
                 "status",
                 {
