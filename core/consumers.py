@@ -142,12 +142,6 @@ class UserListConsumer(AsyncWebsocketConsumer):
 
     async def send_users(self, message):
         print('ws222222222222222222222222222222')
-        await self.send(text_data=json.dumps({
-            'message': message
-        }))
-
-    async def receive(self, text_data):
-        data = json.loads(text_data)
         await self.channel_layer.group_send(
                 "status",
                 {
@@ -155,6 +149,13 @@ class UserListConsumer(AsyncWebsocketConsumer):
                     "text": 'text_data',
                 },
             )
+        await self.send(text_data=json.dumps({
+            'message': message
+        }))
+
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+        
         print('riciverrrrrrrrr worksssssssssss')
         user_list = await self.get_online_users()
         await self.send_users(user_list)
