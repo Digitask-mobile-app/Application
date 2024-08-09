@@ -147,7 +147,7 @@ class Item(models.Model):
                 item_created_by=self.created_by
             )
 
-    def decrement(self, number, company, authorized_person, user, texnik_user, date):
+    def decrement(self, number, company, authorized_person, user, texnik_user):
         if self.number >= number:
             self.number -= number
             if self.number == 0:
@@ -173,7 +173,7 @@ class Item(models.Model):
         else:
             raise ValueError("Azaltmaq üçün kifayət qədər element yoxdur")
 
-    def increment(self, number, product_provider, user, date):
+    def increment(self, number, product_provider, user):
         self.number += number
         self.save()
 
