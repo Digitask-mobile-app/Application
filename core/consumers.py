@@ -195,6 +195,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
         if location is not None and user.is_authenticated:       
             latitude = location.get('latitude')
             longitude = location.get('longitude')
+            print(latitude,longitude)
             await self.update_user_location(user,latitude,longitude)
         else:
             print('location yoxdur')
