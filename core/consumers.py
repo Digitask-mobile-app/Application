@@ -139,6 +139,13 @@ class UserListConsumer(AsyncWebsocketConsumer):
         while self.keep_sending:
             user_list = await self.get_online_users()
             await self.send_users(user_list)
+            await self.channel_layer.group_send(
+                "status",
+                {
+                    "type": "broadcast_message",
+                    "text": 'text_data',
+                },
+            )
             await asyncio.sleep(10)
 
     async def receive(self, text_data):
@@ -146,13 +153,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
         print('riciverrrrrrrrr worksssssssssss')
         user_list = await self.get_online_users()
         await self.send_users(user_list)
-        await self.channel_layer.group_send(
-                "status",
-                {
-                    "type": "broadcast_message",
-                    "text": 'text_data',
-                },
-            )
+        
 
     @database_sync_to_async
     def get_online_users(self):
