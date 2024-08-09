@@ -185,13 +185,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
 
         
         await self.broadcast_message({user.id:'online'})
-        await self.channel_layer.group_send(
-                "status",
-                {
-                    "type": "broadcast_message",
-                    "text": user.email + ' email istifadeci qosuldu',
-                },
-            )
+        
         
     async def disconnect(self, close_code):
         user = self.scope['user']
@@ -214,7 +208,13 @@ class StatusConsumer(AsyncWebsocketConsumer):
             latitude = location.get('latitude')
             longitude = location.get('longitude')
             print(latitude,longitude)
-            
+            await self.channel_layer.group_send(
+                "status",
+                {
+                    "type": "broadcast_message",
+                    "text": user.email + ' email istifadeci qosuldu',
+                },
+            )
             await self.update_user_location(user,latitude,longitude)
         else:
             print('location yoxdur')
