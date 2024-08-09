@@ -219,7 +219,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(
                 "status",
                 {
-                    "type": "status_message",
+                    "type": "status_message2",
                     "message": {'++++++++++++++++++++++++++++++++++++++++++':'+++++++++++++++++++++++++++++++++='},
                 },
             )
@@ -232,6 +232,12 @@ class StatusConsumer(AsyncWebsocketConsumer):
      
 
     async def status_message(self, event):
+        message = event['message']
+        await self.send(text_data=json.dumps({
+            'message': message
+        }))
+
+    async def status_message2(self, event):
         message = event['message']
         await self.send(text_data=json.dumps({
             'message': message
