@@ -129,11 +129,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
         self.keep_sending = False
         print('disconnected userlist')
 
-    async def send_users(self, message):
-        print('ws222222222222222222222222222222')
-        await self.send(text_data=json.dumps({
-            'message': message
-        }))
+    
 
     async def send_online_users_periodically(self):
         while self.keep_sending:
@@ -143,12 +139,18 @@ class UserListConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(
                 "status",
                 {
-                    "type": "broadcast_message",
+                    "type": "send_users",
                     "text": 'text_data',
                 },
             )
             print('group message sent2')
             await asyncio.sleep(10)
+
+    async def send_users(self, message):
+        print('ws222222222222222222222222222222')
+        await self.send(text_data=json.dumps({
+            'message': message
+        }))
 
     async def receive(self, text_data):
         data = json.loads(text_data)
