@@ -168,7 +168,6 @@ class Item(models.Model):
                 authorized_person=authorized_person,
                 number=number,
                 texnik_user=texnik_user,
-                date=date,
                 item_created_by=user
             )
         else:
@@ -189,7 +188,6 @@ class Item(models.Model):
             item_size_length=self.size_length,
             product_provider=product_provider,
             number=number,
-            date=date,
             item_created_by=user
         )
 

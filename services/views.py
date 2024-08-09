@@ -123,11 +123,10 @@ class DecrementItemView(generics.GenericAPIView):
         authorized_person = serializer.validated_data['authorized_person']
         number = serializer.validated_data['number']
         texnik_user = serializer.validated_data['texnik_user']
-        date = serializer.validated_data['date']
         
         try:
             item = Item.objects.get(id=item_id)
-            item.decrement(number, company, authorized_person, request.user, texnik_user, date)
+            item.decrement(number, company, authorized_person, request.user, texnik_user)
 
             # latest_history = History.objects.filter(item=item).order_by('-date').first()
             # history_serializer = HistorySerializer(latest_history)
@@ -155,11 +154,11 @@ class IncrementItemView(generics.GenericAPIView):
         item_id = serializer.validated_data['item_id']
         product_provider = serializer.validated_data['product_provider']
         number = serializer.validated_data['number']
-        date = serializer.validated_data['date']
+
         
         try:
             item = Item.objects.get(id=item_id)
-            item.increment(number, product_provider, request.user, date)
+            item.increment(number, product_provider, request.user)
 
             return Response({
                 "message": "Element uğurla artırıldı."
