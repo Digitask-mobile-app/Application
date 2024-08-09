@@ -218,7 +218,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
                 "status",
                 {
                     "type": "status_message",
-                    "text": user.email + ' email istifadeci qosuldu',
+                    "message": user.email + ' email istifadeci qosuldu',
                 },
             )
             await self.update_user_location(user,latitude,longitude)
