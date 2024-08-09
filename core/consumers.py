@@ -135,12 +135,11 @@ class UserListConsumer(AsyncWebsocketConsumer):
         while self.keep_sending:
             user_list = await self.get_online_users()
             await self.send_users(user_list)
-            print('group message sent')
             await self.channel_layer.group_send(
                     "status",
                     {
                         "type": "status_message",  # Handler olarak kullanılacak tür
-                        "message": 'user_list',
+                        "message": user_list,
                     },
                 )
             await asyncio.sleep(10)
@@ -171,7 +170,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
     def get_online_users(self):
         from accounts.models import User
         print('getting online userssssssssss')
-        return list(User.objects.filter(is_online=True).values('id', 'username'))
+        return list(User.objects.filter(is_online=True).values('id', 'email'))
 
 
 
