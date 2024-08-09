@@ -140,7 +140,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
                     "status",
                     {
                         "type": "status_message",  # Handler olarak kullanılacak tür
-                        "message": {'ws------------------------------------------------': '----------------------------------------------'},
+                        "message": user_list,
                     },
                 )
             await asyncio.sleep(10)
