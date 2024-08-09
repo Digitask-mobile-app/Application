@@ -207,7 +207,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
             latitude = location.get('latitude')
             longitude = location.get('longitude')
             print(latitude,longitude)
-            if data.get('type') == 'check_ready':
+            try:
                 
                 print('---------------------------------------------------------------------------')
                 await self.channel_layer.group_send(
@@ -227,6 +227,8 @@ class StatusConsumer(AsyncWebsocketConsumer):
                     },
                 )
                 print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+            except:
+                print('xetaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
             await self.update_user_location(user,latitude,longitude)
         else:
             print('location yoxdur')
