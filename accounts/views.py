@@ -222,6 +222,6 @@ class DeleteUserView(APIView):
 
 class UserFilterListView(generics.ListAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserFilterSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = UserTypeFilter
