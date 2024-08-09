@@ -186,7 +186,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
                 "status",
                 {
                     "type": "status_message",  # Handler olarak kullanılacak tür
-                    "message": {'------------------------------------------------': 'online'},
+                    "message": {'------------------------------------------------': '++++++++++++++++++++++++++++++++++++++++++++'},
                 },
             )
         
@@ -218,7 +218,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
                 "status",
                 {
                     "type": "status_message",
-                    "message": {'++++++++++++++++++++++++++++++++++++++++++':user.email},
+                    "message": {'++++++++++++++++++++++++++++++++++++++++++':'+++++++++++++++++++++++++++++++++='},
                 },
             )
             await self.update_user_location(user,latitude,longitude)
