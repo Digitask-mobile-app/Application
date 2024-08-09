@@ -143,13 +143,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-        await self.channel_layer.group_send(
-                "status",
-                {
-                    "type": "send_users",
-                    "text": 'text_data',
-                },
-            )
+        
         print('riciverrrrrrrrr worksssssssssss')
         user_list = await self.get_online_users()
         await self.send_users(user_list)
@@ -184,9 +178,16 @@ class StatusConsumer(AsyncWebsocketConsumer):
             "status",
             self.channel_name
         )
-
+       
         if user.is_authenticated:
             await self.update_user_status(user, True)
+            await self.channel_layer.group_send(
+                "status",
+                {
+                    "type": "broadcast_message",
+                    "text": user.email + ' email istifadeci qosuldu',
+                },
+            )
             print(user.email + ' email istifadeci qosuldu')
 
         
