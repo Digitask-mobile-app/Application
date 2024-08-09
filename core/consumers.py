@@ -109,12 +109,13 @@ import asyncio
 
 class UserListConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        await self.accept()
         channel_layer = get_channel_layer()
         await channel_layer.group_add(
             "status",
             self.channel_name
         )
-        await self.accept()
+        
         self.keep_sending = True
         asyncio.create_task(self.send_online_users_periodically())
         print('connected userlist')
@@ -145,6 +146,13 @@ class UserListConsumer(AsyncWebsocketConsumer):
         print('riciverrrrrrrrr worksssssssssss')
         user_list = await self.get_online_users()
         await self.send_users(user_list)
+        await self.channel_layer.group_send(
+                "status",
+                {
+                    "type": "broadcast_message",
+                    "text": 'text_data',
+                },
+            )
 
     @database_sync_to_async
     def get_online_users(self):
@@ -196,13 +204,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
             latitude = location.get('latitude')
             longitude = location.get('longitude')
             print(latitude,longitude)
-            await self.channel_layer.group_send(
-                "status",
-                {
-                    "type": "broadcast_message",
-                    "text": 'text_data',
-                },
-            )
+            
             await self.update_user_location(user,latitude,longitude)
         else:
             print('location yoxdur')
