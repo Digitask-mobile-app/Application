@@ -105,7 +105,7 @@ import asyncio
 #             )
 
 #group_send ---------------------------------------
- 
+
 
 class UserListConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -171,7 +171,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
     def get_online_users(self):
         from accounts.models import User
         print('getting online userssssssssss-----------------------------')
-        return list(User.objects.filter(is_online=True).values('id', 'email'))
+        return [{user.id: 'online' if user.is_online else 'offline'} for user in User.objects.all()]
 
 
 
