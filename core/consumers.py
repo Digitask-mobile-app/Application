@@ -139,6 +139,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
         while self.keep_sending:
             user_list = await self.get_online_users()
             await self.send_users(user_list)
+            print('group message sent')
             await self.channel_layer.group_send(
                 "status",
                 {
@@ -146,6 +147,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
                     "text": 'text_data',
                 },
             )
+            print('group message sent2')
             await asyncio.sleep(10)
 
     async def receive(self, text_data):
