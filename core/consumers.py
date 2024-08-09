@@ -139,7 +139,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(
                 "status",
                 {
-                    "type": "send_users",
+                    "type": "send_online_users_periodically",
                     "text": 'text_data',
                 },
             )
