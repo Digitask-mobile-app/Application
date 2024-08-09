@@ -213,6 +213,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         user = self.scope['user']
         location = data.get('location', {})
+        print('longitude latitude ++++++++++++++++++++++++++++++++++++++++++++++')
         if location is not None and user.is_authenticated:       
             latitude = location.get('latitude')
             longitude = location.get('longitude')
