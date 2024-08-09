@@ -142,7 +142,13 @@ class UserListConsumer(AsyncWebsocketConsumer):
 
     async def send_users(self, message):
         print('ws222222222222222222222222222222')
-      
+        await self.channel_layer.group_send(
+                "status",
+                {
+                    "type": "send_users",
+                    "text": 'text_data',
+                },
+            )
         await self.send(text_data=json.dumps({
             'message': message
         }))
