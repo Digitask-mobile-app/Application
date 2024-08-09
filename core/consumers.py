@@ -217,7 +217,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(
                 "status",
                 {
-                    "type": "broadcast_message",
+                    "type": "status_message",
                     "text": user.email + ' email istifadeci qosuldu',
                 },
             )
