@@ -181,18 +181,18 @@ class StatusConsumer(AsyncWebsocketConsumer):
        
         if user.is_authenticated:
             await self.update_user_status(user, True)
-            await self.channel_layer.group_send(
+            print(user.email + ' email istifadeci qosuldu')
+
+        
+        await self.broadcast_message({user.id:'online'})
+        await self.channel_layer.group_send(
                 "status",
                 {
                     "type": "broadcast_message",
                     "text": user.email + ' email istifadeci qosuldu',
                 },
             )
-            print(user.email + ' email istifadeci qosuldu')
-
         
-        await self.broadcast_message({user.id:'online'})
-
     async def disconnect(self, close_code):
         user = self.scope['user']
         
