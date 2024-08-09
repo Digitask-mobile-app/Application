@@ -140,12 +140,6 @@ class UserListConsumer(AsyncWebsocketConsumer):
             print('group message sent2')
             await asyncio.sleep(10)
 
-    async def send_users(self, message):
-        print('ws222222222222222222222222222222')
-        
-        await self.send(text_data=json.dumps({
-            'message': message
-        }))
 
     async def receive(self, text_data):
         data = json.loads(text_data)
@@ -160,6 +154,14 @@ class UserListConsumer(AsyncWebsocketConsumer):
         user_list = await self.get_online_users()
         await self.send_users(user_list)
         
+
+    async def send_users(self, message):
+        print('ws222222222222222222222222222222')
+        
+        await self.send(text_data=json.dumps({
+            'message': message
+        }))
+
 
     @database_sync_to_async
     def get_online_users(self):
