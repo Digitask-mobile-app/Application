@@ -218,3 +218,10 @@ class DeleteUserView(APIView):
         user = get_object_or_404(User, id=user_id)
         user.delete()
         return Response({"mesaj": "İstifadəçi uğurla silindi."}, status=status.HTTP_204_NO_CONTENT)
+    
+
+class UserFilterListView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = UserFilter

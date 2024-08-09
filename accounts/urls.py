@@ -8,7 +8,7 @@ from .views import (
         PasswordResetConfirm, 
         PasswordResetRequestView,
         SetNewPasswordView, LogoutApiView, 
-        delete_user, ProfileView, UserListView, 
+        delete_user, ProfileView, UserListView, UserFilterListView,
         VerifyOTPView, ResendOtpView, UpdateUserView, DeleteUserView)
 
 from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
@@ -31,6 +31,7 @@ urlpatterns = [
     path('users/', UserListView.as_view(), name='user-list'),
     path('update_user/<int:pk>/', UpdateUserView.as_view(), name='user-update'),
     path('delete_user/<int:user_id>/', DeleteUserView.as_view(), name='delete_user'),
+    path('userListFilter/', UserFilterListView.as_view(), name='UserFilterListView'),
 
 ]
 
