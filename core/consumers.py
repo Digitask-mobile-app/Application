@@ -136,31 +136,41 @@ class UserListConsumer(AsyncWebsocketConsumer):
             user_list = await self.get_online_users()
             await self.send_users(user_list)
             print('group message sent')
-            
-            print('group message sent2')
+            await self.channel_layer.group_send(
+                    "status",
+                    {
+                        "type": "status_message",  # Handler olarak kullanılacak tür
+                        "message": {'------------------------------------------------': '----------------------------------------------'},
+                    },
+                )
             await asyncio.sleep(10)
 
 
     async def receive(self, text_data):
         data = json.loads(text_data)
         
-        print('riciverrrrrrrrr worksssssssssss')
+        print('receiving dataaaaaaaaaaaaaaaaaaaaaaaaa')
         user_list = await self.get_online_users()
         await self.send_users(user_list)
         
 
     async def send_users(self, message):
-        print('ws222222222222222222222222222222')
+        print('sending usersssssssssss')
         
         await self.send(text_data=json.dumps({
             'message': message
         }))
 
+    async def status_message(self, event):
+        message = event['message']
+        await self.send(text_data=json.dumps({
+            'message': message
+        }))
 
     @database_sync_to_async
     def get_online_users(self):
         from accounts.models import User
-        print('inuserssssssssssss')
+        print('getting online userssssssssss')
         return list(User.objects.filter(is_online=True).values('id', 'username'))
 
 
@@ -207,28 +217,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
             latitude = location.get('latitude')
             longitude = location.get('longitude')
             print(latitude,longitude)
-            try:
-                
-                print('---------------------------------------------------------------------------')
-                await self.channel_layer.group_send(
-                    "status",
-                    {
-                        "type": "status_message",  # Handler olarak kullanılacak tür
-                        "message": {'------------------------------------------------': '----------------------------------------------'},
-                    },
-                )
-                print('---------------------------------------------------------------------------')
-                print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-                await self.channel_layer.group_send(
-                    "status",
-                    {
-                        "type": "status_message2",
-                        "message": {'++++++++++++++++++++++++++++++++++++++++++':'+++++++++++++++++++++++++++++++++='},
-                    },
-                )
-                print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-            except:
-                print('xetaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+           
             await self.update_user_location(user,latitude,longitude)
         else:
             print('location yoxdur')
@@ -242,11 +231,6 @@ class StatusConsumer(AsyncWebsocketConsumer):
             'message': message
         }))
 
-    async def status_message2(self, event):
-        message = event['message']
-        await self.send(text_data=json.dumps({
-            'message': message
-        }))
 
     async def broadcast_message(self, message):
         await self.send(text_data=json.dumps({
@@ -264,3 +248,18 @@ class StatusConsumer(AsyncWebsocketConsumer):
         user.latitude = latitude
         user.longitude = longitude
         user.save()
+
+
+# await self.channel_layer.group_send(
+#                     "status",
+#                     {
+#                         "type": "status_message",  # Handler olarak kullanılacak tür
+#                         "message": {'------------------------------------------------': '----------------------------------------------'},
+#                     },
+#                 )
+
+    # async def status_message(self, event):
+    #     message = event['message']
+    #     await self.send(text_data=json.dumps({
+    #         'message': message
+    #     }))
