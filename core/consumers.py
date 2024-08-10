@@ -30,6 +30,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             user = self.scope['user']
             if user.is_authenticated:
                 notification_list = await self.get_notifications()
+                print('notific----------------------------------------------------------------------------')
                 await self.channel_layer.group_send(
                         "notification",
                         {
