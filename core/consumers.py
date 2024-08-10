@@ -5,107 +5,58 @@ from django.utils import timezone
 from channels.db import database_sync_to_async
 import asyncio
 
-# class StatusConsumer(AsyncWebsocketConsumer):
-#     online_users = {}
+class NotificationConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        await self.accept()
+        channel_layer = get_channel_layer()
+        await channel_layer.group_add(
+            "notification",
+            self.channel_name
+        )
+        self.keep_sending = True
+        asyncio.create_task(self.send_notification_periodically())
 
-#     async def connect(self):
-#         await self.accept()
-#         self.user_id = self.scope['user'].id if self.scope['user'].is_authenticated else None
-       
-#         if self.user_id:
-#             channel_layer = get_channel_layer()
-#             await channel_layer.group_add(
-#                 'status_updates',
-#                 self.channel_name
-#             )
-#             StatusConsumer.online_users[self.user_id] = self.channel_name
-#             await self.update_user_status(self.user_id, True)
-#             await self.broadcast_status(self.user_id, 'online')
-#             print(f"User {self.user_id} connected and status set to online.")
-#         else:
-#             print("Unauthenticated user tried to connect.")
+    async def disconnect(self, close_code):
+        channel_layer = get_channel_layer()
+        await channel_layer.group_discard(
+            "notification",
+            self.channel_name
+        )
+        self.keep_sending = False
+    
+    async def send_notification_periodically(self):
+        while self.keep_sending:
+            notification_list = await self.get_notifications()
+            await self.channel_layer.group_send(
+                    "notification",
+                    {
+                        "type": "notification_message",  
+                        "message": notification_list,
+                    },
+                )
+            await asyncio.sleep(8)
 
-#     async def disconnect(self, close_code):
-#         if self.user_id in StatusConsumer.online_users:
-#             del StatusConsumer.online_users[self.user_id]
-#             await self.update_user_status(self.user_id, False)
-#             await self.broadcast_status(self.user_id, 'offline')
-#             print(f"User {self.user_id} disconnected and status set to offline.")
+    async def notification_message(self, event):
+        message = event['message']
+        await self.send(text_data=json.dumps({
+            'message': message
+        }))
 
-#     @database_sync_to_async
-#     def update_user_status(self, user_id, online):
-#         from accounts.models import User
-#         try:
-#             user = User.objects.get(id=user_id)
-#             user.is_online = online
-#             user.save()
-#         except User.DoesNotExist:
-#             print(f"User with ID {user_id} does not exist.")
-#         except Exception as e:
-#             print(f"Error updating user status: {e}")
+    @database_sync_to_async
+    def get_notifications(self):
+        from accounts.models import Notification
+        user = self.scope['user']
+        notifications = Notification.objects.filter(users=user)
 
-
-#     async def receive(self, text_data):
-#         print(f"Received WebSocket message: {text_data}")
-#         data = json.loads(text_data)
-#         user_id = data.get('userId')
-#         status = data.get('status')
-
-#         if user_id and status:
-#             await self.broadcast_status(user_id, status)
-#         else:
-#             print(f"Invalid message received: {text_data}")
-
-#     async def broadcast_status(self, user_id, status):
-#         channel_layer = get_channel_layer()
-#         await channel_layer.group_send(
-#             'status_updates',
-#             {
-#                 'type': 'user_status',
-#                 'user_id': user_id,
-#                 'status': status
-#             }
-#         )
-#         print(f"Broadcasting status: {status} user: {user_id}")
-
-#     async def user_status(self, event):
-#         await self.send(text_data=json.dumps({
-#             'userId': event['user_id'],
-#             'status': event['status']
-#         }))
-#         print(f"Status: {event['status']} user: {event['user_id']}")
-
-# How to take arg from ws url ------------------------------------
-
-# query_string = self.scope.get("query_string", b"").decode()
-# query_params = parse_qs(query_string)
-# email = query_params.get("email", [None])[0]
-
-#------------------------------------------------------
-
-#-----------------------------------------------
-#group_senddeki typeda ise saldigimiz functionun adini yaziriq
-
-#channel_layer = get_channel_layer()
-#        await channel_layer.group_add(
-#            "status",
-#            self.channel_name
-#        )
-
-#---------------------------------
-#        user = self.scope['user'] useri goturmek ucun
-#--------------------------------------------
-
-#  await self.channel_layer.group_send(
-#                 "status",
-#                 {
-#                     "type": "broadcast_message",
-#                     "text": 'text_data',
-#                 },
-#             )
-
-#group_send ---------------------------------------
-
+        response_data = []
+        for notification in notifications:
+            response_data.append({
+                'id': notification.id,
+                'message': notification.message,
+                'created_at': notification.created_at.isoformat(),
+                'read_by': notification.is_read_by(user),
+            })
+        return response_data
 
 class UserListConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -118,7 +69,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
         
         self.keep_sending = True
         asyncio.create_task(self.send_online_users_periodically())
-        print('connected userlist')
+
 
     async def disconnect(self, close_code):
         channel_layer = get_channel_layer()
@@ -127,9 +78,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         self.keep_sending = False
-        print('disconnected userlist')
 
-    
 
     async def send_online_users_periodically(self):
         while self.keep_sending:
@@ -143,7 +92,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
                     },
                 )
             print('userlist -------------------------------------------------')
-            await asyncio.sleep(10)
+            await asyncio.sleep(8)
 
 
     async def receive(self, text_data):
@@ -154,9 +103,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
         await self.send_users(user_list)
         
 
-    async def send_users(self, message):
-        print('sending usersssssssssss-----------------------')
-        
+    async def send_users(self, message):     
         await self.send(text_data=json.dumps({
             'message': message
         }))
