@@ -38,7 +38,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                             "message": notification_list
                         },
                     )
-            await asyncio.sleep(8)
+            await asyncio.sleep(16)
 
     async def notification_message(self, event):
         message = event['message']
@@ -95,14 +95,14 @@ class UserListConsumer(AsyncWebsocketConsumer):
                         "message": user_list,
                     },
                 )
-            print('userlist -------------------------------------------------')
+ 
             await asyncio.sleep(8)
 
 
     async def receive(self, text_data):
         data = json.loads(text_data)
         
-        print('receiving dataaaaaaaaaaaaaaaaaaaaaaaaa--------------------------')
+
         user_list = await self.get_online_users()
         await self.send_users(user_list)
         
@@ -121,7 +121,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_online_users(self):
         from accounts.models import User
-        print('getting online userssssssssss-----------------------------')
+
         return {str(user.id): 'online' if user.is_online else 'offline' for user in User.objects.all()}
 
 
@@ -164,7 +164,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         user = self.scope['user']
         location = data.get('location', {})
-        print('longitude latitude ++++++++++++++++++++++++++++++++++++++++++++++')
+
         if location is not None and user.is_authenticated:       
             latitude = location.get('latitude')
             longitude = location.get('longitude')
