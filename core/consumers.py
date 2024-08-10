@@ -31,13 +31,14 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             if user.is_authenticated:
                 notification_list = await self.get_notifications()
                 print(notification_list,'notific----------------------------------------------------------------------------')
-                await self.channel_layer.group_send(
-                        "notification",
-                        {
-                            "type": "notification_message",  
-                            "message": notification_list
-                        },
-                    )
+                if len(notification_list)>0:
+                    await self.channel_layer.group_send(
+                            "notification",
+                            {
+                                "type": "notification_message",  
+                                "message": notification_list
+                            },
+                        )
             await asyncio.sleep(16)
 
     async def notification_message(self, event):
@@ -53,6 +54,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         notifications = Notification.objects.filter(users=user)
 
         response_data = []
+
         for notification in notifications:
             response_data.append({
                 'id': notification.id,
