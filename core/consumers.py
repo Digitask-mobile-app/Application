@@ -26,14 +26,16 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     
     async def send_notification_periodically(self):
         while self.keep_sending:
-            notification_list = await self.get_notifications()
-            await self.channel_layer.group_send(
-                    "notification",
-                    {
-                        "type": "notification_message",  
-                        "message": notification_list,
-                    },
-                )
+            user = self.scope['user']
+            if user.is_authenticated:
+                notification_list = await self.get_notifications()
+                await self.channel_layer.group_send(
+                        "notification",
+                        {
+                            "type": "notification_message",  
+                            "message": notification_list,
+                        },
+                    )
             await asyncio.sleep(8)
 
     async def notification_message(self, event):
