@@ -34,7 +34,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                         "notification",
                         {
                             "type": "notification_message",  
-                            "message": notification_list
+                            "message": json.dumps(notification_list, ensure_ascii=False),
                         },
                     )
             await asyncio.sleep(8)
