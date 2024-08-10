@@ -4,6 +4,7 @@ from channels.layers import get_channel_layer
 from django.utils import timezone
 from channels.db import database_sync_to_async
 import asyncio
+import json
 
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -33,7 +34,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                         "notification",
                         {
                             "type": "notification_message",  
-                            "message": notification_list,
+                            "message": json.dumps(notification_list, ensure_ascii=False)
                         },
                     )
             await asyncio.sleep(8)
