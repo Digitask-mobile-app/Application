@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
 from accounts.serializers import UserSerializer
+from accounts.models import Notification
 
 class CreateTaskView(generics.CreateAPIView):
     serializer_class = TaskDetailSerializer
@@ -268,6 +269,23 @@ class UpdateTaskView(generics.UpdateAPIView):
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        instance = self.get_object()
+        
+        if instance.status == 'inprogress':
+            message = f'{self.request.user.email} istifadəçi {instance.full_name} adlı müştərinin tapşırığını qəbul etdi.'
+        elif instance.status == 'started':
+             message = f'{self.request.user.email} istifadəçi {instance.full_name} adlı müştərinin tapşırığının icrasına başladı.'
+        elif instance.status == 'completed':
+            message = f'{self.request.user.email} istifadəçi {instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
+        else:
+            message = f'{self.request.user.email} istifadəçi {instance.full_name} adlı müştərinin tapşırığında {instance.status} statusuna keçid etdi.'
+
+        notification = Notification.objects.create(message=message)
+        texnik_users = User.objects.filter(user_type='Ofis menecer')
+        plumber_users = User.objects.filter(user_type='Texnik menecer')
+        notification.users.set(texnik_users | plumber_users)
 
 class MeetingsApiView(generics.ListAPIView):
     queryset = Meeting.objects.all()

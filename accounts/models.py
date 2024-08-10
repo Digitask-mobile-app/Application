@@ -116,3 +116,17 @@ class Meeting(models.Model):
     def __str__(self):
         return f"{self.title}-{self.meeting_type}"
     
+
+class Notification(models.Model):
+    message = models.TextField()
+    users = models.ManyToManyField(User, related_name='notifications')
+    read = models.ManyToManyField(User,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Notification - {self.message[:20]}"
+
+    def is_read_by(self, user):
+        return self.read.filter(id=user.id).exists()
+
+ 
