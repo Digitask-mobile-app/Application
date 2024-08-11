@@ -1,12 +1,12 @@
 from django.dispatch import receiver
 from asgiref.sync import async_to_sync
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save,pre_save
 from accounts.models import Notification
 from channels.layers import get_channel_layer
 import json
 
 
-@receiver(post_save, sender=Notification)
+@receiver(pre_save, sender=Notification)
 def user_status_update(sender, instance,created, **kwargs):
     print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
     if created:
