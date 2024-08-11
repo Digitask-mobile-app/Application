@@ -32,7 +32,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         message = event['message']
         if user.is_authenticated:
             message = await self.get_notifications(user)
-            print(message)
+            print(message,'-----------------------------------------------------------------------------')
+            print(message,'-----------------------------------------------------------------------------')
             await self.send(text_data=json.dumps({
                 'message': message
             }))
@@ -41,10 +42,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     def get_notifications(self,user):
         from accounts.models import Notification
                 
-   
-        print(user,'9999999999999999999999999999999999999999999999999999999999')
         notifications = Notification.objects.filter(users=user)
-        print(notifications,'9999999999999999999999999999999999999999999999999999999999')
+   
         response_data = []
 
         for notification in notifications:
