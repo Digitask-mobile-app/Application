@@ -10,17 +10,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
         channel_layer = get_channel_layer()
-        print('--------------------------------------------------------')
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print('--------------------------------------------------------')
+
         await channel_layer.group_add(
             "notification",
             self.channel_name
@@ -38,6 +28,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     
 
     async def notification_message(self, event):
+
         message = event['message']
         message = await self.get_notifications()
         print(message)
@@ -48,7 +39,18 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_notifications(self):
         from accounts.models import Notification
-        
+                
+        print('--------------------------------------------------------')
+        print(self.scope['user'])
+        print(self.scope['user'])
+        print(self.scope['user'])
+        print(self.scope['user'])
+        print(self.scope['user'])
+        print(self.scope['user'])
+        print(self.scope['user'])
+        print(self.scope['user'])
+        print(self.scope['user'])
+        print('--------------------------------------------------------')
         user = self.scope['user']
         print(user,'9999999999999999999999999999999999999999999999999999999999')
         notifications = Notification.objects.filter(users=user)
