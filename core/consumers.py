@@ -38,9 +38,11 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_notifications(self):
         from accounts.models import Notification
+        
         user = self.scope['user']
+        print(user,'9999999999999999999999999999999999999999999999999999999999')
         notifications = Notification.objects.filter(users=user)
-
+        print(notifications,'9999999999999999999999999999999999999999999999999999999999')
         response_data = []
 
         for notification in notifications:
