@@ -15,7 +15,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             "notification",
             self.channel_name
         )
-        print('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
+
         self.keep_sending = True
         asyncio.create_task(self.send_notification_periodically())
 
@@ -27,27 +27,12 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         )
         self.keep_sending = False
     
-    async def send_notification_periodically(self):
-        while self.keep_sending:
-            user = self.scope['user']
-            if user.is_authenticated:
-                # notification_list = await self.get_notifications()
-                # print(notification_list,'notific----------------------------------------------------------------------------')
-                # if len(notification_list)>0:
-                    # await self.channel_layer.group_send(
-                    #         "notification",
-                    #         {
-                    #             "type": "notification_message",  
-                    #             "message": notification_list
-                    #         },
-                    #     )
-                    pass
-            await asyncio.sleep(16)
 
     async def notification_message(self, event):
         message = event['message']
+        notification_list = await self.get_notifications()
         await self.send(text_data=json.dumps({
-            'message': message
+            'message': notification_list
         }))
 
     @database_sync_to_async
@@ -67,7 +52,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             })
         return response_data
 
-#########################################################################################################
+
 
 class UserListConsumer(AsyncWebsocketConsumer):
     async def connect(self):
