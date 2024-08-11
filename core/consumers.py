@@ -16,8 +16,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
-        self.keep_sending = True
-        asyncio.create_task(self.send_notification_periodically())
+
 
     async def disconnect(self, close_code):
         channel_layer = get_channel_layer()
@@ -25,12 +24,13 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             "notification",
             self.channel_name
         )
-        self.keep_sending = False
+   
     
 
     async def notification_message(self, event):
         message = event['message']
         notification_list = await self.get_notifications()
+        print(notification_list)
         await self.send(text_data=json.dumps({
             'message': notification_list
         }))
