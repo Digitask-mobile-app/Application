@@ -10,10 +10,12 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
         channel_layer = get_channel_layer()
+
         await channel_layer.group_add(
             "notification",
             self.channel_name
         )
+        print('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
         self.keep_sending = True
         asyncio.create_task(self.send_notification_periodically())
 
