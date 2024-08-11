@@ -75,7 +75,7 @@ INSTALLED_APPS = [
     #myapps
     'accounts',
     "services",
-    # 'core.apps.CoreConfig'
+    'core.apps.CoreConfig'
 ]
 
 
