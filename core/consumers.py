@@ -15,7 +15,13 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             "notification",
             self.channel_name
         )
-
+        await self.channel_layer.group_send(
+            'notification',
+            {
+                'type': 'notification_message', 
+                'message': {'data': 'group send workinggggggggggggggggggggggggggggggg'}
+            }
+        )
 
 
     async def disconnect(self, close_code):
@@ -55,7 +61,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             })
         return response_data
 
-
+###########################################################################
 
 class UserListConsumer(AsyncWebsocketConsumer):
     async def connect(self):
