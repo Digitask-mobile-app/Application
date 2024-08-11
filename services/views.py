@@ -281,7 +281,7 @@ class UpdateTaskView(generics.UpdateAPIView):
             message = f'{self.request.user.email} istifadəçi {instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
         else:
             message = f'{self.request.user.email} istifadəçi {instance.full_name} adlı müştərinin tapşırığında {instance.status} statusuna keçid etdi.'
-
+        print('ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc')
         notification = Notification.objects.create(message=message)
         texnik_users = User.objects.filter(user_type='Ofis menecer')
         plumber_users = User.objects.filter(user_type='Texnik menecer')
