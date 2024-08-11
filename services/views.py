@@ -286,6 +286,7 @@ class UpdateTaskView(generics.UpdateAPIView):
         texnik_users = User.objects.filter(user_type='Ofis menecer')
         plumber_users = User.objects.filter(user_type='Texnik menecer')
         notification.users.set(texnik_users | plumber_users)
+        notification.save()
 
 class MeetingsApiView(generics.ListAPIView):
     queryset = Meeting.objects.all()
