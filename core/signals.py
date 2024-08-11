@@ -8,9 +8,11 @@ import json
 
 @receiver(post_save, sender=Notification)
 def user_status_update(sender, instance,created, **kwargs):
+    print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
     if created:
         channel_layer = get_channel_layer()
-        
+        print(created)
+        print('yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy') 
         async_to_sync(channel_layer.group_send)(
             'notification',
             {
