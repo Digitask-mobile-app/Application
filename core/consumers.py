@@ -10,6 +10,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
         channel_layer = get_channel_layer()
+        print('--------------------------------------------------------')
         print(self.scope['user'])
         print(self.scope['user'])
         print(self.scope['user'])
@@ -19,6 +20,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         print(self.scope['user'])
         print(self.scope['user'])
         print(self.scope['user'])
+        print('--------------------------------------------------------')
         await channel_layer.group_add(
             "notification",
             self.channel_name
