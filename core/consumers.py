@@ -28,30 +28,20 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     
 
     async def notification_message(self, event):
-        print('--------------------------------------------------------')
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print('--------------------------------------------------------')
+        user = self.scope['user']
         message = event['message']
-        message = await self.get_notifications()
-        print(message)
-        await self.send(text_data=json.dumps({
-            'message': message
-        }))
+        if user.is_authenticated:
+            message = await self.get_notifications(user)
+            print(message)
+            await self.send(text_data=json.dumps({
+                'message': message
+            }))
 
     @database_sync_to_async
-    def get_notifications(self):
+    def get_notifications(self,user):
         from accounts.models import Notification
                 
    
-        user = self.scope['user']
         print(user,'9999999999999999999999999999999999999999999999999999999999')
         notifications = Notification.objects.filter(users=user)
         print(notifications,'9999999999999999999999999999999999999999999999999999999999')
