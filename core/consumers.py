@@ -28,7 +28,17 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     
 
     async def notification_message(self, event):
-
+        print('--------------------------------------------------------')
+        print(self.scope['user'])
+        print(self.scope['user'])
+        print(self.scope['user'])
+        print(self.scope['user'])
+        print(self.scope['user'])
+        print(self.scope['user'])
+        print(self.scope['user'])
+        print(self.scope['user'])
+        print(self.scope['user'])
+        print('--------------------------------------------------------')
         message = event['message']
         message = await self.get_notifications()
         print(message)
@@ -40,17 +50,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     def get_notifications(self):
         from accounts.models import Notification
                 
-        print('--------------------------------------------------------')
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print(self.scope['user'])
-        print('--------------------------------------------------------')
+   
         user = self.scope['user']
         print(user,'9999999999999999999999999999999999999999999999999999999999')
         notifications = Notification.objects.filter(users=user)
