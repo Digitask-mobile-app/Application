@@ -29,10 +29,10 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 
     async def notification_message(self, event):
         message = event['message']
-        notification_list = await self.get_notifications()
-        print(notification_list)
+        message = await self.get_notifications()
+        print(message)
         await self.send(text_data=json.dumps({
-            'message': notification_list
+            'message': message
         }))
 
     @database_sync_to_async
