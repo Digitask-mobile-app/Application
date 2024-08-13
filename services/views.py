@@ -273,7 +273,7 @@ class UpdateTaskView(generics.UpdateAPIView):
         instance = serializer.save()
         instance = self.get_object()
         user_email = self.request.user.email
-
+        
         if instance.status == 'inprogress':
             message = f' istifadəçi {instance.full_name} adlı müştərinin tapşırığını qəbul etdi.'
         elif instance.status == 'started':
@@ -282,11 +282,8 @@ class UpdateTaskView(generics.UpdateAPIView):
             message = f' istifadəçi {instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
         else:
             message = f' istifadəçi {instance.full_name} adlı müştərinin tapşırığında {instance.status} statusuna keçid etdi.'
-
-        notification = Notification.objects.create(
-            user_email=user_email,
-            message=message
-        )
+        print('ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc')
+        notification = Notification.objects.create(message=message, user_email=user_email)
         texnik_users = User.objects.filter(user_type='Ofis menecer')
         plumber_users = User.objects.filter(user_type='Texnik menecer')
         notification.users.set(texnik_users | plumber_users)
