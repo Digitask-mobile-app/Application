@@ -5,9 +5,8 @@ from accounts.models import Notification
 from channels.layers import get_channel_layer
 
 
-
 @receiver(post_save, sender=Notification)
-def user_status_update(sender, instance,created, **kwargs):
+def user_status_update(sender, instance, created, **kwargs):
 
     if created:
         channel_layer = get_channel_layer()
@@ -15,8 +14,7 @@ def user_status_update(sender, instance,created, **kwargs):
         async_to_sync(channel_layer.group_send)(
             'notification',
             {
-                'type': 'notification_message', 
-                'message': {'data': 'group send workinggggggggggggggggggggggggggggggg'},
-                'email':{'email': 'group send workinggggggggggggggggggg'}
+                'type': 'notification_message',
+                'message': {'data': 'group send workinggggggggggggggggggggggggggggggg'}
             }
         )
