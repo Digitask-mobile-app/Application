@@ -36,7 +36,6 @@ class Task(Status):
     location = models.CharField(max_length=100)
     note = models.TextField(null=True, blank=True)
     date = models.DateField()
-    # map = models.
     start_time = models.TimeField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True)
     group = models.ManyToManyField(
