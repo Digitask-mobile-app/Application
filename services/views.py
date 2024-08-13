@@ -13,6 +13,7 @@ from rest_framework.views import APIView
 from accounts.serializers import UserSerializer
 from accounts.models import Notification
 
+
 class CreateTaskView(generics.CreateAPIView):
     serializer_class = TaskDetailSerializer
 
@@ -21,15 +22,16 @@ class TaskListView(ListAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskDetailSerializer
 
+
 class GroupListView(ListAPIView):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+
 
 class TaskDetailView(RetrieveAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskDetailSerializer
     lookup_field = 'id'
-
 
 
 class TaskListAPIView(generics.ListAPIView):
@@ -38,12 +40,11 @@ class TaskListAPIView(generics.ListAPIView):
     filterset_class = StatusAndTaskFilter
     filter_backends = (DjangoFilterBackend,)
 
-    
+
 class UserTaskListView(APIView):
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
-    
 
     def get_queryset(self):
         user = self.request.user
@@ -56,7 +57,7 @@ class UserTaskListView(APIView):
             'tasks': serializer.data,
         }
         return Response(response_data, status=status.HTTP_200_OK)
-    
+
 
 class PerformanceListView(generics.ListAPIView):
     serializer_class = PerformanceSerializer
@@ -69,17 +70,18 @@ class PerformanceListView(generics.ListAPIView):
 
         for user in queryset:
             context = {'request': self.request}
-            
+
             serializer = PerformanceSerializer(user, context=context)
             task_count = serializer.data['task_count']
-            
+
             total = task_count['total']
             users_with_totals.append((user, total))
-        
-        sorted_users = sorted(users_with_totals, key=lambda x: x[1], reverse=True)
-        
+
+        sorted_users = sorted(
+            users_with_totals, key=lambda x: x[1], reverse=True)
+
         sorted_queryset = [user for user, _ in sorted_users]
-        
+
         return sorted_queryset
 
 
@@ -89,7 +91,7 @@ class PerformanceListView(generics.ListAPIView):
 #         item=instance,
 #         action='export'
 #     )
-    
+
 class ItemImportView(generics.CreateAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
@@ -100,16 +102,18 @@ class ItemImportView(generics.CreateAPIView):
             raise ValueError("İstifadəçinin autentifikasiyası yoxdur.")
         serializer.save(created_by=self.request.user)
 
+
 class ItemListView(ListAPIView):
     queryset = Item.objects.all()
     serializer_class = WarehouseItemSerializer
     filterset_class = WarehouseItemFilter
     filter_backends = (DjangoFilterBackend,)
 
+
 class WarehouseListView(ListAPIView):
     queryset = Warehouse.objects.all()
     serializer_class = WarehouseSerializer
-    
+
 
 class DecrementItemView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
@@ -118,24 +122,25 @@ class DecrementItemView(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
+
         item_id = serializer.validated_data['item_id']
         company = serializer.validated_data['company']
         authorized_person = serializer.validated_data['authorized_person']
         number = serializer.validated_data['number']
         texnik_user = serializer.validated_data['texnik_user']
-        
+
         try:
             item = Item.objects.get(id=item_id)
-            item.decrement(number, company, authorized_person, request.user, texnik_user)
+            item.decrement(number, company, authorized_person,
+                           request.user, texnik_user)
 
             # latest_history = History.objects.filter(item=item).order_by('-date').first()
             # history_serializer = HistorySerializer(latest_history)
-            user_serializer = UserSerializer(request.user) 
+            user_serializer = UserSerializer(request.user)
 
             return Response({
                 "message": "Element uğurla azaldıldı.",
-                "request_user": user_serializer.data, 
+                "request_user": user_serializer.data,
                 # "history": history_serializer.data
             }, status=status.HTTP_200_OK)
 
@@ -144,6 +149,7 @@ class DecrementItemView(generics.GenericAPIView):
         except ValueError as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+
 class IncrementItemView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = IncrementItemSerializer
@@ -151,12 +157,11 @@ class IncrementItemView(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
+
         item_id = serializer.validated_data['item_id']
         product_provider = serializer.validated_data['product_provider']
         number = serializer.validated_data['number']
 
-        
         try:
             item = Item.objects.get(id=item_id)
             item.increment(number, product_provider, request.user)
@@ -176,31 +181,37 @@ class TexnikUserListView(generics.ListAPIView):
     serializer_class = ItemUserSerializer
     permission_classes = [IsAuthenticated]
 
+
 class HistoryListView(generics.ListAPIView):
     queryset = History.objects.all().order_by('-date')
     serializer_class = HistorySerializer
     filterset_class = HistoryFilter
     filter_backends = [DjangoFilterBackend]
 
+
 class HistoryIncrementListView(generics.ListAPIView):
     queryset = HistoryIncrement.objects.all().order_by('-date')
     serializer_class = HistoryIncrementSerializer
     filterset_class = IncrementHistoryFilter
     filter_backends = [DjangoFilterBackend]
-    
+
+
 class TaskUpdateAPIView(generics.UpdateAPIView):
     queryset = Task.objects.all()
     serializer_class = UpdateTaskSerializer
     http_method_names = ['patch']
 
+
 class CreateMeetingView(generics.CreateAPIView):
     serializer_class = CreatingMeetingSerializer
-    queryset = Meeting.objects.all()  
+    queryset = Meeting.objects.all()
+
 
 class MeetingDetailView(generics.RetrieveAPIView):
     queryset = Meeting.objects.all()
     serializer_class = MeetingDetailSerializer
     lookup_field = 'id'
+
 
 class TaskDeleteAPIView(APIView):
     def delete(self, request, id):
@@ -220,6 +231,7 @@ class MainPageView(generics.RetrieveAPIView):
     def get_object(self):
         return self.request.user
 
+
 class CreateTaskView(generics.CreateAPIView):
     serializer_class = CreateTaskSerializer
     queryset = Task.objects.all()
@@ -229,33 +241,39 @@ class CreateTvView(generics.CreateAPIView):
     queryset = TV.objects.all()
     serializer_class = TVSerializer
 
+
 class UpdateTvView(generics.UpdateAPIView):
     queryset = TV.objects.all()
     serializer_class = TVUpdateSerializer
     http_method_names = ['patch']
 
+
 class CreateInternetView(generics.CreateAPIView):
     queryset = Internet.objects.all()
     serializer_class = InternetSerializer
+
 
 class UpdateInternetView(generics.UpdateAPIView):
     queryset = Internet.objects.all()
     serializer_class = InternetUpdateSerializer
     http_method_names = ['patch']
 
+
 class CreateVoiceView(generics.CreateAPIView):
     queryset = Voice.objects.all()
     serializer_class = VoiceSerializer
+
 
 class UpdateVoiceView(generics.UpdateAPIView):
     queryset = Voice.objects.all()
     serializer_class = VoiceUpdateSerializer
     http_method_names = ['patch']
 
-   
+
 class UpdateTaskView(generics.UpdateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskUpdateSerializer
+    http_method_names = ['patch']
     permission_classes = [IsAuthenticated]
 
     def get_serializer_context(self):
@@ -273,7 +291,7 @@ class UpdateTaskView(generics.UpdateAPIView):
         instance = serializer.save()
         instance = self.get_object()
         user_email = self.request.user.email
-        
+
         if instance.status == 'inprogress':
             message = f' istifadəçi {instance.full_name} adlı müştərinin tapşırığını qəbul etdi.'
         elif instance.status == 'started':
@@ -283,11 +301,13 @@ class UpdateTaskView(generics.UpdateAPIView):
         else:
             message = f' istifadəçi {instance.full_name} adlı müştərinin tapşırığında {instance.status} statusuna keçid etdi.'
         print('ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc')
-        notification = Notification.objects.create(message=message, user_email=user_email)
+        notification = Notification.objects.create(
+            message=message, user_email=user_email)
         texnik_users = User.objects.filter(user_type='Ofis menecer')
         plumber_users = User.objects.filter(user_type='Texnik menecer')
         notification.users.set(texnik_users | plumber_users)
         notification.save()
+
 
 class MeetingsApiView(generics.ListAPIView):
     queryset = Meeting.objects.all()
