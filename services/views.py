@@ -272,17 +272,21 @@ class UpdateTaskView(generics.UpdateAPIView):
     def perform_update(self, serializer):
         instance = serializer.save()
         instance = self.get_object()
+        user_email = self.request.user.email
         
         if instance.status == 'inprogress':
-            message = f'{self.request.user.email} istifadəçi {instance.full_name} adlı müştərinin tapşırığını qəbul etdi.'
+            message = f'{instance.full_name} adlı müştərinin tapşırığını qəbul etdi.'
         elif instance.status == 'started':
-             message = f'{self.request.user.email} istifadəçi {instance.full_name} adlı müştərinin tapşırığının icrasına başladı.'
+            message = f'{instance.full_name} adlı müştərinin tapşırığının icrasına başladı.'
         elif instance.status == 'completed':
-            message = f'{self.request.user.email} istifadəçi {instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
+            message = f'{instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
         else:
-            message = f'{self.request.user.email} istifadəçi {instance.full_name} adlı müştərinin tapşırığında {instance.status} statusuna keçid etdi.'
-        print('ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc')
-        notification = Notification.objects.create(message=message)
+            message = f'{instance.full_name} adlı müştərinin tapşırığında {instance.status} statusuna keçid etdi.'
+
+        notification = Notification.objects.create(
+            user_email=user_email,
+            message=message
+        )
         texnik_users = User.objects.filter(user_type='Ofis menecer')
         plumber_users = User.objects.filter(user_type='Texnik menecer')
         notification.users.set(texnik_users | plumber_users)
