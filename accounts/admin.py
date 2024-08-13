@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext, gettext_lazy as _
-from .models import User, OneTimePassword, Group, Meeting
+from .models import User, OneTimePassword, Group, Meeting,Notification
 from django.urls import reverse
 from django.utils.html import format_html
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
@@ -10,8 +10,8 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name', 'phone', 'user_type', 'group')}),
-        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'group', 'user_permissions')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'phone', 'user_type', 'group','timestamp','is_online','latitude','longitude',)}),
+        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login',)}),
     )
     add_fieldsets = (
@@ -20,7 +20,7 @@ class UserAdmin(BaseUserAdmin):
             'fields': ('email', 'password1', 'password2'),
         }),
     )
-    list_display = ('email', 'first_name', 'last_name', 'phone', 'user_type', 'group', 'is_active', 'is_staff', 'is_superuser', 'is_online')
+    list_display = ('email', 'first_name', 'last_name', 'phone','latitude','longitude', 'user_type','timestamp','is_online', 'group', 'is_active', 'is_staff', 'is_superuser')
     search_fields = ('email', 'first_name', 'last_name', 'phone')
     ordering = ('email',)
 
@@ -44,3 +44,4 @@ admin.site.register(User, UserAdmin)
 admin.site.register(OneTimePassword)
 admin.site.register(Group)
 admin.site.register(Meeting)
+admin.site.register(Notification)

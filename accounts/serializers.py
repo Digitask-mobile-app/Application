@@ -225,6 +225,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'email', 'first_name', 'last_name', 'phone', 'user_type', 'group', 'username']
 
+class UserFilterSerializer(serializers.ModelSerializer):
+    group = GroupSerializer()
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'first_name', 'last_name',  'user_type', 'group']
 
 class UpdateUserSerializer(serializers.ModelSerializer):
     group_id = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all(), write_only=True, required=False, allow_null=True)

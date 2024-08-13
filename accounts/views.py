@@ -15,7 +15,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from .serializers import UserSerializer
-from .filters import UserFilter
+from .filters import UserFilter,UserTypeFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from django.db.models import Q 
@@ -218,3 +218,10 @@ class DeleteUserView(APIView):
         user = get_object_or_404(User, id=user_id)
         user.delete()
         return Response({"mesaj": "İstifadəçi uğurla silindi."}, status=status.HTTP_204_NO_CONTENT)
+    
+
+class UserFilterListView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserFilterSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = UserTypeFilter

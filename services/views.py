@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
 from accounts.serializers import UserSerializer
+from accounts.models import Notification
 
 class CreateTaskView(generics.CreateAPIView):
     serializer_class = TaskDetailSerializer
@@ -123,11 +124,10 @@ class DecrementItemView(generics.GenericAPIView):
         authorized_person = serializer.validated_data['authorized_person']
         number = serializer.validated_data['number']
         texnik_user = serializer.validated_data['texnik_user']
-        date = serializer.validated_data['date']
         
         try:
             item = Item.objects.get(id=item_id)
-            item.decrement(number, company, authorized_person, request.user, texnik_user, date)
+            item.decrement(number, company, authorized_person, request.user, texnik_user)
 
             # latest_history = History.objects.filter(item=item).order_by('-date').first()
             # history_serializer = HistorySerializer(latest_history)
@@ -155,11 +155,11 @@ class IncrementItemView(generics.GenericAPIView):
         item_id = serializer.validated_data['item_id']
         product_provider = serializer.validated_data['product_provider']
         number = serializer.validated_data['number']
-        date = serializer.validated_data['date']
+
         
         try:
             item = Item.objects.get(id=item_id)
-            item.increment(number, product_provider, request.user, date)
+            item.increment(number, product_provider, request.user)
 
             return Response({
                 "message": "Element uğurla artırıldı."
@@ -269,6 +269,24 @@ class UpdateTaskView(generics.UpdateAPIView):
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        instance = self.get_object()
+        
+        if instance.status == 'inprogress':
+            message = f'{self.request.user.email} istifadəçi {instance.full_name} adlı müştərinin tapşırığını qəbul etdi.'
+        elif instance.status == 'started':
+             message = f'{self.request.user.email} istifadəçi {instance.full_name} adlı müştərinin tapşırığının icrasına başladı.'
+        elif instance.status == 'completed':
+            message = f'{self.request.user.email} istifadəçi {instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
+        else:
+            message = f'{self.request.user.email} istifadəçi {instance.full_name} adlı müştərinin tapşırığında {instance.status} statusuna keçid etdi.'
+        print('ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc')
+        notification = Notification.objects.create(message=message)
+        texnik_users = User.objects.filter(user_type='Ofis menecer')
+        plumber_users = User.objects.filter(user_type='Texnik menecer')
+        notification.users.set(texnik_users | plumber_users)
+        notification.save()
 
 class MeetingsApiView(generics.ListAPIView):
     queryset = Meeting.objects.all()

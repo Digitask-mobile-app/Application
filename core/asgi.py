@@ -6,6 +6,10 @@ from channels.security.websocket import AllowedHostsOriginValidator
 from channels.sessions import SessionMiddlewareStack
 from .routing import websocket_urlpatterns
 
+from urllib.parse import parse_qs
+from channels.db import database_sync_to_async
+
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 
 django_asgi_app = get_asgi_application()
@@ -19,7 +23,7 @@ def get_user_from_token(token):
         token = AccessToken(token)
         user_id = token['user_id']
         return User.objects.get(id=user_id)
-    except (AccessToken.Error, User.DoesNotExist):
+    except:
         return AnonymousUser()
 
 class TokenAuthMiddleware:
@@ -30,13 +34,14 @@ class TokenAuthMiddleware:
         query_string = scope.get("query_string", b"").decode()
         query_params = parse_qs(query_string)
         token = query_params.get("token", [None])[0]
+        print(token,'token------------------')
         scope["user"] = await get_user_from_token(token)
         return await self.inner(scope, receive, send)
 
 application = ProtocolTypeRouter({
     "http": django_asgi_app,
     "websocket": AllowedHostsOriginValidator(
-        SessionMiddlewareStack(
+        TokenAuthMiddleware(
             AuthMiddlewareStack(
                 URLRouter(
                     websocket_urlpatterns

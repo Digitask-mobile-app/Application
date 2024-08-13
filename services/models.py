@@ -147,14 +147,14 @@ class Item(models.Model):
                 item_created_by=self.created_by
             )
 
-    def decrement(self, number, company, authorized_person, user, texnik_user, date):
+    def decrement(self, number, company, authorized_person, user, texnik_user):
         if self.number >= number:
             self.number -= number
             if self.number == 0:
                 self.delete()
             else:
                 self.save()
-
+                
             History.objects.create(
                 item_warehouse=self.warehouse,
                 item_equipment_name=self.equipment_name,
@@ -168,13 +168,12 @@ class Item(models.Model):
                 authorized_person=authorized_person,
                 number=number,
                 texnik_user=texnik_user,
-                date=date,
                 item_created_by=user
             )
         else:
             raise ValueError("Azaltmaq üçün kifayət qədər element yoxdur")
 
-    def increment(self, number, product_provider, user, date):
+    def increment(self, number, product_provider, user):
         self.number += number
         self.save()
 
@@ -189,7 +188,6 @@ class Item(models.Model):
             item_size_length=self.size_length,
             product_provider=product_provider,
             number=number,
-            date=date,
             item_created_by=user
         )
 
@@ -229,3 +227,5 @@ class HistoryIncrement(models.Model):
 
     def __str__(self):
         return f"{self.item_equipment_name} - {self.item_serial_number} - artırıldı"
+    
+    

@@ -38,12 +38,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=15, validators=[validate_phone_number])
     user_type = models.CharField(max_length=20, choices=USER_TYPE)
     group = models.ForeignKey(Group, on_delete = models.CASCADE, blank=True, null=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(null=True,blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
     is_online = models.BooleanField(default=False)
+    latitude = models.FloatField(null=True,blank=True)
+    longitude = models.FloatField(null=True,blank=True)
+
     group = models.ForeignKey(
         Group,
         verbose_name=('groups'),
@@ -112,3 +115,18 @@ class Meeting(models.Model):
 
     def __str__(self):
         return f"{self.title}-{self.meeting_type}"
+    
+
+class Notification(models.Model):
+    message = models.TextField()
+    users = models.ManyToManyField(User, related_name='notifications')
+    read = models.ManyToManyField(User,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Notification - {self.message[:20]}"
+
+    def is_read_by(self, user):
+        return self.read.filter(id=user.id).exists()
+
+ 

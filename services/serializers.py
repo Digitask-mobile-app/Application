@@ -187,7 +187,6 @@ class DecrementItemSerializer(serializers.Serializer):
     authorized_person = serializers.CharField(max_length=255, required=False, allow_blank=True)
     number = serializers.IntegerField()
     texnik_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(user_type='Texnik'), required=False, allow_null=True)
-    date = serializers.DateTimeField(default=date.today)
 
     def validate(self, data):
         company = data.get('company')
@@ -232,7 +231,7 @@ class IncrementItemSerializer(serializers.Serializer):
     item_id = serializers.IntegerField()
     product_provider = serializers.CharField(max_length=255, required=True)
     number = serializers.IntegerField()
-    date = serializers.DateTimeField(default=datetime.now)
+
 
     def validate(self, data):
         if data['number'] <= 0:

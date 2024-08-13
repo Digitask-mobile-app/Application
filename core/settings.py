@@ -73,8 +73,9 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     #myapps
-    'accounts',
+
     "services",
+    'accounts.apps.AccountsConfig'
 ]
 
 
@@ -106,6 +107,7 @@ CHANNEL_LAYERS = {
         "CONFIG": {
             "hosts": [('127.0.0.1', 6379)],
         },
+        
     },
 }
 
