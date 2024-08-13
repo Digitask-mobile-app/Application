@@ -16,6 +16,7 @@ def user_status_update(sender, instance,created, **kwargs):
             'notification',
             {
                 'type': 'notification_message', 
-                'message': {'data': 'group send workinggggggggggggggggggggggggggggggg'}
+                'message': {'data': 'group send workinggggggggggggggggggggggggggggggg'},
+                'email':{'email': 'group send workinggggggggggggggggggg'}
             }
         )
