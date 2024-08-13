@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import User,Group
+from accounts.models import User, Group
 # from django.contrib.gis.db import models
 from django.utils import timezone
 from django.conf import settings
@@ -17,26 +17,32 @@ status_task = (
     ("completed", "completed"),
 )
 
+
 class Status(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True,null=True,blank=True)
-    updated_at = models.DateTimeField(auto_now=True,null=True,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     class Meta:
         abstract = True
 
 
 class Task(Status):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    user = models.ForeignKey(
+        User, on_delete=models.SET_NULL, blank=True, null=True)
     full_name = models.CharField(max_length=100)
     task_type = models.CharField(max_length=100, choices=TASK_TYPES)
     registration_number = models.CharField(max_length=100)
-    contact_number = models.CharField(max_length=100,null=True,blank=True)
-    location = models.CharField(max_length=100)  
-    note = models.TextField(null=True,blank=True)
+    contact_number = models.CharField(max_length=100, null=True, blank=True)
+    location = models.CharField(max_length=100)
+    note = models.TextField(null=True, blank=True)
     date = models.DateField()
-    time = models.CharField(max_length=200,null=True,blank=True)
-    group = models.ManyToManyField(Group, related_name='group_tasks',blank=True)
-    status = models.CharField(max_length=100, choices=status_task, default='waiting')
+    # map = models.
+    start_time = models.TimeField(null=True, blank=True)
+    end_time = models.TimeField(null=True, blank=True)
+    group = models.ManyToManyField(
+        Group, related_name='group_tasks', blank=True)
+    status = models.CharField(
+        max_length=100, choices=status_task, default='waiting')
 
     is_voice = models.BooleanField(default=False)
     is_internet = models.BooleanField(default=False)
@@ -45,7 +51,6 @@ class Task(Status):
 
     def __str__(self):
         return self.task_type
- 
 
     def is_service(self):
         return hasattr(self, 'internet') or hasattr(self, 'tv') or hasattr(self, 'voice')
@@ -58,44 +63,49 @@ class Task(Status):
         if hasattr(self, 'voice') and self.voice:
             return 'Voice'
         return None
-    
+
 
 class Internet(models.Model):
-    task = models.OneToOneField(Task, on_delete=models.CASCADE, related_name='internet')
-    photo_modem = models.ImageField(upload_to='internet/',null=True,blank=True)
-    modem_SN = models.CharField(max_length=100,null=True,blank=True)
-    optical_cable = models.CharField(max_length=100,null=True,blank=True)
-    fastconnector = models.CharField(max_length=100,null=True,blank=True)
-    siqnal = models.CharField(max_length=100,null=True,blank=True)
+    task = models.OneToOneField(
+        Task, on_delete=models.CASCADE, related_name='internet')
+    photo_modem = models.ImageField(
+        upload_to='internet/', null=True, blank=True)
+    modem_SN = models.CharField(max_length=100, null=True, blank=True)
+    optical_cable = models.CharField(max_length=100, null=True, blank=True)
+    fastconnector = models.CharField(max_length=100, null=True, blank=True)
+    siqnal = models.CharField(max_length=100, null=True, blank=True)
 
 
 class TV(models.Model):
-    task = models.OneToOneField(Task, on_delete=models.CASCADE, related_name='tv')
-    photo_modem = models.ImageField(upload_to='tv/',null=True,blank=True)
-    modem_SN = models.CharField(max_length=100,null=True,blank=True)
-    rg6_cable = models.CharField(max_length=100,null=True,blank=True)
-    f_connector = models.CharField(max_length=100,null=True,blank=True)
-    splitter = models.CharField(max_length=100,null=True,blank=True)
+    task = models.OneToOneField(
+        Task, on_delete=models.CASCADE, related_name='tv')
+    photo_modem = models.ImageField(upload_to='tv/', null=True, blank=True)
+    modem_SN = models.CharField(max_length=100, null=True, blank=True)
+    rg6_cable = models.CharField(max_length=100, null=True, blank=True)
+    f_connector = models.CharField(max_length=100, null=True, blank=True)
+    splitter = models.CharField(max_length=100, null=True, blank=True)
 
 
 class Voice(models.Model):
-    task = models.OneToOneField(Task, on_delete=models.CASCADE, related_name='voice')
-    photo_modem = models.ImageField(upload_to='voice/',null=True,blank=True)
-    modem_SN = models.CharField(max_length=100,null=True,blank=True)
-    home_number = models.CharField(max_length=100,null=True,blank=True)
-    password = models.CharField(max_length=100,null=True,blank=True)
+    task = models.OneToOneField(
+        Task, on_delete=models.CASCADE, related_name='voice')
+    photo_modem = models.ImageField(upload_to='voice/', null=True, blank=True)
+    modem_SN = models.CharField(max_length=100, null=True, blank=True)
+    home_number = models.CharField(max_length=100, null=True, blank=True)
+    password = models.CharField(max_length=100, null=True, blank=True)
 
 
 class PlumberTask(models.Model):
-    user = models.ForeignKey(User, on_delete= models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     equipment = models.CharField(max_length=200)
     type = models.CharField(max_length=200)
-    count =  models.IntegerField()
+    count = models.IntegerField()
     date = models.DateField()
 
     def __str__(self):
         return self.equipment
-    
+
+
 class Warehouse(models.Model):
     name = models.CharField(max_length=255)
     region = models.CharField(max_length=255)
@@ -103,33 +113,37 @@ class Warehouse(models.Model):
     def __str__(self):
         return self.name
 
+
 class ItemManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(deleted=False)
-    
+
+
 class Item(models.Model):
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     equipment_name = models.CharField(max_length=255)
-    brand = models.CharField(max_length=255)
-    model = models.CharField(max_length=255)
-    mac = models.CharField(max_length=255)
-    port_number = models.PositiveIntegerField()
-    serial_number = models.CharField(max_length=255, unique=True)
+    brand = models.CharField(max_length=255, blank=True, null=True)
+    model = models.CharField(max_length=255, blank=True, null=True)
+    mac = models.CharField(max_length=255, blank=True, null=True)
+    port_number = models.PositiveIntegerField(blank=True, null=True)
+    serial_number = models.CharField(max_length=255, unique=True, blank=True, null=True)
     number = models.PositiveIntegerField()
-    size_length = models.DecimalField(max_digits=10, decimal_places=2)
+    size_length = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     date = models.DateField(auto_now_add=True)
     deleted = models.BooleanField(default=False)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
 
     def __str__(self):
         return f"{self.equipment_name} - {self.serial_number}"
-    
+
     objects = ItemManager()
 
     def save(self, *args, **kwargs):
-        is_new = self.pk is None  
+        is_new = self.pk is None
         super().save(*args, **kwargs)
-        
+
         if is_new:
             full_name = f"{self.created_by.first_name} {self.created_by.last_name}"
             HistoryIncrement.objects.create(
@@ -154,7 +168,7 @@ class Item(models.Model):
                 self.delete()
             else:
                 self.save()
-                
+
             History.objects.create(
                 item_warehouse=self.warehouse,
                 item_equipment_name=self.equipment_name,
@@ -204,12 +218,15 @@ class History(models.Model):
     company = models.CharField(max_length=255, blank=True, null=True)
     authorized_person = models.CharField(max_length=255, blank=True, null=True)
     number = models.PositiveIntegerField()
-    texnik_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='texnik_actions', blank=True, null=True)
+    texnik_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='texnik_actions', blank=True, null=True)
     date = models.DateTimeField(default=datetime.now)
-    item_created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_items')
+    item_created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_items')
 
     def __str__(self):
         return f"{self.item_equipment_name}"
+
 
 class HistoryIncrement(models.Model):
     item_warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
@@ -223,9 +240,8 @@ class HistoryIncrement(models.Model):
     product_provider = models.CharField(max_length=255, blank=True, null=True)
     number = models.PositiveIntegerField()
     date = models.DateTimeField(default=datetime.now)
-    item_created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_increment_items')
+    item_created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_increment_items')
 
     def __str__(self):
         return f"{self.item_equipment_name} - {self.item_serial_number} - artırıldı"
-    
-    

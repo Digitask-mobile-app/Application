@@ -48,7 +48,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     def get_notifications(self, user):
         from accounts.models import Notification
 
-        notifications = Notification.objects.filter(users=user)
+        notifications = Notification.objects.filter(
+            users=user).order_by('-created_at')
 
         response_data = []
 
