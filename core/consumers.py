@@ -121,7 +121,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
     def get_online_users(self):
         from accounts.models import User
 
-        return {str(user.id): 'online' if user.is_online else 'offline' for user in User.objects.all()}
+        return {str(user.id): {'status':'online','location':{'latitude':user.latitude,'longitude':user.longitude}} if user.is_online else 'offline' for user in User.objects.all()}
 
 
 class StatusConsumer(AsyncWebsocketConsumer):
