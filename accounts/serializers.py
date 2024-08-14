@@ -1,3 +1,5 @@
+from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from .models import User, OneTimePassword, Group
 from services.serializers import GroupSerializer
 from rest_framework import serializers
@@ -8,26 +10,30 @@ from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 from rest_framework.authtoken.models import Token
+from datetime import timedelta
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(max_length=68, min_length=6, write_only=True)
-    password2= serializers.CharField(max_length=68, min_length=6, write_only=True)
+    password = serializers.CharField(
+        max_length=68, min_length=6, write_only=True)
+    password2 = serializers.CharField(
+        max_length=68, min_length=6, write_only=True)
 
     class Meta:
-        model=User
-        fields = ['email', 'first_name', 'last_name', 'group', "user_type", 'username', 'password', 'password2', 'phone']
+        model = User
+        fields = ['email', 'first_name', 'last_name', 'group',
+                  "user_type", 'username', 'password', 'password2', 'phone']
 
     def validate(self, attrs):
-        password=attrs.get('password', '')
-        password2 =attrs.get('password2', '')
-        if password !=password2:
+        password = attrs.get('password', '')
+        password2 = attrs.get('password2', '')
+        if password != password2:
             raise serializers.ValidationError("Parollar uyğun gəlmir")
-         
+
         return attrs
 
     def create(self, validated_data):
-        user= User.objects.create_user(
+        user = User.objects.create_user(
             email=validated_data['email'],
             first_name=validated_data.get('first_name'),
             last_name=validated_data.get('last_name'),
@@ -36,33 +42,49 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             username=validated_data.get('username'),
             user_type=validated_data.get('user_type'),
             phone=validated_data.get('phone'),
-            )
+        )
         return user
-    
+
 
 class LoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=155, min_length=6)
     password = serializers.CharField(max_length=68, write_only=True)
     access_token = serializers.CharField(max_length=255, read_only=True)
     refresh_token = serializers.CharField(max_length=255, read_only=True)
+    remember_me = serializers.BooleanField(default=False, write_only=True)
     user_type = serializers.CharField(max_length=20, read_only=True)
     is_admin = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['email', 'password', 'access_token', 'refresh_token', 'user_type', 'is_admin']
+        fields = ['email', 'password', 'access_token',
+                  'refresh_token', 'user_type', 'is_admin', 'remember_me']
 
     def validate(self, attrs):
         email = attrs.get('email')
         password = attrs.get('password')
+        remember_me = attrs.get('remember_me')
         request = self.context.get('request')
         user = authenticate(email=email, password=password)
 
         if not user:
-            raise AuthenticationFailed("Etibarsız etimadnamələr, yenidən cəhd edin.")
+            raise AuthenticationFailed(
+                "Etibarsız etimadnamələr, yenidən cəhd edin.")
 
         tokens = user.tokens()
-        
+        refresh = RefreshToken.for_user(user)
+
+        if remember_me:
+            refresh.set_exp(lifetime=timedelta(days=30))
+
+        access_token = refresh.access_token
+        if remember_me:
+            access_token.set_exp(lifetime=timedelta(days=30))
+
+        is_admin = False
+        if user.user_type == 'Ofis menecer' or user.user_type == 'Texnik menecer':
+            is_admin = True
+
         is_admin = False
         if user.user_type == 'Ofis menecer' or user.user_type == 'Texnik menecer':
             is_admin = True
@@ -76,7 +98,6 @@ class LoginSerializer(serializers.ModelSerializer):
         }
 
 
-
 class PasswordResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=255)
 
@@ -86,14 +107,15 @@ class PasswordResetRequestSerializer(serializers.Serializer):
     def validate(self, attrs):
         email = attrs.get('email')
         if not User.objects.filter(email=email).exists():
-            raise ValidationError("Bu e-poçt ünvanı ilə qeydiyyatdan keçilməyib.")
-        
+            raise ValidationError(
+                "Bu e-poçt ünvanı ilə qeydiyyatdan keçilməyib.")
+
         user = User.objects.get(email=email)
-        
+
         OneTimePassword.objects.filter(user=user).delete()
-        
-        otp = get_random_string(length=4, allowed_chars='0123456789') 
-        OneTimePassword.objects.create(user=user, otp=otp)  
+
+        otp = get_random_string(length=4, allowed_chars='0123456789')
+        OneTimePassword.objects.create(user=user, otp=otp)
 
         email_body = f"Salam {user.first_name}, parolunuzu sıfırlamaq üçün aşağıdakı OTP kodunu istifadə edin: {otp}"
         data = {
@@ -104,15 +126,14 @@ class PasswordResetRequestSerializer(serializers.Serializer):
         send_mail(
             data['email_subject'],
             data['email_body'],
-            'no-reply@yourdomain.com', 
+            'no-reply@yourdomain.com',
             [data['to_email']],
             fail_silently=False,
         )
 
         return super().validate(attrs)
-    
-    
-    
+
+
 class VerifyOTPSerializer(serializers.Serializer):
     otp = serializers.CharField()
 
@@ -131,9 +152,12 @@ class VerifyOTPSerializer(serializers.Serializer):
 
         return data
 
+
 class SetNewPasswordSerializer(serializers.Serializer):
-    password = serializers.CharField(max_length=100, min_length=6, write_only=True)
-    confirm_password = serializers.CharField(max_length=100, min_length=6, write_only=True)
+    password = serializers.CharField(
+        max_length=100, min_length=6, write_only=True)
+    confirm_password = serializers.CharField(
+        max_length=100, min_length=6, write_only=True)
     token = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
@@ -147,7 +171,8 @@ class SetNewPasswordSerializer(serializers.Serializer):
         try:
             user = Token.objects.get(key=token).user
         except Token.DoesNotExist:
-            raise serializers.ValidationError("Etibarsız və ya vaxtı keçmiş nişan")
+            raise serializers.ValidationError(
+                "Etibarsız və ya vaxtı keçmiş nişan")
 
         attrs['user'] = user
         return attrs
@@ -162,10 +187,7 @@ class SetNewPasswordSerializer(serializers.Serializer):
         Token.objects.filter(user=user).delete()
 
         return user
-    
-        
-from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
-from rest_framework_simplejwt.exceptions import TokenError
+
 
 class LogoutUserSerializer(serializers.Serializer):
     refresh_token = serializers.CharField()
@@ -184,7 +206,7 @@ class LogoutUserSerializer(serializers.Serializer):
         try:
             refresh_token = RefreshToken(self.refresh_token)
             refresh_token.blacklist()
-            
+
             access_token = AccessToken(self.access_token)
             access_token.blacklist()
 
@@ -192,49 +214,63 @@ class LogoutUserSerializer(serializers.Serializer):
             self.fail('bad_token')
 
 
-
 class VerifyUserEmailSerializer(serializers.Serializer):
     otp = serializers.CharField(max_length=4)
 
+
 class ProfileSerializer(serializers.ModelSerializer):
-    groupData = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all(), required=False) 
+    groupData = serializers.PrimaryKeyRelatedField(
+        queryset=Group.objects.all(), required=False)
     group = GroupSerializer(read_only=True)
 
     class Meta:
         model = User
         fields = [
             'id', 'email', 'first_name', 'last_name', 'phone',
-            'user_type', 'groupData','group'
+            'user_type', 'groupData', 'group'
         ]
 
     def update(self, instance, validated_data):
         group_data = validated_data.pop('groupData', None)
         if group_data:
             instance.group = Group.objects.get(id=group_data.id)
-        instance.first_name = validated_data.get('first_name', instance.first_name)
-        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.first_name = validated_data.get(
+            'first_name', instance.first_name)
+        instance.last_name = validated_data.get(
+            'last_name', instance.last_name)
         instance.phone = validated_data.get('phone', instance.phone)
-        instance.user_type = validated_data.get('user_type', instance.user_type)
+        instance.user_type = validated_data.get(
+            'user_type', instance.user_type)
         instance.email = validated_data.get('email', instance.email)
         instance.save()
         return instance
 
+
 class UserSerializer(serializers.ModelSerializer):
     group = GroupSerializer()
+
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'phone', 'user_type', 'group', 'username']
+        fields = ['id', 'email', 'first_name', 'last_name',
+                  'phone', 'user_type', 'group', 'username']
+
 
 class UserFilterSerializer(serializers.ModelSerializer):
     group = GroupSerializer()
+
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name',  'user_type', 'group']
+        fields = ['id', 'email', 'first_name',
+                  'last_name',  'user_type', 'group']
+
 
 class UpdateUserSerializer(serializers.ModelSerializer):
-    group_id = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all(), write_only=True, required=False, allow_null=True)
-    password = serializers.CharField(write_only=True, required=False, allow_blank=True, allow_null=True)
-    password2 = serializers.CharField(write_only=True, required=False, allow_blank=True, allow_null=True)
+    group_id = serializers.PrimaryKeyRelatedField(
+        queryset=Group.objects.all(), write_only=True, required=False, allow_null=True)
+    password = serializers.CharField(
+        write_only=True, required=False, allow_blank=True, allow_null=True)
+    password2 = serializers.CharField(
+        write_only=True, required=False, allow_blank=True, allow_null=True)
     group = GroupSerializer(read_only=True)
 
     class Meta:
@@ -262,11 +298,14 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         password2 = data.get('password2')
 
         if (password or password2) and not password:
-            raise serializers.ValidationError({"password": "Bu sahə təkrar şifrə təmin edildikdə tələb olunur."})
+            raise serializers.ValidationError(
+                {"password": "Bu sahə təkrar şifrə təmin edildikdə tələb olunur."})
         if (password or password2) and not password2:
-            raise serializers.ValidationError({"password2": "Şifrə təmin edildikdə bu sahə tələb olunur."})
+            raise serializers.ValidationError(
+                {"password2": "Şifrə təmin edildikdə bu sahə tələb olunur."})
         if password and password2 and password != password2:
-            raise serializers.ValidationError({"password2": "İki şifrə sahəsi eyni olmalıdır."})
+            raise serializers.ValidationError(
+                {"password2": "İki şifrə sahəsi eyni olmalıdır."})
 
         return data
 
@@ -275,13 +314,13 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         if group is not None:
             instance.group = group
         else:
-            instance.group = None 
+            instance.group = None
         password = validated_data.pop('password', None)
         if password:
-            instance.set_password(password)  
+            instance.set_password(password)
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
-        
+
         instance.save()
         return instance
 
@@ -294,5 +333,5 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
 class PerformanceUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model=User
+        model = User
         fields = ['id', 'first_name', 'last_name', 'user_type']
