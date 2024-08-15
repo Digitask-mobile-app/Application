@@ -397,7 +397,7 @@ class UpdateTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = ['task_type', 'full_name', 'start_time', 'end_time', 'registration_number', 'contact_number', 'location',
-                  'services', 'status', 'group', 'note', "is_tv", "is_voice", "is_internet", 'tv', 'voice', 'internet', 'date']
+                  'services', 'status', 'group', 'note', "is_tv", "is_voice", "is_internet",  'date', 'tv', 'voice', 'internet']
 
     def get_services(self, obj):
         try:
