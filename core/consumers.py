@@ -165,6 +165,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
         if location is not None and user.is_authenticated:
             latitude = location.get('latitude')
             longitude = location.get('longitude')
+            print(user.email,'+++++++++++++++++++++++++++')
             print(latitude, longitude,
                   '++++++++++++++++++++++++++++++++++++++++++++++')
 
