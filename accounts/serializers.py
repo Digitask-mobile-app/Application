@@ -54,11 +54,12 @@ class LoginSerializer(serializers.ModelSerializer):
     remember_me = serializers.BooleanField(default=False, write_only=True)
     user_type = serializers.CharField(max_length=20, read_only=True)
     is_admin = serializers.BooleanField(read_only=True)
+    phone = serializers.CharField(max_length=15, read_only=True)
 
     class Meta:
         model = User
         fields = ['email', 'password', 'access_token',
-                  'refresh_token', 'user_type', 'is_admin', 'remember_me']
+                  'refresh_token', 'user_type', 'is_admin', 'remember_me', 'phone']
 
     def validate(self, attrs):
         email = attrs.get('email')
@@ -94,7 +95,8 @@ class LoginSerializer(serializers.ModelSerializer):
             'access_token': str(tokens.get('access')),
             'refresh_token': str(tokens.get('refresh')),
             'user_type': user.user_type,
-            'is_admin': is_admin
+            'is_admin': is_admin,
+            'phone': user.phone,
         }
 
 
