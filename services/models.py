@@ -17,14 +17,12 @@ status_task = (
     ("completed", "completed"),
 )
 
-
 class Status(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     class Meta:
         abstract = True
-
 
 class Task(Status):
     user = models.ForeignKey(
@@ -42,7 +40,8 @@ class Task(Status):
         Group, related_name='group_tasks', blank=True)
     status = models.CharField(
         max_length=100, choices=status_task, default='waiting')
-
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
     is_voice = models.BooleanField(default=False)
     is_internet = models.BooleanField(default=False)
     is_tv = models.BooleanField(default=False)
@@ -63,7 +62,6 @@ class Task(Status):
             return 'Voice'
         return None
 
-
 class Internet(models.Model):
     task = models.OneToOneField(
         Task, on_delete=models.CASCADE, related_name='internet')
@@ -73,7 +71,6 @@ class Internet(models.Model):
     optical_cable = models.CharField(max_length=100, null=True, blank=True)
     fastconnector = models.CharField(max_length=100, null=True, blank=True)
     siqnal = models.CharField(max_length=100, null=True, blank=True)
-
 
 class TV(models.Model):
     task = models.OneToOneField(
@@ -125,9 +122,11 @@ class Item(models.Model):
     model = models.CharField(max_length=255, blank=True, null=True)
     mac = models.CharField(max_length=255, blank=True, null=True)
     port_number = models.PositiveIntegerField(blank=True, null=True)
-    serial_number = models.CharField(max_length=255, unique=True, blank=True, null=True)
+    serial_number = models.CharField(
+        max_length=255, unique=True, blank=True, null=True)
     number = models.PositiveIntegerField()
-    size_length = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    size_length = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True)
     date = models.DateField(auto_now_add=True)
     deleted = models.BooleanField(default=False)
     created_by = models.ForeignKey(
