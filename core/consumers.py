@@ -122,13 +122,13 @@ class UserListConsumer(AsyncWebsocketConsumer):
         from accounts.models import User
         response = {}
         for user in User.objects.all():
-            if user.is_online:
-                
+            if user.is_online: 
                 if user.has_started_task():
                     started_task = user.user_tasks.filter(status='started').first()
                     response[str(user.id)] = {'status': 'online', 'location': {'latitude': user.latitude, 'longitude': user.longitude}, 'user': {'email': user.email},'started_task':{"location":{'latitude': started_task.latitude, 'longitude': started_task.longitude}}}
                 else:    
-                    response[str(user.id)] = {'status': 'online', 'location': {'latitude': user.latitude, 'longitude': user.longitude}, 'user': {'email': user.email},'started_task':{}
+                    response[str(user.id)] = {'status': 'online', 'location': {'latitude': user.latitude, 'longitude': user.longitude}, 'user': {'email': user.email},'started_task':{}}
+            
             else:
                 response[str(user.id)] = {'status': 'offline', 'location': {}, 'user': {'email': user.email}}
         return response
