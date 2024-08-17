@@ -26,7 +26,7 @@ class Status(models.Model):
 
 class Task(Status):
     user = models.ForeignKey(
-        User, on_delete=models.SET_NULL, blank=True, null=True)
+        User, on_delete=models.SET_NULL, blank=True, null=True,related_name="user_tasks")
     full_name = models.CharField(max_length=100)
     task_type = models.CharField(max_length=100, choices=TASK_TYPES)
     registration_number = models.CharField(max_length=100)

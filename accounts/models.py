@@ -101,6 +101,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     def is_texnik_menecer(self):
         return self.user_type == "Texnik menecer"
 
+    def has_started_task(self):
+        return self.user_tasks.filter(status='started').exists()
 
 class OneTimePassword(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

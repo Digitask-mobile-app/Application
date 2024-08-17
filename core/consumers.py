@@ -120,8 +120,18 @@ class UserListConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_online_users(self):
         from accounts.models import User
-
-        return {str(user.id): {'status': 'online', 'location': {'latitude': user.latitude, 'longitude': user.longitude}, 'user': {'email': user.email}} if user.is_online else {'status': 'offline'} for user in User.objects.all()}
+        response = {}
+        for user in User.objects.all():
+            if user.is_online:
+                
+                if user.has_started_task():
+                    started_task = user.user_tasks.filter(status='started').first()
+                    response[str(user.id)] = {'status': 'online', 'location': {'latitude': user.latitude, 'longitude': user.longitude}, 'user': {'email': user.email},'started_task':{"location":{'latitude': started_task.latitude, 'longitude': started_task.longitude}}}
+                else:    
+                    response[str(user.id)] = {'status': 'online', 'location': {'latitude': user.latitude, 'longitude': user.longitude}, 'user': {'email': user.email}}
+            else:
+                response[str(user.id)] = {'status': 'offline', 'location': {}, 'user': {'email': user.email}}
+        return response
 
 
 class StatusConsumer(AsyncWebsocketConsumer):
