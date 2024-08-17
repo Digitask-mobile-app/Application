@@ -128,7 +128,7 @@ class UserListConsumer(AsyncWebsocketConsumer):
                     started_task = user.user_tasks.filter(status='started').first()
                     response[str(user.id)] = {'status': 'online', 'location': {'latitude': user.latitude, 'longitude': user.longitude}, 'user': {'email': user.email},'started_task':{"location":{'latitude': started_task.latitude, 'longitude': started_task.longitude}}}
                 else:    
-                    response[str(user.id)] = {'status': 'online', 'location': {'latitude': user.latitude, 'longitude': user.longitude}, 'user': {'email': user.email}}
+                    response[str(user.id)] = {'status': 'online', 'location': {'latitude': user.latitude, 'longitude': user.longitude}, 'user': {'email': user.email},'started_task':{}
             else:
                 response[str(user.id)] = {'status': 'offline', 'location': {}, 'user': {'email': user.email}}
         return response
