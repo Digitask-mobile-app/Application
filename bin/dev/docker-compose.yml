@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  postgres:
+    container_name: postgres-db-core
+    image: postgres:13.0-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - core_postgres-data:/var/lib/postgresql/data
+    env_file: .env
+
+  redis:
+    container_name: redis
+    image: redis:5
+    restart: "on-failure"
+    expose:
+      - '6379'
+    ports:
+      - '6379:6379'
+    volumes:
+      - core_redis-data:/data
+
+  celery: &celery
+    container_name: celery
+    build: .
+    env_file: .env
+    volumes:
+      - ../../:/code
+    command: bash -c "cd /code/ && celery --app=core.celery:app worker -B --loglevel=INFO"
+    depends_on:
+      - web
+      - redis
+    links:
+      - postgres
+      - redis
+
+  web:
+    container_name: core
+    build: .
+    restart: "always"
+    env_file: .env
+    volumes:
+      - ../../:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - "postgres"
+    command: bash -c " python /code/manage.py makemigrations --noinput && python /code/manage.py migrate && python /code/manage.py runserver 0.0.0.0:8000"
+
+volumes:
+  core_redis-data:
+  core_postgres-data:
