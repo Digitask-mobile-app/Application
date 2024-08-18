@@ -35,16 +35,16 @@ ALLOWED_HOSTS = ['*']
 CORS_ALLOWED_ORIGINS = [
     'http://135.181.42.192',
     'http://135.181.42.192:100',
-    'http://localhost:5173/',
-    'http://78.47.82.5/',
+    'http://localhost:5173',
+    'http://78.47.82.5',
 ]
 
 # Application definition
 CSRF_TRUSTED_ORIGINS = [
     'http://135.181.42.192',
     'http://135.181.42.192:100',
-    'http://localhost:5173/',
-    'http://78.47.82.5/',
+    'http://localhost:5173',
+    'http://78.47.82.5',
 ]
 
 
@@ -116,7 +116,7 @@ CHANNEL_LAYERS = {
 
 
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:5173/',
+    'http://localhost:5173',
 ]
 
 ACCESS_CONTROL_ALLOW_ORIGIN = ['*']
@@ -211,7 +211,7 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-DOMAIN = 'localhost:3000'
+# DOMAIN = 'localhost:3000'
 SITE_NAME = 'Henry Ultimate Authentication Course'
 
 EMAIL_HOST = 'smtp.gmail.com'
