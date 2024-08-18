@@ -35,7 +35,7 @@ ALLOWED_HOSTS = ['*']
 CORS_ALLOWED_ORIGINS = [
     'http://135.181.42.192',
     'http://135.181.42.192:100',
-    'http://localhost:5173',
+    # 'http://localhost:5173',
     'http://78.47.82.5',
 ]
 
@@ -43,7 +43,7 @@ CORS_ALLOWED_ORIGINS = [
 CSRF_TRUSTED_ORIGINS = [
     'http://135.181.42.192',
     'http://135.181.42.192:100',
-    'http://localhost:5173',
+    # 'http://localhost:5173',
     'http://78.47.82.5',
 ]
 
@@ -116,7 +116,7 @@ CHANNEL_LAYERS = {
 
 
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:5173',
+    # 'http://localhost:5173',
 ]
 
 ACCESS_CONTROL_ALLOW_ORIGIN = ['*']
