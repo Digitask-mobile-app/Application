@@ -8,13 +8,6 @@ from django.db.models import Min
 from django_filters import DateFilter
 from rest_framework import serializers
 
-def get_year_choices():
-    min_year = Task.objects.aggregate(min_year=Min('date__year'))['min_year']
-    current_year = datetime.now().year
-    if min_year is None:
-        min_year = current_year 
-    return [(year, str(year)) for year in range(min_year, current_year + 1)]
-
 MONTH_CHOICES = [
     (1, 'Yanvar'),
     (2, 'Fevral'),
@@ -34,17 +27,14 @@ class StatusAndTaskFilter(django_filters.FilterSet):
     status = django_filters.MultipleChoiceFilter(choices=status_task, field_name='status')
     task_type = django_filters.ChoiceFilter(choices=TASK_TYPES, field_name='task_type')
     month = django_filters.ChoiceFilter(choices=MONTH_CHOICES, method='filter_by_month', field_name='date')
-    year = django_filters.ChoiceFilter(choices=get_year_choices(), method='filter_by_year', field_name='date')
 
     class Meta:
         model = Task
-        fields = ['status', 'task_type', 'month', 'year']
+        fields = ['status', 'task_type', 'month']
 
     def filter_by_month(self, queryset, name, value):
         return queryset.filter(date__month=value)
     
-    def filter_by_year(self, queryset, name, value):
-        return queryset.filter(date__year=value)
     
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
