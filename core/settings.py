@@ -119,6 +119,8 @@ CORS_ORIGIN_WHITELIST = [
     # 'http://localhost:5173',
 ]
 
+ACCESS_CONTROL_ALLOW_ORIGIN = ['*']
+
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
@@ -132,7 +134,6 @@ SWAGGER_SETTINGS = {
     }
 }
 
-Access-Control-Allow-Origin: *
 
 ROOT_URLCONF = 'core.urls'
 
