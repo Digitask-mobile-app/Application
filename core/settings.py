@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import django
+from django.utils.translation import gettext_lazy as _
+from datetime import timedelta
 import os
 from pathlib import Path
 
@@ -24,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-dj@g@p0zq76f6=wplo@znnuzclq4v=($p=ky@+x=$rx!9as@f2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", False) != "False"
 
 ALLOWED_HOSTS = ['*']
 
@@ -72,14 +75,11 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
-    #myapps
+    # myapps
 
     "services",
     'accounts.apps.AccountsConfig'
 ]
-
-
-
 
 
 MIDDLEWARE = [
@@ -107,7 +107,7 @@ CHANNEL_LAYERS = {
         "CONFIG": {
             "hosts": [('127.0.0.1', 6379)],
         },
-        
+
     },
 }
 
@@ -150,19 +150,19 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
-AUTH_USER_MODEL='accounts.User'
+AUTH_USER_MODEL = 'accounts.User'
 
-REST_FRAMEWORK={
-    'NON_FIELD_ERRORS_KEY':'error',
-        'DEFAULT_AUTHENTICATION_CLASSES': (
+REST_FRAMEWORK = {
+    'NON_FIELD_ERRORS_KEY': 'error',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (  
-    'rest_framework.authentication.SessionAuthentication',
-    'rest_framework.authentication.BasicAuthentication',
-    'rest_framework_simplejwt.authentication.JWTAuthentication', 
-    'rest_framework.authentication.TokenAuthentication',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
@@ -173,22 +173,31 @@ REST_FRAMEWORK={
 WSGI_APPLICATION = 'core.wsgi.application'
 
 
-
 GDAL_LIBRARY_PATH = 'C:\\Program Files\\GDAL\\gdalxxx.dll'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('POSTGRES_HOST'),
+        'PORT': os.getenv('POSTGRES_PORT'),
     }
+
 }
 
-
-from datetime import timedelta
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
@@ -196,14 +205,14 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-DOMAIN='localhost:3000'
+DOMAIN = 'localhost:3000'
 SITE_NAME = 'Henry Ultimate Authentication Course'
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'aytacmehdizade08@gmail.com'
 EMAIL_HOST_PASSWORD = 'pful vvvc uhib hxup'
 EMAIL_PORT = 587
-EMAIL_USE_TLS=True
+EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 
@@ -226,9 +235,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-from django.utils.translation import gettext_lazy as _
-
-
 LANGUAGES = [
     ('az', _('Az')),
     ('en', _('En')),
@@ -236,9 +242,9 @@ LANGUAGES = [
 
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'az'
 PARLER_LANGUAGES = {
-    None : (
-        {'code': 'az',},
-        {'code': 'en',},
+    None: (
+        {'code': 'az', },
+        {'code': 'en', },
     ),
     'default': {
         'fallbacks': [],
@@ -285,7 +291,7 @@ CORS_ALLOW_METHODS = [
     'GET',
     'POST',
     'PUT',
-    'PATCH',  
+    'PATCH',
     'DELETE',
     'OPTIONS',
 ]
@@ -304,6 +310,4 @@ CORS_ALLOW_HEADERS = [
 ]
 
 
-
-import django
 django.setup()
