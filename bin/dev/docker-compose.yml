@@ -21,20 +21,6 @@ services:
     volumes:
       - core_redis-data:/data
 
-  celery: &celery
-    container_name: celery
-    build: .
-    env_file: .env
-    volumes:
-      - ../../:/code
-    command: bash -c "cd /code/ && celery --app=core.celery:app worker -B --loglevel=INFO"
-    depends_on:
-      - web
-      - redis
-    links:
-      - postgres
-      - redis
-
   web:
     container_name: core
     build: .
