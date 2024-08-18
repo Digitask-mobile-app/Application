@@ -132,6 +132,8 @@ SWAGGER_SETTINGS = {
     }
 }
 
+Access-Control-Allow-Origin: *
+
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
