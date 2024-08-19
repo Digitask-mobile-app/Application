@@ -45,6 +45,16 @@ services:
       - postgres
     depends_on:
       - "postgres"
+  daphne:
+    image: daphne/daphne
+    container_name: daphne
+    restart: "always"
+    command: daphne -u /tmp/daphne.sock core.asgi:application
+    volumes:
+      - ../..:/code
+    depends_on:
+      - "app"
+      - "redis"
 
   postgres:
     container_name: postgres-db
