@@ -68,12 +68,12 @@ services:
       - ./redisdb:/var/lib/redis
     env_file: .env
 
-networks:
-  default:
-    external:
-      name: nginx-proxy
-
 volumes:
   letsencrypt-certs:
   letsencrypt-vhost-d:
   letsencrypt-html:
+
+networks:
+  default:
+    external:
+      name: nginx-proxy
