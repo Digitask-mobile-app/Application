@@ -25,6 +25,7 @@ from drf_yasg import openapi
 from rest_framework.routers import DefaultRouter
 from django.conf.urls.i18n import i18n_patterns
 from django.views.i18n import JavaScriptCatalog
+from django.views.generic import TemplateView
 
 router = DefaultRouter()
 
@@ -44,6 +45,7 @@ schema_view = get_schema_view(
 
 
 urlpatterns = [
+    path('', TemplateView.as_view(template_name='index.html')),
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('services/', include('services.urls')),
