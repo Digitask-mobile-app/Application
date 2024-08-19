@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3"
 
 services:
   nginx-proxy:
@@ -75,5 +75,5 @@ volumes:
 
 networks:
   default:
-    external:
-      name: nginx-proxy
+    external: True
+    name: nginx-proxy
