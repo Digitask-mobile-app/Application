@@ -1,7 +1,6 @@
-version: '3'
+version: "3"
 
 services:
-
   nginx-proxy:
     image: jwilder/nginx-proxy
     container_name: nginx-proxy
@@ -69,8 +68,12 @@ services:
       - ./redisdb:/var/lib/redis
     env_file: .env
 
-
 networks:
   default:
     external:
       name: nginx-proxy
+
+volumes:
+  letsencrypt-certs:
+  letsencrypt-vhost-d:
+  letsencrypt-html:
