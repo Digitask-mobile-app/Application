@@ -157,6 +157,9 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+
+static
+
 # Production db instance
 pgdb
 redisdb
