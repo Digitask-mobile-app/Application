@@ -110,11 +110,10 @@ REDIS_PASSWORD = os.getenv('REDIS_PASSWORD', None)
 
 CHANNEL_LAYERS = {
     "default": {
+        "ROUTING": "widget.routing.channel_routing",
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [(f'redis://:${REDIS_PASSWORD}@127.0.0.1:6379/0')],
-            # "hosts": [(REDIS_HOST, REDIS_PORT), ("127.0.0.1", 6379)],
-            # "password": REDIS_PASSWORD,
         },
     },
 }
