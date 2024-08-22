@@ -104,16 +104,15 @@ ASGI_APPLICATION = 'core.asgi.application'
 SITE_ID = 1
 
 
-REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
+REDIS_HOST = os.getenv('REDIS_HOST', '127.0.0.1')
 REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
 REDIS_PASSWORD = os.getenv('REDIS_PASSWORD', None)
 
 CHANNEL_LAYERS = {
     "default": {
-        "ROUTING": "widget.routing.channel_routing",
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [(f'redis://:${REDIS_PASSWORD}@127.0.0.1:6379/0')],
+            "hosts": [(f'${REDIS_HOST}://:${REDIS_PASSWORD}@${REDIS_HOST}:${REDIS_PORT}/0')],
         },
     },
 }
