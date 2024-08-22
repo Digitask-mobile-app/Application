@@ -74,7 +74,7 @@ services:
   django_asgi:
     container_name: django_asgi
     build: ../..
-    command: daphne -b 0.0.0.0 -p 8002 core.asgi:application --proxy-headers --timeout 600
+    command: daphne -b 0.0.0.0 -p 8002 core.asgi:application
     volumes:
       - ../../:/code
     networks:
