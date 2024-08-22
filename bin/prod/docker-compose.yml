@@ -130,8 +130,6 @@ services:
       - redisnet
     environment:
       - REDIS_PASSWORD=G5iFxpsxkbxQ615A
-  
-
 volumes:
   letsencrypt-certs:
   letsencrypt-vhost-d:
