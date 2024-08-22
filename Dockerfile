@@ -24,7 +24,8 @@ RUN apt-get update && \
 COPY ./mime.types /etc/mime.types
 COPY ./uwsgi.ini /conf/uwsgi.ini
 COPY . /code
+COPY entrypoint.sh /entrypoint.sh
 
-# Start uWSGI
-CMD [ "uwsgi", "--ini", "/conf/uwsgi.ini"]
-# CMD ["daphne", "-b", "0.0.0.0", "-p", "8002", "core.asgi:application"]
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
