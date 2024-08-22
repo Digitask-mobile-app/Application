@@ -26,5 +26,5 @@ COPY ./uwsgi.ini /conf/uwsgi.ini
 COPY . /code
 
 # Start uWSGI
-# CMD [ "uwsgi", "--ini", "/conf/uwsgi.ini"]
-CMD ["daphne", "-b", "0.0.0.0", "-p", "8002", "core.asgi:application"]
+CMD [ "uwsgi", "--ini", "/conf/uwsgi.ini"]
+# CMD ["daphne", "-b", "0.0.0.0", "-p", "8002", "core.asgi:application"]
