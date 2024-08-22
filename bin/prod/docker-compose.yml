@@ -83,7 +83,7 @@ services:
     links:
       - redis
     ports:
-    - "8002:8002"
+      - "8002:8002"
 
   worker_channels:
     build: ../..
@@ -125,7 +125,7 @@ services:
       - ./redisdb:/var/lib/redis
     env_file: .env
     networks:
-    - redisnet
+      - redisnet
 
 volumes:
   letsencrypt-certs:
@@ -138,4 +138,3 @@ networks:
     name: nginx-proxy
   webnet:
   redisnet:
-    external: true
