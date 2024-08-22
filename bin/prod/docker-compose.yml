@@ -124,6 +124,8 @@ services:
     volumes:
       - ./redisdb:/var/lib/redis
     env_file: .env
+    networks:
+    - redisnet
 
 volumes:
   letsencrypt-certs:
