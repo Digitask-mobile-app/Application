@@ -118,7 +118,7 @@ services:
     build:
       context: .
       dockerfile: redis.dockerfile
-    image: redis:4.0.11
+    image: redis:7
     restart: "on-failure"
     container_name: redis
     ports:
@@ -128,6 +128,7 @@ services:
     env_file: .env
     networks:
       - redisnet
+  
 
 volumes:
   letsencrypt-certs:
@@ -139,4 +140,5 @@ networks:
     external: True
     name: nginx-proxy
   webnet:
+    driver: bridge
   redisnet:
