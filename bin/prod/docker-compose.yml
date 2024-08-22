@@ -83,6 +83,24 @@ services:
     links:
       - redis
 
+  worker_channels:
+    build: ../..
+    command: python manage.py runworker
+    volumes:
+      - ../../:/code
+    links:
+      - redis
+      
+  channels:
+    build: ../..
+    command: daphne -b 0.0.0.0 -p 8001 core.asgi:application
+    volumes:
+      - ../../:/code
+    ports:
+      - "8001:8001"
+    links:
+      - redis
+
   postgres:
     container_name: postgres-db
     image: postgres:13
