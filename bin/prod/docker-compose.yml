@@ -85,11 +85,6 @@ services:
     ports:
       - "8002:8002"
     restart: always  
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8002/healthcheck/"] 
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
 
   worker_channels:
