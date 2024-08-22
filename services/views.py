@@ -308,6 +308,11 @@ class UpdateTaskView(generics.UpdateAPIView):
         notification.users.set(texnik_users | plumber_users)
         notification.save()
 
+from django.http import JsonResponse
+
+def health_check(request):
+    return JsonResponse({"status": "ok"}, status=200)
+
 
 class MeetingsApiView(generics.ListAPIView):
     queryset = Meeting.objects.all()
