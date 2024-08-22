@@ -82,6 +82,8 @@ services:
       - redisnet
     links:
       - redis
+    ports:
+    - "8002:8002"
 
   worker_channels:
     build: ../..
