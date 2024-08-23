@@ -37,6 +37,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://78.47.82.5',
     'http://78.47.82.5:8080',
+    'http://78.47.82.5:8002',
 ]
 
 # Application definition
@@ -46,6 +47,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
     'http://78.47.82.5',
     'http://78.47.82.5:8080',
+    'http://78.47.82.5:8002',
 ]
 
 
