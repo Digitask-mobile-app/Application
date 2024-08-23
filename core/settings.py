@@ -116,7 +116,6 @@ CHANNEL_LAYERS = {
         "CONFIG": {
             "hosts": [('redis://:G5iFxpsxkbxQ615A@redis:6379/0', 6379)],
         },
-        "ROUTING": "django_channels.routing.channel_routing",
     },
 }
 
