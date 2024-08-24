@@ -195,7 +195,7 @@ import socket
 
 hostname = socket.gethostname()
 server_ip = socket.gethostbyname(hostname)
-
+print(server_ip,'-------------------------------------------')
 if server_ip == '192.168.31.32' or server_ip == '135.181.42.192':
     DATABASES = {
         'default': {
