@@ -191,11 +191,22 @@ GDAL_LIBRARY_PATH = 'C:\\Program Files\\GDAL\\gdalxxx.dll'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-import socket
 
-hostname = socket.gethostname()
-server_ip = socket.gethostbyname(hostname)
+import socket
+def get_ip_address():
+    try:
+        # Connect to an external server (Google DNS server) to determine the IP address
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip_address = s.getsockname()[0]
+        s.close()
+        return ip_address
+    except Exception as e:
+        return f"Unable to determine IP address: {e}"
+
+server_ip = get_ip_address()
 print(server_ip,'-------------------------------------------')
+
 if server_ip == '192.168.31.32' or server_ip == '135.181.42.192':
     DATABASES = {
         'default': {
