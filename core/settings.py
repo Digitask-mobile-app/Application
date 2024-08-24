@@ -108,19 +108,28 @@ ASGI_APPLICATION = 'core.asgi.application'
 SITE_ID = 1
 
 
-REDIS_HOST = os.getenv('REDIS_HOST', '127.0.0.1')
-REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
-REDIS_PASSWORD = os.getenv('REDIS_PASSWORD', None)
+# REDIS_HOST = os.getenv('REDIS_HOST', '127.0.0.1')
+# REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
+# REDIS_PASSWORD = os.getenv('REDIS_PASSWORD', None)
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [('redis://:G5iFxpsxkbxQ615A@redis:6379/0', 6379)],
+#         },
+#     },
+# }
 
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [('redis://:G5iFxpsxkbxQ615A@redis:6379/0', 6379)],
+            "hosts": [('127.0.0.1', 6379)],
         },
+        
     },
 }
-
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:5173',
