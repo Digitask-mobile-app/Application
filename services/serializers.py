@@ -207,8 +207,7 @@ class DecrementItemSerializer(serializers.Serializer):
     authorized_person = serializers.CharField(
         max_length=255, required=False, allow_blank=True)
     number = serializers.IntegerField()
-    texnik_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(
-        user_type='Texnik'), required=False, allow_null=True)
+    texnik_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
 
     def validate(self, data):
         company = data.get('company')
@@ -379,12 +378,16 @@ class CreateTaskSerializer(serializers.ModelSerializer):
 class TaskUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ['user', 'status']
+        fields = [ 'status']
 
     def update(self, instance, validated_data):
+        print('----1')
         request = self.context.get('request')
+        print('----2')
         instance.user = request.user
+        print(instance.user)
         instance.status = validated_data.get('status', instance.status)
+        print(instance.status)
         instance.save()
         return instance
 

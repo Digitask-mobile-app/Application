@@ -282,6 +282,7 @@ class UpdateTaskView(generics.UpdateAPIView):
         return context
 
     def put(self, request, *args, **kwargs):
+        print(request.data,'--------------------------')
         return self.update(request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
