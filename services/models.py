@@ -218,7 +218,7 @@ class History(models.Model):
     number = models.PositiveIntegerField()
     texnik_user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='texnik_actions', blank=True, null=True)
-    date = models.DateTimeField(default=datetime.now)
+    date = models.DateTimeField(default=timezone.now)
     item_created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_items')
 
