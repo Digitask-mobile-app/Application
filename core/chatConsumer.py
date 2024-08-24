@@ -24,6 +24,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     self.channel_name
                 )
         else:
+            print('user yoxdur')
+            await self.send(text_data=json.dumps({
+                'message': 'user auth deyil'
+            }))
             await self.close()
 
 
