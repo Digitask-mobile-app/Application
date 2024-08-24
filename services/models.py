@@ -237,7 +237,7 @@ class HistoryIncrement(models.Model):
     item_size_length = models.DecimalField(max_digits=10, decimal_places=2)
     product_provider = models.CharField(max_length=255, blank=True, null=True)
     number = models.PositiveIntegerField()
-    date = models.DateTimeField(default=datetime.now)
+    date = models.DateTimeField(default=timezone.now)
     item_created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_increment_items')
 
