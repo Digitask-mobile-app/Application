@@ -205,7 +205,7 @@ def get_ip_address():
         return f"Unable to determine IP address: {e}"
 
 server_ip = get_ip_address()
-print(server_ip,'-------------------------------------------')
+
 
 if server_ip == '192.168.31.32' or server_ip == '135.181.42.192':
     DATABASES = {
