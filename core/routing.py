@@ -1,6 +1,6 @@
 from django.urls import re_path
 from .consumers import StatusConsumer,UserListConsumer,NotificationConsumer
-from .chatConsumer import ChatConsumer
+# from .chatConsumer import ChatConsumer
 
 websocket_urlpatterns = [
     re_path(r'ws/status/$', StatusConsumer.as_asgi()),
