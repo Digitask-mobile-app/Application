@@ -123,7 +123,7 @@ class Item(models.Model):
     mac = models.CharField(max_length=255, blank=True, null=True)
     port_number = models.PositiveIntegerField(blank=True, null=True)
     serial_number = models.CharField(
-        max_length=255, unique=True, blank=True, null=True)
+        max_length=255,  blank=True, null=True)
     number = models.PositiveIntegerField()
     size_length = models.DecimalField(
         max_digits=10, decimal_places=2, blank=True, null=True)
