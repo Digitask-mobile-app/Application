@@ -15,7 +15,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         user = self.scope['user']
 
         if user.is_authenticated:
-            rooms = [x.name for x in user.rooms.all()]
+            rooms = await database_sync_to_async(lambda: [x.name for x in user.rooms.all()])()
 
             for room_name in rooms:
                 group_name = f'room_{room_name}'
