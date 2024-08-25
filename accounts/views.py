@@ -259,7 +259,7 @@ class AddMembersView(generics.UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         room = self.get_object() 
-        user_ids = request.data.get('members')  
+        user_ids = request.data.get('user_ids')  
 
         if not user_ids or not isinstance(user_ids, list):
             return Response({"error": "A list of user IDs is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -289,7 +289,7 @@ class RemoveMembersView(generics.UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         room = self.get_object() 
-        user_ids = request.data.get('members') 
+        user_ids = request.data.get('user_ids') 
 
         if not user_ids or not isinstance(user_ids, list):
             return Response({"error": "A list of user IDs is required"}, status=status.HTTP_400_BAD_REQUEST)
