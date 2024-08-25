@@ -348,4 +348,8 @@ class MessageSerializer(serializers.ModelSerializer):
         model = Message
         fields = '__all__'
 
+class AddRemoveRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = ['id','members']
 

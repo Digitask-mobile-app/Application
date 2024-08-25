@@ -254,14 +254,15 @@ class AddGroup(generics.CreateAPIView):
 
 class AddMembersView(generics.UpdateAPIView):
     queryset = Room.objects.all()
-    serializer_class = RoomSerializer
+    serializer_class = AddRemoveRoomSerializer
     lookup_field = 'id'  
 
     def update(self, request, *args, **kwargs):
         room = self.get_object() 
-        user_ids = request.data.get('user_ids')  
 
-        if not user_ids or not isinstance(user_ids, list):
+        user_ids = request.data.getlist('members')  
+
+        if not user_ids:
             return Response({"error": "A list of user IDs is required"}, status=status.HTTP_400_BAD_REQUEST)
         
         added_users = []
@@ -269,7 +270,7 @@ class AddMembersView(generics.UpdateAPIView):
         
         for user_id in user_ids:
             user = get_object_or_404(User, id=user_id)  
-            
+            print(user)
             if user in room.members.all():
                 already_members.append(user.email)
             else:
@@ -284,14 +285,14 @@ class AddMembersView(generics.UpdateAPIView):
 
 class RemoveMembersView(generics.UpdateAPIView):
     queryset = Room.objects.all()
-    serializer_class = RoomSerializer
+    serializer_class = AddRemoveRoomSerializer
     lookup_field = 'id'  
 
     def update(self, request, *args, **kwargs):
         room = self.get_object() 
-        user_ids = request.data.get('user_ids') 
+        user_ids = request.data.getlist('members') 
 
-        if not user_ids or not isinstance(user_ids, list):
+        if not user_ids:
             return Response({"error": "A list of user IDs is required"}, status=status.HTTP_400_BAD_REQUEST)
         
         removed_users = []
