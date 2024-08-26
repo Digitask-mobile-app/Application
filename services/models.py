@@ -243,3 +243,4 @@ class HistoryIncrement(models.Model):
 
     def __str__(self):
         return f"{self.item_equipment_name} - {self.item_serial_number} - artırıldı"
+    

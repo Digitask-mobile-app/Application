@@ -355,4 +355,3 @@ class AddRemoveRoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = ['id','members']
-

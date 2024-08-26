@@ -94,7 +94,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'user', 'full_name', 'task_type', 'registration_number',
             'contact_number', 'location', 'note', 'date', 'start_time', 'end_time', 'status',
-            'tv', 'voice', 'internet', 'services', 'first_name', 'last_name', 'phone', 'group', 'latitude', 'longitude',
+            'tv', 'voice', 'internet', 'services', 'first_name', 'last_name', 'phone', 'group', 'latitude', 'longitude'
             "is_tv", "is_voice", "is_internet"
         ]
 
@@ -410,3 +410,4 @@ class UpdateTaskSerializer(serializers.ModelSerializer):
         except Exception as e:
             print(f"Error getting services: {e}")
             return None
+        

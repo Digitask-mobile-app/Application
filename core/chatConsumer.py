@@ -81,4 +81,3 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'content': content,
             'user': user,
         }))
-
