@@ -36,10 +36,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         message = event['message']
         if user.is_authenticated:
             message = await self.get_notifications(user)
-            print(
-                message, '-----------------------------------------------------------------------------')
-            print(
-                message, '-----------------------------------------------------------------------------')
+       
             await self.send(text_data=json.dumps({
                 'message': message
             }))
@@ -148,8 +145,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
 
         if user.is_authenticated:
             await self.update_user_status(user, True)
-            print(
-                user.email + ' email istifadeci qosuldu ++++++++++++++++++++++++++++++++++')
+
 
         await self.broadcast_message({user.id: 'online'})
 
@@ -157,8 +153,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
         user = self.scope['user']
 
         if user.is_authenticated:
-            print(
-                user.email + ' email istifadeci terk etdi ++++++++++++++++++++++++++++++++++')
+        
             await self.update_user_status(user, False)
         channel_layer = get_channel_layer()
         await channel_layer.group_discard(
@@ -176,8 +171,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
             latitude = location.get('latitude')
             longitude = location.get('longitude')
             print(user.email,'+++++++++++++++++++++++++++')
-            print(latitude, longitude,
-                  '++++++++++++++++++++++++++++++++++++++++++++++')
+            print(latitude, longitude,'++++++++++++++++++++++++++++++++++++++++++++++')
 
             await self.update_user_location(user, latitude, longitude)
         else:

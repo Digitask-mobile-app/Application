@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
-from .models import User, OneTimePassword, Group
+from .models import User, OneTimePassword, Group, Room, Message
 from services.serializers import GroupSerializer
 from rest_framework import serializers
 from django.contrib.auth import authenticate
@@ -337,3 +337,19 @@ class PerformanceUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name', 'user_type']
+
+class RoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = '__all__'
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = '__all__'
+
+class AddRemoveRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = ['id','members']
+

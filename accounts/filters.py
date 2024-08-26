@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from .models import User,USER_TYPE
+from .models import User,USER_TYPE,Message
 
 class UserFilter(filters.FilterSet):
     user_type = filters.CharFilter(field_name="user_type", lookup_expr="exact")
@@ -16,3 +16,11 @@ class UserTypeFilter(filters.FilterSet):
     class Meta:
         model = User
         fields = ['user_type', 'group']
+
+
+class MessageFilter(filters.FilterSet):
+    room = filters.NumberFilter(field_name='room__id')
+
+    class Meta:
+        model = Message
+        fields = ['room']

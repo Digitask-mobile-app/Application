@@ -3,7 +3,11 @@ from django.urls import path
 from .views import (
         RegisterView, 
         VerifyUserEmail,
+        AddGroup,
+        AddMembersView,
+        RemoveMembersView,
         LoginUserView, 
+        MessageListView,
         TestingAuthenticatedReq, 
         PasswordResetConfirm, 
         PasswordResetRequestView,
@@ -32,5 +36,8 @@ urlpatterns = [
     path('update_user/<int:pk>/', UpdateUserView.as_view(), name='user-update'),
     path('delete_user/<int:user_id>/', DeleteUserView.as_view(), name='delete_user'),
     path('userListFilter/', UserFilterListView.as_view(), name='UserFilterListView'),
-
+    path('add_group/', AddGroup.as_view(), name='AddGroup'),
+    path('rooms/<int:id>/add-members/', AddMembersView.as_view(), name='add-members'),
+    path('rooms/<int:id>/remove-members/', RemoveMembersView.as_view(), name='remove-members'),
+    path('messages/', MessageListView.as_view(), name='message-list'),
 ]
