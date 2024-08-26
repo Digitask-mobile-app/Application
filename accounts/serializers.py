@@ -339,9 +339,12 @@ class PerformanceUserSerializer(serializers.ModelSerializer):
         fields = ['id', 'first_name', 'last_name', 'user_type']
 
 class RoomSerializer(serializers.ModelSerializer):
+    members = UserSerializer(many=True, read_only=True) 
+    admin = UserSerializer(read_only=True) 
+
     class Meta:
         model = Room
-        fields = '__all__'
+        fields = ['id', 'name', 'members', 'admin']
 
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
