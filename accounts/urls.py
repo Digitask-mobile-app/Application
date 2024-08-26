@@ -6,6 +6,7 @@ from .views import (
         AddGroup,
         AddMembersView,
         RemoveMembersView,
+        RoomsApiView,
         LoginUserView, 
         MessageListView,
         TestingAuthenticatedReq, 
@@ -40,4 +41,5 @@ urlpatterns = [
     path('rooms/<int:id>/add-members/', AddMembersView.as_view(), name='add-members'),
     path('rooms/<int:id>/remove-members/', RemoveMembersView.as_view(), name='remove-members'),
     path('messages/', MessageListView.as_view(), name='message-list'),
+    path('RoomsApiView/', RoomsApiView.as_view(), name='RoomsApiView'),
 ]

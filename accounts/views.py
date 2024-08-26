@@ -330,3 +330,12 @@ class MessageListView(generics.ListAPIView):
         queryset = Message.objects.filter(room__in=user_rooms)
         return queryset
     
+class RoomsApiView(generics.ListAPIView):
+    serializer_class = RoomSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        if not self.request.user.is_authenticated:
+            return Room.objects.all()
+        else:
+            return Room.objects.filter(members=user)
