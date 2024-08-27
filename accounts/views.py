@@ -345,6 +345,11 @@ class MessageListView(generics.ListAPIView):
         user_rooms = Room.objects.filter(members=user)
         queryset = Message.objects.filter(room__in=user_rooms)
         return queryset
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({'request': self.request})
+        return context
 
 
 class RoomsApiView(generics.ListAPIView):

@@ -354,9 +354,20 @@ class UserMessageSerializer(serializers.ModelSerializer):
 
 class MessageSerializer(serializers.ModelSerializer):
     user = UserMessageSerializer()
+    type = serializers.SerializerMethodField()
+
     class Meta:
         model = Message
         fields = '__all__'
+
+    def get_type(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            if obj.user == request.user:
+                return 'send'
+            else:
+                return 'received'
+        return 'received'
 
 class AddRemoveRoomSerializer(serializers.ModelSerializer):
     class Meta:
