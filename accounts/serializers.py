@@ -346,7 +346,14 @@ class RoomSerializer(serializers.ModelSerializer):
         model = Room
         fields = ['id', 'name', 'members', 'admin']
 
+
+class UserMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id','email','first_name','last_name']
+
 class MessageSerializer(serializers.ModelSerializer):
+    user = UserMessageSerializer()
     class Meta:
         model = Message
         fields = '__all__'
