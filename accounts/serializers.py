@@ -72,7 +72,7 @@ class LoginSerializer(serializers.ModelSerializer):
             raise AuthenticationFailed(
                 "Etibarsız etimadnamələr, yenidən cəhd edin.")
 
-        tokens = user.tokens()
+   
         refresh = RefreshToken.for_user(user)
 
         if remember_me:
