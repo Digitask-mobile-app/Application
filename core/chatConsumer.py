@@ -55,23 +55,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
         content = text_data_json['content']
         user = self.scope['user']
        
-        try:
-            room = await database_sync_to_async(Room.objects.get)(id=room)
-
-            message = await database_sync_to_async(Message.objects.create)(user=user, room=room, content=content)
-
-            await self.channel_layer.group_send(
-                f'room_{slugify(room.name)}',
-                {
-                    'type': 'chat_message',
-                    'content': message.content,
-                    'timestamp':message.timestamp,
-                    'room':message.room,
-                    'user': user.email,
-                }
-            )
-        except:
-            print('Room yoxdur')
+   
+        room = await database_sync_to_async(Room.objects.get)(id=room)
+        message = await database_sync_to_async(Message.objects.create)(user=user, room=room, content=content)
+        await self.channel_layer.group_send(
+            f'room_{slugify(room.name)}',
+            {
+                'type': 'chat_message',
+                'content': message.content,
+                'timestamp':message.timestamp,
+                'room':message.room,
+                'user': user.email,
+            }
+        )
+       
 
 
     async def chat_message(self, event):
