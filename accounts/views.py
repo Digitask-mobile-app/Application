@@ -257,11 +257,13 @@ class AddGroup(generics.CreateAPIView):
 class AddMembersView(generics.UpdateAPIView):
     queryset = Room.objects.all()
     serializer_class = AddRemoveRoomSerializer
-    http_method_names = ['patch']
     lookup_field = 'id'
 
     def update(self, request, *args, **kwargs):
         room = self.get_object()
+
+        print("Room:", room)
+        print("Request Data:", request.data)
 
         user_ids = request.data.get('members', [])
 
@@ -279,9 +281,16 @@ class AddMembersView(generics.UpdateAPIView):
                 room.members.add(user)
                 added_users.append(user.email)
 
+        updated_members = room.members.all()
+        print("Updated Members:", updated_members)
+
+        members_data = [{"id": member.id, "first_name": member.first_name,
+                         "last_name": member.last_name} for member in updated_members]
+
         return Response({
             "added_users": added_users,
-            "already_members": already_members
+            "already_members": already_members,
+            "members": members_data
         }, status=status.HTTP_200_OK)
 
 
