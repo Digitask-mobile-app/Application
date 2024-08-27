@@ -64,7 +64,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'type': 'chat_message',
                 'content': message.content,
                 'timestamp':message.timestamp.isoformat(),
-                'room':message.room,
+                'room':room.id,
                 'user': user.email,
             }
         )
