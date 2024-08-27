@@ -263,7 +263,7 @@ class AddMembersView(generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         room = self.get_object()
 
-        user_ids = request.data.getlist('members')
+        user_ids = request.data.get('members', [])
 
         if not user_ids:
             return Response({"error": "A list of user IDs is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -273,7 +273,6 @@ class AddMembersView(generics.UpdateAPIView):
 
         for user_id in user_ids:
             user = get_object_or_404(User, id=user_id)
-            print(user)
             if user in room.members.all():
                 already_members.append(user.email)
             else:
