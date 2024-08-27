@@ -16,7 +16,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from .serializers import UserSerializer
-from .filters import UserFilter, UserTypeFilter,MessageFilter
+from .filters import UserFilter, UserTypeFilter, MessageFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from django.db.models import Q
@@ -25,6 +25,7 @@ from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 from django.db import IntegrityError
 from django_filters import rest_framework as filters
+
 
 class RegisterView(GenericAPIView):
     serializer_class = UserRegisterSerializer
@@ -248,80 +249,83 @@ class AddGroup(generics.CreateAPIView):
     queryset = Room.objects.all()
 
     def perform_create(self, serializer):
-        user = self.request.user 
-        room = serializer.save(admin=user)  
+        user = self.request.user
+        room = serializer.save(admin=user)
         room.members.add(user)
+
 
 class AddMembersView(generics.UpdateAPIView):
     queryset = Room.objects.all()
     serializer_class = AddRemoveRoomSerializer
-    lookup_field = 'id'  
+    http_method_names = ['patch']
+    lookup_field = 'id'
 
     def update(self, request, *args, **kwargs):
-        room = self.get_object() 
+        room = self.get_object()
 
-        user_ids = request.data.getlist('members')  
+        user_ids = request.data.getlist('members')
 
         if not user_ids:
             return Response({"error": "A list of user IDs is required"}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         added_users = []
         already_members = []
-        
+
         for user_id in user_ids:
-            user = get_object_or_404(User, id=user_id)  
+            user = get_object_or_404(User, id=user_id)
             print(user)
             if user in room.members.all():
                 already_members.append(user.email)
             else:
-                room.members.add(user)  
+                room.members.add(user)
                 added_users.append(user.email)
-        
+
         return Response({
             "added_users": added_users,
             "already_members": already_members
         }, status=status.HTTP_200_OK)
-    
+
 
 class RemoveMembersView(generics.UpdateAPIView):
     queryset = Room.objects.all()
     serializer_class = AddRemoveRoomSerializer
-    lookup_field = 'id'  
+    lookup_field = 'id'
 
     def update(self, request, *args, **kwargs):
-        room = self.get_object() 
-        user_ids = request.data.getlist('members') 
+        room = self.get_object()
+        user_ids = request.data.getlist('members')
 
         if not user_ids:
             return Response({"error": "A list of user IDs is required"}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         removed_users = []
         not_members = []
-        
+
         for user_id in user_ids:
-            user = get_object_or_404(User, id=user_id)  
-            
+            user = get_object_or_404(User, id=user_id)
+
             if user not in room.members.all():
                 not_members.append(user.email)
             else:
-                room.members.remove(user)  
+                room.members.remove(user)
                 removed_users.append(user.email)
-        
+
         return Response({
             "removed_users": removed_users,
             "not_members": not_members
         }, status=status.HTTP_200_OK)
-    
+
 
 class MessagePagination(PageNumberPagination):
     page_size = 1
     page_size_query_param = 'page_size'
     max_page_size = 100
 
+
 class MessageListView(generics.ListAPIView):
     serializer_class = MessageSerializer
     pagination_class = MessagePagination
-    permission_classes = [permissions.IsAuthenticated]  
+    permission_classes = [permissions.IsAuthenticated]
     filterset_class = MessageFilter
 
     def get_queryset(self):
@@ -329,7 +333,8 @@ class MessageListView(generics.ListAPIView):
         user_rooms = Room.objects.filter(members=user)
         queryset = Message.objects.filter(room__in=user_rooms)
         return queryset
-    
+
+
 class RoomsApiView(generics.ListAPIView):
     serializer_class = RoomSerializer
 
