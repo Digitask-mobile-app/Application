@@ -58,6 +58,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
    
         room = await database_sync_to_async(Room.objects.get)(id=room)
         message = await database_sync_to_async(Message.objects.create)(user=user, room=room, content=content)
+        
+        if user == message.user:
+            typeM = 'sent'
+        else:
+            typeM = 'received'
+
         await self.channel_layer.group_send(
             f'room_{slugify(room.name)}',
             {
@@ -65,7 +71,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'content': message.content,
                 'timestamp':message.timestamp.isoformat(),
                 'room':room.id,
-                'user': user.email,
+                'typeM':typeM,
+                'user': {
+                    'first_name':message.user.first_name,
+                    'last_name':message.user.last_name,
+                    'email':message.user.email
+                },
             }
         )
        
