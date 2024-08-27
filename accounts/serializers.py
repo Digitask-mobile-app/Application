@@ -364,7 +364,7 @@ class MessageSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
             if obj.user == request.user:
-                return 'send'
+                return 'sent'
             else:
                 return 'received'
         return 'received'
