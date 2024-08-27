@@ -16,7 +16,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         if user.is_authenticated:
             print(user,'--------------------------------------chat')
-            rooms = await database_sync_to_async(lambda: [x.name for x in user.rooms.all()])()
+            rooms = await database_sync_to_async(lambda: [x.name for x in user.member_rooms.all()])()
             
             for room_name in rooms: 
                 print(room_name,'--------------------------------------chat')
