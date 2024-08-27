@@ -301,7 +301,7 @@ class RemoveMembersView(generics.UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         room = self.get_object()
-        user_ids = request.data.getlist('members')
+        user_ids = request.data.get('members', [])
 
         if not user_ids:
             return Response({"error": "A list of user IDs is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -311,16 +311,20 @@ class RemoveMembersView(generics.UpdateAPIView):
 
         for user_id in user_ids:
             user = get_object_or_404(User, id=user_id)
-
-            if user not in room.members.all():
-                not_members.append(user.email)
-            else:
+            if user in room.members.all():
                 room.members.remove(user)
                 removed_users.append(user.email)
+            else:
+                not_members.append(user.email)
+
+        updated_members = room.members.all()
+        members_data = [{"id": member.id, "first_name": member.first_name,
+                         "last_name": member.last_name} for member in updated_members]
 
         return Response({
             "removed_users": removed_users,
-            "not_members": not_members
+            "not_members": not_members,
+            "members": members_data
         }, status=status.HTTP_200_OK)
 
 
