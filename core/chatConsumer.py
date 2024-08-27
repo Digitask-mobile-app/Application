@@ -6,6 +6,7 @@ from channels.db import database_sync_to_async
 import asyncio
 import json
 from asgiref.sync import sync_to_async
+from .utils import slugify
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -20,7 +21,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             
             for room_name in rooms: 
                 print(room_name,'--------------------------------------chat')
-                group_name = f'room_{room_name}'
+                group_name = f'room_{slugify(room_name)}'
                 await channel_layer.group_add(
                     group_name,
                     self.channel_name
@@ -41,7 +42,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             rooms = [x.name for x in user.rooms.all()]
             print(rooms)
             for room_name in rooms:
-                group_name = f'room_{room_name}'
+                group_name = f'room_{slugify(room_name)}'
                 await channel_layer.group_discard(
                     group_name,
                     self.channel_name
@@ -60,7 +61,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             message = await database_sync_to_async(Message.objects.create)(user=user, room=room, content=content)
 
             await self.channel_layer.group_send(
-                f'room_{room.name}',
+                f'room_{slugify(room.name)}',
                 {
                     'type': 'chat_message',
                     'content': message.content,
