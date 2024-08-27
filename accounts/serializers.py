@@ -77,10 +77,11 @@ class LoginSerializer(serializers.ModelSerializer):
 
         if remember_me:
             refresh.set_exp(lifetime=timedelta(days=30))
-
-        access_token = refresh.access_token
-        if remember_me:
+            access_token = refresh.access_token
             access_token.set_exp(lifetime=timedelta(days=30))
+        else:
+            access_token = refresh.access_token
+
 
         is_admin = False
         if user.user_type == 'Ofis menecer' or user.user_type == 'Texnik menecer':
@@ -92,8 +93,8 @@ class LoginSerializer(serializers.ModelSerializer):
 
         return {
             'email': user.email,
-            'access_token': str(tokens.get('access')),
-            'refresh_token': str(tokens.get('refresh')),
+            'access_token': str(access_token),
+            'refresh_token': str(refresh),
             'user_type': user.user_type,
             'is_admin': is_admin,
             'phone': user.phone,
