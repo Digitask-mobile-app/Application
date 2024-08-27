@@ -51,12 +51,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         from accounts.models import  Message, Room
         text_data_json = json.loads(text_data)
-        room_name = text_data_json['room']
+        room = text_data_json['room']
         content = text_data_json['content']
         user = self.scope['user']
        
         try:
-            room = await database_sync_to_async(Room.objects.get)(name=room_name)
+            room = await database_sync_to_async(Room.objects.get)(id=room)
 
             message = await database_sync_to_async(Message.objects.create)(user=user, room=room, content=content)
 
@@ -77,8 +77,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         content = event['content']
         user = event['user']
+        timestamp = event['timestamp']
+        room = event['room']
 
         await self.send(text_data=json.dumps({
             'content': content,
             'user': user,
+            'timestamp':timestamp,
+            'room':room
         }))
