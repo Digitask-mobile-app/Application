@@ -49,17 +49,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 )
 
     async def receive(self, text_data):
-        from accounts.models import  Message, Room
+        from accounts.models import  Message, Room,User
         text_data_json = json.loads(text_data)
         room = text_data_json['room']
         content = text_data_json['content']
+        email = text_data_json['email']
+        sender = await database_sync_to_async(User.objects.get)(email=email)
         user = self.scope['user']
        
    
         room = await database_sync_to_async(Room.objects.get)(id=room)
         message = await database_sync_to_async(Message.objects.create)(user=user, room=room, content=content)
         
-        if user == message.user:
+        if user == sender:
             typeM = 'sent'
         else:
             typeM = 'received'
