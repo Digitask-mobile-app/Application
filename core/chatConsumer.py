@@ -58,7 +58,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
    
         room = await database_sync_to_async(Room.objects.get)(id=room)
         message = await database_sync_to_async(Message.objects.create)(user=user, room=room, content=content)
-
+        print(message,'meeeeeeeeeeeeeeeeeeeeeeeeeeessssssssssssssage')
+        print(message.id)
         if user.email == self.user_email:
             typeM = 'sent'
         else:
