@@ -353,7 +353,7 @@ class AggregatedPageNumberPagination(PageNumberPagination):
         # Create a paginator instance
         paginator = Paginator(queryset, page_size)
 
-        # Check if the requested page number is valid
+        # Handle cases where the page number is out of range
         if page_number > paginator.num_pages:
             # Return all data if the page number is out of range
             combined_data = []
@@ -370,6 +370,7 @@ class AggregatedPageNumberPagination(PageNumberPagination):
             return combined_data
 
     def get_paginated_response(self, data):
+        # This method is required by DRF but can be overridden to return custom metadata if needed
         return self.get_paginated_response(data)
     
 class MessageListView(generics.ListAPIView):
