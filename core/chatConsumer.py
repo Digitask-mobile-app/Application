@@ -16,18 +16,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
         user = self.scope['user']
         self.user_email = self.scope['user'].email
         if user.is_authenticated:
-            print(user,'--------------------------------------chat')
+    
             rooms = await database_sync_to_async(lambda: [x.name for x in user.member_rooms.all()])()
             
             for room_name in rooms: 
-                print(room_name,'--------------------------------------chat')
+
                 group_name = f'room_{slugify(room_name)}'
                 await channel_layer.group_add(
                     group_name,
                     self.channel_name
                 )
         else:
-            print('user yoxdur --------------------------------------chat')
+    
             await self.send(text_data=json.dumps({
                 'message': 'user auth deyil'
             }))
@@ -37,10 +37,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         channel_layer = get_channel_layer()
         user = self.scope['user']
-        print('exit from chat --------------------------------------chat')
+ 
         if user.is_authenticated:
             rooms = await database_sync_to_async(lambda: [x.name for x in user.member_rooms.all()])()
-            print(rooms)
+   
             for room_name in rooms:
                 group_name = f'room_{slugify(room_name)}'
                 await channel_layer.group_discard(
@@ -58,8 +58,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
    
         room = await database_sync_to_async(Room.objects.get)(id=room)
         message = await database_sync_to_async(Message.objects.create)(user=user, room=room, content=content)
-        print(message,'meeeeeeeeeeeeeeeeeeeeeeeeeeessssssssssssssage')
-        print(message.id)
+
         if user.email == self.user_email:
             typeM = 'sent'
         else:
