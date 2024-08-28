@@ -53,13 +53,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         room = text_data_json['room']
         content = text_data_json['content']
-        email = text_data_json['email']
         user = self.scope['user']
        
    
         room = await database_sync_to_async(Room.objects.get)(id=room)
         message = await database_sync_to_async(Message.objects.create)(user=user, room=room, content=content)
-        
+
         if user.email == self.user_email:
             typeM = 'sent'
         else:
