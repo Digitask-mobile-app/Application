@@ -340,9 +340,32 @@ class MessagePagination(PageNumberPagination):
     max_page_size = 100
 
 
+from rest_framework.pagination import PageNumberPagination
+from django.core.paginator import Paginator
+
+class AggregatedPageNumberPagination(PageNumberPagination):
+    page_size = 20  
+
+    def paginate_queryset(self, queryset, request, view=None):
+        page_number = int(request.query_params.get('page', 1))
+        page_size = self.page_size
+        paginator = Paginator(queryset, page_size)
+        if page_number > paginator.num_pages:
+            combined_data = []
+            for i in range(1, paginator.num_pages + 1):
+                page = paginator.page(i)
+                combined_data.extend(page.object_list)
+            return combined_data
+        else:
+            combined_data = []
+            for i in range(1, page_number + 1):
+                page = paginator.page(i)
+                combined_data.extend(page.object_list)
+            return combined_data
+        
 class MessageListView(generics.ListAPIView):
     serializer_class = MessageSerializer
-    pagination_class = MessagePagination
+    pagination_class = AggregatedPageNumberPagination
     permission_classes = [permissions.IsAuthenticated]
     filterset_class = MessageFilter
 
