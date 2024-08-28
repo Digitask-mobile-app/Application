@@ -14,9 +14,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         channel_layer = get_channel_layer()
 
         user = self.scope['user']
-        await self.send(text_data=json.dumps({
-                'email': user.email
-            }))
         self.user_email = self.scope['user'].email
         if user.is_authenticated:
     
@@ -62,10 +59,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         room = await database_sync_to_async(Room.objects.get)(id=room)
         message = await database_sync_to_async(Message.objects.create)(user=user, room=room, content=content)
 
-        if message.user.email == self.user_email:
-            typeM = 'sent'
-        else:
-            typeM = 'received'
+
      
         await self.channel_layer.group_send(
             f'room_{slugify(room.name)}',
@@ -75,7 +69,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'content': message.content,
                 'timestamp':message.timestamp.isoformat(),
                 'room':room.id,
-                'typeM':typeM,
                 'user': {
                     'first_name':message.user.first_name,
                     'last_name':message.user.last_name,
@@ -91,7 +84,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         user = event['user']
         timestamp = event['timestamp']
         room = event['room']
-        typeM = event['typeM']
         id = event['id']
 
         await self.send(text_data=json.dumps({
@@ -100,12 +92,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'user': user,
             'timestamp':timestamp,
             'room':room,
-            'typeM':typeM
         }))
 
-    async def chat_email(self, event):
-        email = event['email']
-
-        await self.send(text_data=json.dumps({
-            'email':email
-        }))
+    
