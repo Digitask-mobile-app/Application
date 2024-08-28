@@ -63,7 +63,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             typeM = 'sent'
         else:
             typeM = 'received'
-
+        print(user.email,self.user_email,message.user.email,'----------------------------------')
         await self.channel_layer.group_send(
             f'room_{slugify(room.name)}',
             {
