@@ -14,7 +14,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         channel_layer = get_channel_layer()
 
         user = self.scope['user']
-
+        self.user_email = self.scope['user'].email
         if user.is_authenticated:
             print(user,'--------------------------------------chat')
             rooms = await database_sync_to_async(lambda: [x.name for x in user.member_rooms.all()])()
@@ -49,21 +49,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 )
 
     async def receive(self, text_data):
-        from accounts.models import  Message, Room,User
+        from accounts.models import  Message, Room
         text_data_json = json.loads(text_data)
         room = text_data_json['room']
         content = text_data_json['content']
         email = text_data_json['email']
-        print(email,'sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss')
-        sender = await database_sync_to_async(User.objects.get)(email=email)
-        print(sender,'mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
         user = self.scope['user']
        
    
         room = await database_sync_to_async(Room.objects.get)(id=room)
         message = await database_sync_to_async(Message.objects.create)(user=user, room=room, content=content)
         
-        if user == sender:
+        if user.email == self.user_email:
             typeM = 'sent'
         else:
             typeM = 'received'
