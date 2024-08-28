@@ -349,7 +349,7 @@ class MessageListView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         user_rooms = Room.objects.filter(members=user)
-        queryset = Message.objects.filter(room__in=user_rooms).order_by('timestamp')
+        queryset = Message.objects.filter(room__in=user_rooms).order_by('-timestamp')
         return queryset
     
     def get_serializer_context(self):
