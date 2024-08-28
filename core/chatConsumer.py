@@ -39,7 +39,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         user = self.scope['user']
         print('exit from chat --------------------------------------chat')
         if user.is_authenticated:
-            rooms = [x.name for x in user.rooms.all()]
+            rooms = [x.name for x in user.member_rooms.all()]
             print(rooms)
             for room_name in rooms:
                 group_name = f'room_{slugify(room_name)}'
