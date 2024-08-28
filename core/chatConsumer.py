@@ -69,6 +69,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             f'room_{slugify(room.name)}',
             {
                 'type': 'chat_message',
+                'id':message.id
                 'content': message.content,
                 'timestamp':message.timestamp.isoformat(),
                 'room':room.id,
@@ -89,8 +90,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         timestamp = event['timestamp']
         room = event['room']
         typeM = event['typeM']
+        id = event['id']
 
         await self.send(text_data=json.dumps({
+            'id':id,
             'content': content,
             'user': user,
             'timestamp':timestamp,
