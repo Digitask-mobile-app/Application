@@ -344,25 +344,34 @@ from rest_framework.pagination import PageNumberPagination
 from django.core.paginator import Paginator
 
 class AggregatedPageNumberPagination(PageNumberPagination):
-    page_size = 20  
+    page_size = 10  # Number of items per page
 
     def paginate_queryset(self, queryset, request, view=None):
         page_number = int(request.query_params.get('page', 1))
         page_size = self.page_size
+
+        # Create a paginator instance
         paginator = Paginator(queryset, page_size)
+
+        # Check if the requested page number is valid
         if page_number > paginator.num_pages:
+            # Return all data if the page number is out of range
             combined_data = []
             for i in range(1, paginator.num_pages + 1):
                 page = paginator.page(i)
                 combined_data.extend(page.object_list)
             return combined_data
         else:
+            # Aggregate data from all pages up to the current page
             combined_data = []
             for i in range(1, page_number + 1):
                 page = paginator.page(i)
                 combined_data.extend(page.object_list)
             return combined_data
-        
+
+    def get_paginated_response(self, data):
+        return self.get_paginated_response(data)
+    
 class MessageListView(generics.ListAPIView):
     serializer_class = MessageSerializer
     pagination_class = AggregatedPageNumberPagination
