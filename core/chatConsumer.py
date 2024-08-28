@@ -76,7 +76,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'user': {
                     'first_name':message.user.first_name,
                     'last_name':message.user.last_name,
-                    'email':message.user.email
+                    'email':message.user.email,
+                    'user_meail':self.user_email
                 },
             }
         )
