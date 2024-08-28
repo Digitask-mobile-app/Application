@@ -69,7 +69,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             f'room_{slugify(room.name)}',
             {
                 'type': 'chat_message',
-                'id':message.id
+                'id':message.id,
                 'content': message.content,
                 'timestamp':message.timestamp.isoformat(),
                 'room':room.id,
