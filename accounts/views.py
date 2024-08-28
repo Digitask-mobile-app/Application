@@ -71,7 +71,6 @@ class VerifyUserEmail(GenericAPIView):
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import AllowAny
 
-@csrf_exempt
 class LoginUserView(GenericAPIView):
     serializer_class = LoginSerializer
     permission_classes = [AllowAny]
