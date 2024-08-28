@@ -21,7 +21,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             
 
             await self.send(text_data=json.dumps({
-                'user.email': user.email
+                'email': user.email
             }))
 
             rooms = await database_sync_to_async(lambda: [x.name for x in user.member_rooms.all()])()
