@@ -68,9 +68,13 @@ class VerifyUserEmail(GenericAPIView):
             return Response({'message': 'passcode not provided'}, status=status.HTTP_400_BAD_REQUEST)
 
 
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import AllowAny
+
+@csrf_exempt
 class LoginUserView(GenericAPIView):
     serializer_class = LoginSerializer
-
+    permission_classes = [AllowAny]
     def post(self, request):
         print(request.data)
         serializer = self.serializer_class(
