@@ -14,6 +14,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         channel_layer = get_channel_layer()
 
         user = self.scope['user']
+        await self.send(text_data=json.dumps({
+                'email': user.email
+            }))
         self.user_email = self.scope['user'].email
         if user.is_authenticated:
     
@@ -77,7 +80,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'first_name':message.user.first_name,
                     'last_name':message.user.last_name,
                     'email':message.user.email,
-                    'user_meail':self.user_email
                 },
             }
         )
@@ -99,4 +101,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'timestamp':timestamp,
             'room':room,
             'typeM':typeM
+        }))
+
+    async def chat_email(self, event):
+        email = event['email']
+
+        await self.send(text_data=json.dumps({
+            'email':email
         }))
