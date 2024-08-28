@@ -14,9 +14,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
         channel_layer = get_channel_layer()
 
         user = self.scope['user']
-        self.user_email = self.scope['user'].email
+        
+
+
         if user.is_authenticated:
-    
+            
+
+            await self.send(text_data=json.dumps({
+                'user.email': user.email
+            }))
+
             rooms = await database_sync_to_async(lambda: [x.name for x in user.member_rooms.all()])()
             
             for room_name in rooms: 
@@ -59,7 +66,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         room = await database_sync_to_async(Room.objects.get)(id=room)
         message = await database_sync_to_async(Message.objects.create)(user=user, room=room, content=content)
 
-
      
         await self.channel_layer.group_send(
             f'room_{slugify(room.name)}',
@@ -78,7 +84,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
        
 
-
     async def chat_message(self, event):
         content = event['content']
         user = event['user']
@@ -94,4 +99,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'room':room,
         }))
 
-    
+    async def chat_email(self, event):
+        email = event['email']
+
+        await self.send(text_data=json.dumps({
+            'email':email,
+        }))
+
