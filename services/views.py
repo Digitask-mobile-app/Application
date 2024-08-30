@@ -321,7 +321,7 @@ class MeetingsApiView(generics.ListAPIView):
 
     def get_queryset(self):
         now = timezone.now()
-        return Meeting.objects.filter(date__gte=now)
+        return Meeting.objects.filter(date__lte=now)
 
 # @csrf_exempt
 # def export_item(request, id):
