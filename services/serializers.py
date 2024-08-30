@@ -372,7 +372,7 @@ class MainPageUserSerializer(serializers.ModelSerializer):
     def get_meetings(self, obj):
         now = timezone.now()
         # Filter meetings to include only those that are in the future
-        upcoming_meetings = Meeting.objects.filter(user=obj, date__gte=now)
+        upcoming_meetings = Meeting.objects.filter(participants=obj, date__gte=now)
         data = MeetingSerializer(upcoming_meetings, many=True).data
         return data
 
