@@ -166,7 +166,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         user = self.scope['user']
         location = data.get('location', {})
-
+        print(location,'-------------')
         if location is not None and user.is_authenticated:
             latitude = location.get('latitude')
             longitude = location.get('longitude')
@@ -201,6 +201,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
         user.latitude = latitude
         user.longitude = longitude
         user.save()
+        print(user.latitude,user.longitude,'locationssssssssssssssssssssssssssss')
 
 
 # await self.channel_layer.group_send(
