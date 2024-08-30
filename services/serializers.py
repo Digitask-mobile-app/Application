@@ -6,6 +6,7 @@ from django.db.models import Q
 from .filters import TaskFilter
 from django.db.models import Count
 from datetime import date
+from django.utils import timezone
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -305,7 +306,7 @@ class MainPageUserSerializer(serializers.ModelSerializer):
     task_details = serializers.SerializerMethodField()
     completed_tasks = serializers.SerializerMethodField()
     ongoing_tasks = serializers.SerializerMethodField()
-    meetings = MeetingSerializer(many=True)
+    meetings = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -366,6 +367,13 @@ class MainPageUserSerializer(serializers.ModelSerializer):
             ongoing_tasks = Task.objects.filter(
                 status__in=['started', 'inprogress'])
         data = TaskSerializer(ongoing_tasks, many=True).data
+        return data
+    
+    def get_meetings(self, obj):
+        now = timezone.now()
+        # Filter meetings to include only those that are in the future
+        upcoming_meetings = Meeting.objects.filter(user=obj, date__gte=now)
+        data = MeetingSerializer(upcoming_meetings, many=True).data
         return data
 
 
