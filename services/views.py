@@ -314,10 +314,14 @@ from django.http import JsonResponse
 def health_check(request):
     return JsonResponse({"status": "ok"}, status=200)
 
+from django.utils import timezone
 
 class MeetingsApiView(generics.ListAPIView):
-    queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
+
+    def get_queryset(self):
+        now = timezone.now()
+        return Meeting.objects.filter(date__gte=now)
 
 # @csrf_exempt
 # def export_item(request, id):
