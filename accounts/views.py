@@ -4,7 +4,7 @@ from multiprocessing import context
 from django.shortcuts import render
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from .models import OneTimePassword, User
+from .models import OneTimePassword, User, Notification
 from .serializers import *
 from rest_framework import status, generics, permissions, viewsets
 from .utils import send_generated_otp_to_email
@@ -368,3 +368,19 @@ class RoomsApiView(generics.ListAPIView):
             return Room.objects.all()
         else:
             return Room.objects.filter(members=user)
+        
+
+class MarkNotificationsAsReadView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = UpdateReadStatusSerializer(data=request.data)
+        if serializer.is_valid():
+            notification_ids = serializer.validated_data['notification_ids']
+            
+            notifications = Notification.objects.filter(id__in=notification_ids)
+            
+
+            for notification in notifications:
+                notification.read.add(request.user)
+            
+            return Response({'status': 'Notifications updated'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -11,6 +11,7 @@ from .views import (
         MessageListView,
         TestingAuthenticatedReq, 
         PasswordResetConfirm, 
+        MarkNotificationsAsReadView,
         PasswordResetRequestView,
         SetNewPasswordView, LogoutApiView, 
         delete_user, ProfileView, UserListView, UserFilterListView,
@@ -42,4 +43,5 @@ urlpatterns = [
     path('rooms/<int:id>/remove-members/', RemoveMembersView.as_view(), name='remove-members'),
     path('messages/', MessageListView.as_view(), name='message-list'),
     path('RoomsApiView/', RoomsApiView.as_view(), name='RoomsApiView'),
+    path('notifications/mark-as-read/', MarkNotificationsAsReadView.as_view(), name='mark-notifications-as-read'),
 ]

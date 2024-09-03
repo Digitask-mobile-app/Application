@@ -368,3 +368,7 @@ class AddRemoveRoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = ['id','members']
+
+
+class UpdateReadStatusSerializer(serializers.Serializer):
+    notification_ids = serializers.ListField(child=serializers.IntegerField())
