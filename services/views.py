@@ -64,7 +64,7 @@ class PerformanceListView(generics.ListAPIView):
     filter_backends = (DjangoFilterBackend,)
 
     def get_queryset(self):
-        queryset = User.objects.all()
+        queryset = User.objects.filter(user_type="Texnik")
 
         users_with_totals = []
 

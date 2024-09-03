@@ -336,7 +336,7 @@ class PerformanceUserSerializer(serializers.ModelSerializer):
 class RoomSerializer(serializers.ModelSerializer):
     members = UserSerializer(many=True, read_only=True) 
     admin = UserSerializer(read_only=True) 
-
+    
     class Meta:
         model = Room
         fields = ['id', 'name', 'members', 'admin']
