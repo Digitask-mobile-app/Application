@@ -17,6 +17,9 @@ from accounts.models import Notification
 class CreateTaskView(generics.CreateAPIView):
     serializer_class = TaskDetailSerializer
 
+class CreateGroupView(generics.CreateAPIView):
+    serializer_class = GroupSerializer
+
 
 class TaskListView(ListAPIView):
     queryset = Task.objects.all()

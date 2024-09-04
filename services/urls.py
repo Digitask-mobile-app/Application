@@ -21,6 +21,7 @@ urlpatterns = [
     path('texnik-users/', views.TexnikUserListView.as_view(),
          name='texnik-user-list'),
     path('groups/', views.GroupListView.as_view(), name='groups'),
+    path("create_employee_group", views.CreateGroupView.as_view(), name="create_employee_group"),
     path('update_task/<int:pk>/',
          views.TaskUpdateAPIView.as_view(), name='update_task'),
     path('create_meeting/', views.CreateMeetingView.as_view(), name='create_meeting'),
