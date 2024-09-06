@@ -48,7 +48,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_online = models.BooleanField(default=False)
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
-
+    profil_picture = models.ImageField(null=True,blank=True)
+    
     group = models.ForeignKey(
         Group,
         verbose_name=('groups'),

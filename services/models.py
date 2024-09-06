@@ -32,6 +32,7 @@ class Task(Status):
     registration_number = models.CharField(max_length=100)
     contact_number = models.CharField(max_length=100, null=True, blank=True)
     location = models.CharField(max_length=100)
+    passport = models.ImageField(null=True,blank=True)
     note = models.TextField(null=True, blank=True)
     date = models.DateField()
     start_time = models.TimeField(null=True, blank=True)
