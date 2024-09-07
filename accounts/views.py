@@ -255,9 +255,9 @@ class AddGroup(generics.CreateAPIView):
     queryset = Room.objects.all()
 
     def perform_create(self, serializer):
-        user = self.request.user
-        room = serializer.save(admin=user)
-        room.members.add(user)
+        room = serializer.save() 
+        room.members.add(self.request.user)
+
 
 
 class AddMembersView(generics.UpdateAPIView):

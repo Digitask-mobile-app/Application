@@ -71,8 +71,8 @@ class LoginSerializer(serializers.ModelSerializer):
         if not user:
             raise AuthenticationFailed(
                 "Etibarsız etimadnamələr, yenidən cəhd edin.")
-        print(user,'-0--------------------')
-   
+        print(user, '-0--------------------')
+
         refresh = RefreshToken.for_user(user)
         print(refresh)
         if remember_me:
@@ -81,7 +81,6 @@ class LoginSerializer(serializers.ModelSerializer):
             access_token.set_exp(lifetime=timedelta(days=30))
         else:
             access_token = refresh.access_token
-
 
         is_admin = user.user_type in ['Ofis menecer', 'Texnik menecer']
         print(is_admin)
@@ -333,19 +332,31 @@ class PerformanceUserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'first_name', 'last_name', 'user_type']
 
+
 class RoomSerializer(serializers.ModelSerializer):
-    members = UserSerializer(many=True, read_only=True) 
+    members = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), many=True, required=False)
     admin = UserSerializer(read_only=True) 
-    
+
     class Meta:
         model = Room
         fields = ['id', 'name', 'members', 'admin']
+
+    def create(self, validated_data):
+        members = validated_data.pop('members', [])
+        admin = self.context['request'].user  
+        room = Room.objects.create(admin=admin, **validated_data)
+
+        room.members.set(members)
+
+        return room
 
 
 class UserMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','email','first_name','last_name']
+        fields = ['id', 'email', 'first_name', 'last_name']
+
 
 class MessageSerializer(serializers.ModelSerializer):
     user = UserMessageSerializer()
@@ -364,10 +375,11 @@ class MessageSerializer(serializers.ModelSerializer):
                 return 'received'
         return 'received'
 
+
 class AddRemoveRoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
-        fields = ['id','members']
+        fields = ['id', 'members']
 
 
 class UpdateReadStatusSerializer(serializers.Serializer):
