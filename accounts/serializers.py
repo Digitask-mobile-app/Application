@@ -334,19 +334,27 @@ class PerformanceUserSerializer(serializers.ModelSerializer):
 
 
 class RoomSerializer(serializers.ModelSerializer):
+    # Allow the members field to be writable
     members = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(), many=True, required=False)
-    admin = UserSerializer(read_only=True) 
+        queryset=User.objects.all(), many=True)
+    admin = serializers.PrimaryKeyRelatedField(
+        read_only=True)  # Keep admin read-only
 
     class Meta:
         model = Room
         fields = ['id', 'name', 'members', 'admin']
 
     def create(self, validated_data):
+        # Remove the 'members' list from validated_data, if present
         members = validated_data.pop('members', [])
-        admin = self.context['request'].user  
+
+        # Extract the admin from the request context
+        admin = self.context['request'].user
+
+        # Create the Room object without the 'admin' field in the validated data
         room = Room.objects.create(admin=admin, **validated_data)
 
+        # Add members to the room
         room.members.set(members)
 
         return room

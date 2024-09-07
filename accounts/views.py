@@ -68,13 +68,8 @@ class VerifyUserEmail(GenericAPIView):
             return Response({'message': 'passcode not provided'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
-
 class LoginUserView(GenericAPIView):
     serializer_class = LoginSerializer
-
-
 
     def post(self, request):
         print(request.data)
@@ -255,9 +250,11 @@ class AddGroup(generics.CreateAPIView):
     queryset = Room.objects.all()
 
     def perform_create(self, serializer):
-        room = serializer.save() 
-        room.members.add(self.request.user)
+        # Save the room object and set the current user as admin
+        room = serializer.save()
 
+        # Optionally, add the current user as a member if needed
+        room.members.add(self.request.user)
 
 
 class AddMembersView(generics.UpdateAPIView):
@@ -340,7 +337,6 @@ class MessagePagination(PageNumberPagination):
     max_page_size = 100
 
 
-
 class MessageListView(generics.ListAPIView):
     serializer_class = MessageSerializer
     pagination_class = MessagePagination
@@ -350,9 +346,10 @@ class MessageListView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         user_rooms = Room.objects.filter(members=user)
-        queryset = Message.objects.filter(room__in=user_rooms).order_by('-timestamp')
+        queryset = Message.objects.filter(
+            room__in=user_rooms).order_by('-timestamp')
         return queryset
-    
+
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context.update({'request': self.request})
@@ -368,19 +365,19 @@ class RoomsApiView(generics.ListAPIView):
             return Room.objects.all()
         else:
             return Room.objects.filter(members=user)
-        
+
 
 class MarkNotificationsAsReadView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = UpdateReadStatusSerializer(data=request.data)
         if serializer.is_valid():
             notification_ids = serializer.validated_data['notification_ids']
-            
-            notifications = Notification.objects.filter(id__in=notification_ids)
-            
+
+            notifications = Notification.objects.filter(
+                id__in=notification_ids)
 
             for notification in notifications:
                 notification.read.add(request.user)
-            
+
             return Response({'status': 'Notifications updated'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
