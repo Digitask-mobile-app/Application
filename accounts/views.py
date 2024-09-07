@@ -246,14 +246,12 @@ class UserFilterListView(generics.ListAPIView):
 
 
 class AddGroup(generics.CreateAPIView):
-    serializer_class = RoomSerializer
+    serializer_class = CreateRoomSerializer
     queryset = Room.objects.all()
 
     def perform_create(self, serializer):
-        # Save the room object and set the current user as admin
         room = serializer.save()
 
-        # Optionally, add the current user as a member if needed
         room.members.add(self.request.user)
 
 
