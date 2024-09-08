@@ -223,7 +223,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'email', 'first_name', 'last_name', 'phone',
-            'user_type', 'groupData', 'group'
+            'user_type', 'groupData', 'group', 'profil_picture'
         ]
 
     def update(self, instance, validated_data):
@@ -332,33 +332,20 @@ class PerformanceUserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'first_name', 'last_name', 'user_type']
 
+
 class RoomSerializer(serializers.ModelSerializer):
-    members = UserSerializer(many=True, read_only=True) 
-    admin = UserSerializer(read_only=True) 
-    
+    members = UserSerializer(many=True, read_only=True)
+    admin = UserSerializer(read_only=True)
+
     class Meta:
         model = Room
         fields = ['id', 'name', 'members', 'admin']
 
 
 class CreateRoomSerializer(serializers.ModelSerializer):
-    members = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(), many=True
-    )
-    admin = serializers.PrimaryKeyRelatedField(
-        read_only=True
-    )  
-
     class Meta:
         model = Room
-        fields = ['id', 'name', 'members', 'admin']
-
-    def create(self, validated_data):
-        members = validated_data.pop('members', [])
-        admin = self.context['request'].user
-        room = Room.objects.create(admin=admin, **validated_data)
-        room.members.set(members)
-        return room
+        fields = ['name']
 
 
 class UserMessageSerializer(serializers.ModelSerializer):

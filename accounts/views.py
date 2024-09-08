@@ -180,18 +180,26 @@ def update_auto_increment():
             "UPDATE sqlite_sequence SET seq = (SELECT MAX(id) FROM myapp_task) WHERE name = 'myapp_task'")
 
 
-class ProfileView(generics.RetrieveUpdateAPIView):
-    serializer_class = ProfileSerializer
+class ProfileView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
+    serializer_class = ProfileSerializer
+    http_method_names = ['patch']
 
     def get_object(self):
         return self.request.user
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+# class ProfileView(generics.RetrieveUpdateAPIView):
+#     serializer_class = ProfileSerializer
+#     permission_classes = [permissions.IsAuthenticated]
 
-    def patch(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+#     def get_object(self):
+#         return self.request.user
+
+#     def put(self, request, *args, **kwargs):
+#         return self.update(request, *args, **kwargs)
+
+#     def patch(self, request, *args, **kwargs):
+#         return self.update(request, *args, **kwargs)
 
 
 class UserListView(generics.ListAPIView):
@@ -253,6 +261,19 @@ class AddGroup(generics.CreateAPIView):
         room = serializer.save()
 
         room.members.add(self.request.user)
+
+
+class AddGroup(generics.CreateAPIView):
+    serializer_class = CreateRoomSerializer
+    queryset = Room.objects.all()
+
+    def perform_create(self, serializer):
+        room = serializer.save()
+
+        user = self.request.user
+        room.members.add(user)
+        room.admin = user
+        room.save()
 
 
 class AddMembersView(generics.UpdateAPIView):

@@ -1,3 +1,5 @@
+from django.utils import timezone
+from django.http import JsonResponse
 from .models import Task, Item, History
 from .serializers import *
 from .filters import StatusAndTaskFilter, WarehouseItemFilter, HistoryFilter, IncrementHistoryFilter
@@ -16,6 +18,7 @@ from accounts.models import Notification
 
 class CreateTaskView(generics.CreateAPIView):
     serializer_class = TaskDetailSerializer
+
 
 class CreateGroupView(generics.CreateAPIView):
     serializer_class = GroupSerializer
@@ -111,6 +114,11 @@ class ItemListView(ListAPIView):
     serializer_class = WarehouseItemSerializer
     filterset_class = WarehouseItemFilter
     filter_backends = (DjangoFilterBackend,)
+
+
+class CreateWarehouseView(generics.CreateAPIView):
+    queryset = Warehouse.objects.all()
+    serializer_class = WarehouseSerializer
 
 
 class WarehouseListView(ListAPIView):
@@ -275,7 +283,7 @@ class UpdateVoiceView(generics.UpdateAPIView):
 
 class UpdateTaskView(generics.UpdateAPIView):
     queryset = Task.objects.all()
-    serializer_class = TaskUpdateSerializer
+    serializer_class = TaskStatusUpdateSerializer
     permission_classes = [IsAuthenticated]
     http_method_names = ['patch']
 
@@ -285,7 +293,7 @@ class UpdateTaskView(generics.UpdateAPIView):
         return context
 
     def put(self, request, *args, **kwargs):
-        print(request.data,'--------------------------')
+        print(request.data, '--------------------------')
         return self.update(request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
@@ -312,12 +320,10 @@ class UpdateTaskView(generics.UpdateAPIView):
         notification.users.set(texnik_users | plumber_users)
         notification.save()
 
-from django.http import JsonResponse
 
 def health_check(request):
     return JsonResponse({"status": "ok"}, status=200)
 
-from django.utils import timezone
 
 class MeetingsApiView(generics.ListAPIView):
     serializer_class = MeetingSerializer
