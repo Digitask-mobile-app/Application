@@ -216,7 +216,8 @@ class VerifyUserEmailSerializer(serializers.Serializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     groupData = serializers.PrimaryKeyRelatedField(
-        queryset=Group.objects.all(), required=False)
+        queryset=Group.objects.all(), required=False
+    )
     group = GroupSerializer(read_only=True)
 
     class Meta:
@@ -238,6 +239,8 @@ class ProfileSerializer(serializers.ModelSerializer):
         instance.user_type = validated_data.get(
             'user_type', instance.user_type)
         instance.email = validated_data.get('email', instance.email)
+        if 'profil_picture' in validated_data:
+            instance.profil_picture = validated_data['profil_picture']
         instance.save()
         return instance
 

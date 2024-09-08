@@ -10,7 +10,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name', 'phone', 'user_type', 'group','timestamp','is_online','latitude','longitude',)}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'phone', 'user_type', 'group','timestamp','is_online','latitude','longitude','profil_picture')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login',)}),
     )

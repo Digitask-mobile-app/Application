@@ -1,13 +1,9 @@
 from django.db import connection
-from ast import Expression
-from multiprocessing import context
-from django.shortcuts import render
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from .models import OneTimePassword, User, Notification
 from .serializers import *
-from rest_framework import status, generics, permissions, viewsets
-from .utils import send_generated_otp_to_email
+from rest_framework import status, generics, permissions
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import smart_str, DjangoUnicodeDecodeError
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -21,10 +17,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
-from django.core.mail import send_mail
-from django.utils.crypto import get_random_string
-from django.db import IntegrityError
 from django_filters import rest_framework as filters
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 class RegisterView(GenericAPIView):
@@ -183,10 +177,16 @@ def update_auto_increment():
 class ProfileView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ProfileSerializer
-    http_method_names = ['patch']
+    parser_classes = (MultiPartParser, FormParser)
 
     def get_object(self):
         return self.request.user
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
 
 class ProfileRetrieveView(generics.RetrieveAPIView):
