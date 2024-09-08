@@ -1,4 +1,5 @@
 
+import re
 def slugify(title):
     symbol_mapping = (
         (' ', '-'),
@@ -19,6 +20,9 @@ def slugify(title):
         ("'", '-'),
         ('"', '-'),
         (';', '-'),
+        ('/', '-'),
+        ('|', '-'),
+        (';', '-'),
         ('ə', 'e'),
         ('ı', 'i'),
         ('ö', 'o'),
@@ -27,11 +31,14 @@ def slugify(title):
         ('ş', 's'),
         ('ç', 'c'),
     )
-
+    
     title_url = title.strip().lower()
 
     for before, after in symbol_mapping:
         title_url = title_url.replace(before, after)
 
-    return title_url
+    valid_characters = re.compile(r'[^a-zA-Z0-9._-]')
+    sanitized_name = valid_characters.sub('_', title_url)
+
+    return sanitized_name
 
