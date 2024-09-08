@@ -219,6 +219,8 @@ class ProfileSerializer(serializers.ModelSerializer):
         queryset=Group.objects.all(), required=False
     )
     group = GroupSerializer(read_only=True)
+    profil_picture = serializers.ImageField(
+        allow_empty_file=True, required=False)
 
     class Meta:
         model = User
