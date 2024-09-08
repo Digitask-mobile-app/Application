@@ -29,6 +29,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             for room_name in rooms: 
 
                 group_name = f'room_{slugify(room_name)}'
+                print(group_name,'ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg')
                 await channel_layer.group_add(
                     group_name,
                     self.channel_name
