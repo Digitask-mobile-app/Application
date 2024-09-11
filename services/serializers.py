@@ -112,7 +112,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
             'id', 'user', 'full_name', 'task_type', 'registration_number',
             'contact_number', 'location', 'note', 'date', 'start_time', 'end_time', 'status',
             'tv', 'voice', 'internet', 'services', 'first_name', 'last_name', 'phone', 'group', 'latitude', 'longitude',
-            "is_tv", "is_voice", "is_internet", "passport"
+            "is_tv", "is_voice", "is_internet", "passport",'has_tv','has_voice','has_internet'
         ]
 
     def get_services(self, obj):
