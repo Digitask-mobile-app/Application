@@ -57,6 +57,10 @@ class TaskSerializer(serializers.ModelSerializer):
     last_name = serializers.SerializerMethodField()
     email = serializers.SerializerMethodField()
     user_type = serializers.SerializerMethodField()
+    has_internet = serializers.SerializerMethodField()
+    has_voice = serializers.SerializerMethodField()
+    has_tv = serializers.SerializerMethodField()
+
 
     class Meta:
         model = Task
@@ -73,6 +77,15 @@ class TaskSerializer(serializers.ModelSerializer):
 
     def get_user_type(self, obj):
         return obj.user.user_type if obj.user else None
+    
+    def get_has_internet(self, obj):
+        return hasattr(obj, 'internet') and obj.internet is not None
+
+    def get_has_voice(self, obj):
+        return hasattr(obj, 'voice') and obj.voice is not None
+
+    def get_has_tv(self, obj):
+        return hasattr(obj, 'tv') and obj.tv is not None
 
 
 class TaskViewSet(viewsets.ModelViewSet):
@@ -89,6 +102,9 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     first_name = serializers.SerializerMethodField()
     last_name = serializers.SerializerMethodField()
     phone = serializers.SerializerMethodField()
+    has_internet = serializers.SerializerMethodField()
+    has_voice = serializers.SerializerMethodField()
+    has_tv = serializers.SerializerMethodField()
 
     class Meta:
         model = Task
@@ -126,6 +142,15 @@ class TaskDetailSerializer(serializers.ModelSerializer):
         except AttributeError as e:
             print(f"Error getting phone: {e}")
             return None
+        
+    def get_has_internet(self, obj):
+        return hasattr(obj, 'internet') and obj.internet is not None
+
+    def get_has_voice(self, obj):
+        return hasattr(obj, 'voice') and obj.voice is not None
+
+    def get_has_tv(self, obj):
+        return hasattr(obj, 'tv') and obj.tv is not None
 
 
 class PerformanceSerializer(serializers.ModelSerializer):
