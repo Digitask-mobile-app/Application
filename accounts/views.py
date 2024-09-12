@@ -177,6 +177,9 @@ class ProfileView2(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = Profile2Serializer
 
+    def get_object(self):
+        return self.request.user
+
 class ProfileView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ProfileSerializer
