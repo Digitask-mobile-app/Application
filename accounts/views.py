@@ -184,10 +184,13 @@ class ProfileView2(generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         data = request.data
-
+        print(instance,data,'vvvvvvvvvvvvvvvvvv')
         # Verileri al ve boş veya null olup olmadığını kontrol et
         if 'first_name' in data and data['first_name'] not in [None, '']:
+            
             instance.first_name = data['first_name']
+            print(data['first_name'])
+            print(instance)
         if 'last_name' in data and data['last_name'] not in [None, '']:
             instance.last_name = data['last_name']
         if 'phone' in data and data['phone'] not in [None, '']:
