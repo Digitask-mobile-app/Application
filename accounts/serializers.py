@@ -235,12 +235,17 @@ class ProfileSerializer(serializers.ModelSerializer):
         # group_data = validated_data.pop('groupData', None)
         # if group_data:
         #     instance.group = Group.objects.get(id=group_data.id)
+
         instance.first_name = validated_data.get(
             'first_name')
         instance.last_name = validated_data.get(
             'last_name')
         instance.phone = validated_data.get('phone')
         instance.email = validated_data.get('email')
+        user = User.objects.get(id=instance.id)
+        user.first_name = validated_data.get(
+            'first_name')
+        user.save()
         # if 'profil_picture' in validated_data:
         #     instance.profil_picture = validated_data['profil_picture']
         instance.save()
