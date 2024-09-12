@@ -180,7 +180,8 @@ class ProfileView(generics.UpdateAPIView):
 
 
     def get_object(self):
-        return self.request.user
+        user = User.objects.get(id=self.request.user.id)
+        return user
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
