@@ -180,20 +180,21 @@ class ProfileView2(generics.UpdateAPIView):
     def get_object(self):
         return self.request.user
 
-    def update(self, request, *args, **kwargs):
-        # Gelen multipart veriyi (form + dosya) işlemek için
-        print("Request Data: ", request.data)
-        
-        partial = kwargs.pop('partial', True)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        if not serializer.is_valid():
-            print(serializer.errors) 
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        serializer.save()
-        return Response(serializer.data)
-
+    def update(self, instance, validated_data):
+    # instance ile güncelleme yap
+        print(instance)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.phone = validated_data.get('phone', instance.phone)
+        instance.email = validated_data.get('email', instance.email)
+        instance.user_type = validated_data.get('user_type', instance.user_type)
+        instance.region = validated_data.get('region', instance.region)
+        instance.group = validated_data.get('group', instance.group)
+        # Profil resmi gibi dosya alanlarını işle
+        if 'profile_picture' in validated_data:
+            instance.profile_picture = validated_data['profile_picture']
+        instance.save()
+        return instance
 class ProfileView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ProfileSerializer
