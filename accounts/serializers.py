@@ -230,9 +230,11 @@ class ProfileSerializer(serializers.ModelSerializer):
         ]
 
     def update(self, instance, validated_data):
-        group_data = validated_data.pop('groupData', None)
-        if group_data:
-            instance.group = Group.objects.get(id=group_data.id)
+        print(instance,'sssss')
+        print(validated_data,'sssssssss')
+        # group_data = validated_data.pop('groupData', None)
+        # if group_data:
+        #     instance.group = Group.objects.get(id=group_data.id)
         instance.first_name = validated_data.get(
             'first_name', instance.first_name)
         instance.last_name = validated_data.get(
@@ -241,8 +243,8 @@ class ProfileSerializer(serializers.ModelSerializer):
         instance.user_type = validated_data.get(
             'user_type', instance.user_type)
         instance.email = validated_data.get('email', instance.email)
-        if 'profil_picture' in validated_data:
-            instance.profil_picture = validated_data['profil_picture']
+        # if 'profil_picture' in validated_data:
+        #     instance.profil_picture = validated_data['profil_picture']
         instance.save()
         return instance
 
