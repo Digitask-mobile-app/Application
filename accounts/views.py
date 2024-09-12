@@ -184,7 +184,7 @@ class ProfileView2(generics.UpdateAPIView):
         # Gelen multipart veriyi (form + dosya) işlemek için
         print("Request Data: ", request.data)
         
-        partial = kwargs.pop('partial', False)
+        partial = kwargs.pop('partial', True)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
