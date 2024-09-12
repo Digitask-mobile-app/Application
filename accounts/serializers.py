@@ -232,7 +232,7 @@ class Profile2Serializer(serializers.ModelSerializer):
         instance.group = validated_data.get('group', instance.group)
         if 'profile_picture' in validated_data:
             instance.profile_picture = validated_data['profile_picture']
-        print(validated_data.get('first_name', instance.first_name),'-----------')
+        print(validated_data.get('first_name'),'-----------')
         instance.save()
         return instance
 
