@@ -191,7 +191,7 @@ class ProfileView2(generics.UpdateAPIView):
             print(serializer.errors) 
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
-
+        serializer.save()
         return Response(serializer.data)
 
 class ProfileView(generics.UpdateAPIView):
