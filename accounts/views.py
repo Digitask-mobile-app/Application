@@ -173,62 +173,7 @@ def update_auto_increment():
         cursor.execute(
             "UPDATE sqlite_sequence SET seq = (SELECT MAX(id) FROM myapp_task) WHERE name = 'myapp_task'")
 
-class ProfileView2(generics.UpdateAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = Profile2Serializer
 
-    def get_object(self):
-        print(self.request.user,'kkkk')
-        return self.request.user
-
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        data = request.data
-        print(instance,data,'vvvvvvvvvvvvvvvvvv')
-        # Verileri al ve boş veya null olup olmadığını kontrol et
-        if 'first_name' in data and data['first_name'] not in [None, '']:
-            
-            instance.first_name = data['first_name']
-            instance.save()
-            print(data['first_name'])
-            print(instance)
-        if 'last_name' in data and data['last_name'] not in [None, '']:
-            instance.last_name = data['last_name']
-        if 'phone' in data and data['phone'] not in [None, '']:
-            instance.phone = data['phone']
-        if 'email' in data and data['email'] not in [None, '']:
-            instance.email = data['email']
-        if 'user_type' in data and data['user_type'] not in [None, '']:
-            instance.user_type = data['user_type']
-        
-        # 'group' ID'sini kontrol et
-        if 'group' in data and data['group'] not in [None, '']:
-            try:
-                instance.group = Group.objects.get(pk=data['group'])
-            except Group.DoesNotExist:
-                instance.group = None  # veya uygun bir değer
-        else:
-            instance.group = None  # Boş değer durumunda
-
-        # Dosya yükleme
-        if 'profil_picture' in request.FILES:
-            instance.profil_picture = request.FILES['profil_picture']
-
-        # Değişiklikleri kaydet
-        instance.save()
-
-        # Güncellenmiş veriyi döndür
-        return Response({
-            'id': instance.id,
-            'first_name': instance.first_name,
-            'last_name': instance.last_name,
-            'phone': instance.phone,
-            'email': instance.email,
-            'user_type': instance.user_type,
-            'group': instance.group.id if instance.group else None,
-            'profil_picture': instance.profil_picture.url if instance.profil_picture else None,
-        }, status=status.HTTP_200_OK)
-    
 class ProfileView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ProfileSerializer

@@ -214,27 +214,6 @@ class VerifyUserEmailSerializer(serializers.Serializer):
     otp = serializers.CharField(max_length=4)
 
 
-class Profile2Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = [
-            'id', 'email', 'first_name', 'last_name', 'phone',
-            'user_type',  'group', 'profil_picture'
-        ]
-
-    def update(self, instance, validated_data):
-        print(instance)
-        instance.first_name = validated_data.get('first_name', instance.first_name)
-        instance.last_name = validated_data.get('last_name', instance.last_name)
-        instance.phone = validated_data.get('phone', instance.phone)
-        instance.email = validated_data.get('email', instance.email)
-        instance.user_type = validated_data.get('user_type', instance.user_type)
-        instance.group = validated_data.get('group', instance.group)
-
-        print(validated_data.get('first_name'),'-----------')
-        instance.save()
-        return instance
-
 class ProfileSerializer(serializers.ModelSerializer):
     groupData = serializers.PrimaryKeyRelatedField(
         queryset=Group.objects.all(), required=False

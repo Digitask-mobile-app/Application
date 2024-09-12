@@ -105,10 +105,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     def has_started_task(self):
         return self.user_tasks.filter(status='started').exists()
 
-    def save(self, *args, **kwargs):
-
-        super().save(*args, **kwargs)
-
 class OneTimePassword(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     otp = models.CharField(max_length=4)
