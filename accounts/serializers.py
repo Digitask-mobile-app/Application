@@ -223,6 +223,7 @@ class Profile2Serializer(serializers.ModelSerializer):
         ]
 
     def update(self, instance, validated_data):
+        print(instance)
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.phone = validated_data.get('phone', instance.phone)
@@ -231,6 +232,7 @@ class Profile2Serializer(serializers.ModelSerializer):
         instance.group = validated_data.get('group', instance.group)
         if 'profile_picture' in validated_data:
             instance.profile_picture = validated_data['profile_picture']
+        print(validated_data.get('first_name', instance.first_name),'-----------')
         instance.save()
         return instance
 
