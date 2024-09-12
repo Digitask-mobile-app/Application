@@ -188,19 +188,6 @@ class ProfileView(generics.UpdateAPIView):
     def patch(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
-    def update(self, request, *args, **kwargs):
-        # Print request data and serializer errors for debugging
-        print("Request Data:", request.data)
-        if 'profil_picture' in request.data and (request.data['profil_picture'] is None or request.data['profil_picture'] == ''):
-            del request.data['profil_picture']
-        partial = kwargs.pop('partial', True)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        if not serializer.is_valid():
-            print("Serializer Errors:", serializer.errors)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        self.perform_update(serializer)
-        return Response(serializer.data)
 
 class ProfileRetrieveView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -257,7 +244,6 @@ class UpdateUserView(generics.UpdateAPIView):
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
-    
 
 class DeleteUserView(APIView):
     permission_classes = [IsAuthenticated]
