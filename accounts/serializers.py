@@ -230,8 +230,7 @@ class Profile2Serializer(serializers.ModelSerializer):
         instance.email = validated_data.get('email', instance.email)
         instance.user_type = validated_data.get('user_type', instance.user_type)
         instance.group = validated_data.get('group', instance.group)
-        if 'profile_picture' in validated_data:
-            instance.profile_picture = validated_data['profile_picture']
+
         print(validated_data.get('first_name'),'-----------')
         instance.save()
         return instance
