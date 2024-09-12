@@ -221,7 +221,6 @@ class ProfileView2(generics.UpdateAPIView):
             'phone': instance.phone,
             'email': instance.email,
             'user_type': instance.user_type,
-            'region': instance.region,
             'group': instance.group.id if instance.group else None,
             'profil_picture': instance.profil_picture.url if instance.profil_picture else None,
         }, status=status.HTTP_200_OK)
