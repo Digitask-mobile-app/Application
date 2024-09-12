@@ -187,6 +187,8 @@ class ProfileView2(generics.UpdateAPIView):
         partial = kwargs.pop('partial', True)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        if not serializer.is_valid():
+            print(serializer.errors) 
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 
