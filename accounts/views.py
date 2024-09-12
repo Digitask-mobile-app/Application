@@ -173,6 +173,9 @@ def update_auto_increment():
         cursor.execute(
             "UPDATE sqlite_sequence SET seq = (SELECT MAX(id) FROM myapp_task) WHERE name = 'myapp_task'")
 
+class ProfileView2(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = Profile2Serializer
 
 class ProfileView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]

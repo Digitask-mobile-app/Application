@@ -214,6 +214,14 @@ class VerifyUserEmailSerializer(serializers.Serializer):
     otp = serializers.CharField(max_length=4)
 
 
+class Profile2Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'id', 'email', 'first_name', 'last_name', 'phone',
+            'user_type', 'groupData', 'group', 'profil_picture'
+        ]
+
 class ProfileSerializer(serializers.ModelSerializer):
     groupData = serializers.PrimaryKeyRelatedField(
         queryset=Group.objects.all(), required=False
