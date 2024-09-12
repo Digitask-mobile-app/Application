@@ -180,15 +180,19 @@ class ProfileView(generics.UpdateAPIView):
 
 
     def get_object(self):
+        print('5555')
         return self.request.user
 
     def put(self, request, *args, **kwargs):
+        print('44444')
         return self.update(request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
+        print('3333')
         return self.update(request, *args, **kwargs)
     
     def update(self, request, *args, **kwargs):
+        print('2222222')
         instance = self.get_object()
         data = request.data.copy()
         
@@ -204,6 +208,7 @@ class ProfileView(generics.UpdateAPIView):
         return Response(serializer.data)
 
     def perform_update(self, serializer):
+        print('11111')
         serializer.save()
 
 class ProfileRetrieveView(generics.RetrieveAPIView):
