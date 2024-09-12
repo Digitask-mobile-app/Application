@@ -219,7 +219,7 @@ class Profile2Serializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'email', 'first_name', 'last_name', 'phone',
-            'user_type', 'groupData', 'group', 'profil_picture'
+            'user_type',  'group', 'profil_picture'
         ]
 
 class ProfileSerializer(serializers.ModelSerializer):
