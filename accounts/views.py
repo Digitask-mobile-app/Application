@@ -182,18 +182,44 @@ class ProfileView2(generics.UpdateAPIView):
         return self.request.user
 
     def update(self, request, *args, **kwargs):
-        # Gelen multipart veriyi (form + dosya) işlemek için
-        print("Request Data: ", request.data)
-        
-        partial = kwargs.pop('partial', True)
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        if not serializer.is_valid():
-            print(serializer.errors) 
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        serializer.save()
-        return Response(serializer.data)
+        
+        # Gelen verileri almak
+        data = request.data
+        
+        # Alanları güncellemek
+        if 'first_name' in data:
+            instance.first_name = data['first_name']
+        if 'last_name' in data:
+            instance.last_name = data['last_name']
+        if 'phone' in data:
+            instance.phone = data['phone']
+        if 'email' in data:
+            instance.email = data['email']
+        if 'user_type' in data:
+            instance.user_type = data['user_type']
+        if 'region' in data:
+            instance.region = data['region']
+        if 'group' in data:
+            instance.group = get_object_or_404(Group, pk=data['group'])  # group'ü almak
+        if 'profil_picture' in request.FILES:  # Dosya yükleme
+            instance.profil_picture = request.FILES['profil_picture']
+        
+        # Değişiklikleri kaydetmek
+        instance.save()
+        
+        # Güncellenmiş veriyi döndürmek
+        return Response({
+            'id': instance.id,
+            'first_name': instance.first_name,
+            'last_name': instance.last_name,
+            'phone': instance.phone,
+            'email': instance.email,
+            'user_type': instance.user_type,
+            'region': instance.region,
+            'group': instance.group.id if instance.group else None,
+            'profil_picture': instance.profil_picture.url if instance.profil_picture else None,
+        }, status=status.HTTP_200_OK)
 
 class ProfileView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
