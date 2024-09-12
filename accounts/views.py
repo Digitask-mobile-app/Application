@@ -191,7 +191,8 @@ class ProfileView(generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         # Print request data and serializer errors for debugging
         print("Request Data:", request.data)
-        
+        if 'profil_picture' in request.data and (request.data['profil_picture'] is None or request.data['profil_picture'] == ''):
+            del request.data['profil_picture']
         partial = kwargs.pop('partial', True)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
