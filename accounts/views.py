@@ -196,8 +196,6 @@ class ProfileView2(generics.UpdateAPIView):
             instance.email = data['email']
         if 'user_type' in data and data['user_type'] not in [None, '']:
             instance.user_type = data['user_type']
-        if 'region' in data and data['region'] not in [None, '']:
-            instance.region = data['region']
         
         # 'group' ID'sini kontrol et
         if 'group' in data and data['group'] not in [None, '']:
