@@ -240,7 +240,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         instance.last_name = validated_data.get(
             'last_name')
         instance.phone = validated_data.get('phone')
-        instance.user_type = validated_data.get()
         instance.email = validated_data.get('email')
         # if 'profil_picture' in validated_data:
         #     instance.profil_picture = validated_data['profil_picture']
