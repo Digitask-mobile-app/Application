@@ -182,11 +182,6 @@ class ProfileView(generics.UpdateAPIView):
     def get_object(self):
         return self.request.user
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def patch(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
 
 
 class ProfileRetrieveView(generics.RetrieveAPIView):
