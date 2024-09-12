@@ -188,6 +188,18 @@ class ProfileView(generics.UpdateAPIView):
     def patch(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
+    def update(self, request, *args, **kwargs):
+        # Print request data and serializer errors for debugging
+        print("Request Data:", request.data)
+        
+        partial = kwargs.pop('partial', True)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        if not serializer.is_valid():
+            print("Serializer Errors:", serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        self.perform_update(serializer)
+        return Response(serializer.data)
 
 class ProfileRetrieveView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
