@@ -257,6 +257,8 @@ class UpdateUserView(generics.UpdateAPIView):
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
+    def post(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
 class DeleteUserView(APIView):
     permission_classes = [IsAuthenticated]
