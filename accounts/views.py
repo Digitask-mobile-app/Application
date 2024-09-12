@@ -189,6 +189,7 @@ class ProfileView2(generics.UpdateAPIView):
         if 'first_name' in data and data['first_name'] not in [None, '']:
             
             instance.first_name = data['first_name']
+            instance.save()
             print(data['first_name'])
             print(instance)
         if 'last_name' in data and data['last_name'] not in [None, '']:
