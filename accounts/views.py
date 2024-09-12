@@ -178,6 +178,7 @@ class ProfileView2(generics.UpdateAPIView):
     serializer_class = Profile2Serializer
 
     def get_object(self):
+        print(self.request.user,'kkkk')
         return self.request.user
 
     def update(self, request, *args, **kwargs):
