@@ -188,6 +188,8 @@ class ProfileView(generics.UpdateAPIView):
     def patch(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
+    def perform_update(self, serializer):
+        serializer.save()
 
 class ProfileRetrieveView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
