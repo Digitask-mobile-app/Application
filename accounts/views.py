@@ -183,32 +183,39 @@ class ProfileView2(generics.UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        
-        # Gelen verileri almak
         data = request.data
-        
-        # Alanları güncellemek
-        if 'first_name' in data:
+
+        # Verileri al ve boş veya null olup olmadığını kontrol et
+        if 'first_name' in data and data['first_name'] not in [None, '']:
             instance.first_name = data['first_name']
-        if 'last_name' in data:
+        if 'last_name' in data and data['last_name'] not in [None, '']:
             instance.last_name = data['last_name']
-        if 'phone' in data:
+        if 'phone' in data and data['phone'] not in [None, '']:
             instance.phone = data['phone']
-        if 'email' in data:
+        if 'email' in data and data['email'] not in [None, '']:
             instance.email = data['email']
-        if 'user_type' in data:
+        if 'user_type' in data and data['user_type'] not in [None, '']:
             instance.user_type = data['user_type']
-        if 'region' in data:
+        if 'region' in data and data['region'] not in [None, '']:
             instance.region = data['region']
-        if 'group' in data:
-            instance.group = get_object_or_404(Group, pk=data['group'])  # group'ü almak
-        if 'profil_picture' in request.FILES:  # Dosya yükleme
+        
+        # 'group' ID'sini kontrol et
+        if 'group' in data and data['group'] not in [None, '']:
+            try:
+                instance.group = Group.objects.get(pk=data['group'])
+            except Group.DoesNotExist:
+                instance.group = None  # veya uygun bir değer
+        else:
+            instance.group = None  # Boş değer durumunda
+
+        # Dosya yükleme
+        if 'profil_picture' in request.FILES:
             instance.profil_picture = request.FILES['profil_picture']
-        
-        # Değişiklikleri kaydetmek
+
+        # Değişiklikleri kaydet
         instance.save()
-        
-        # Güncellenmiş veriyi döndürmek
+
+        # Güncellenmiş veriyi döndür
         return Response({
             'id': instance.id,
             'first_name': instance.first_name,
@@ -220,7 +227,7 @@ class ProfileView2(generics.UpdateAPIView):
             'group': instance.group.id if instance.group else None,
             'profil_picture': instance.profil_picture.url if instance.profil_picture else None,
         }, status=status.HTTP_200_OK)
-
+    
 class ProfileView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ProfileSerializer
