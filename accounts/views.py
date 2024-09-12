@@ -204,7 +204,7 @@ class ProfileView(generics.UpdateAPIView):
             print("Validation errors:", serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-        self.perform_update(serializer)
+        serializer.save()
         return Response(serializer.data)
 
     def perform_update(self, serializer):
