@@ -72,6 +72,7 @@ class Internet(models.Model):
     optical_cable = models.CharField(max_length=100, null=True, blank=True)
     fastconnector = models.CharField(max_length=100, null=True, blank=True)
     siqnal = models.CharField(max_length=100, null=True, blank=True)
+    internet_packs = models.CharField(max_length=100, blank=True, null=True)
 
 class TV(models.Model):
     task = models.OneToOneField(
