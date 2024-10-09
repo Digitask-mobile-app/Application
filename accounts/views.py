@@ -66,7 +66,7 @@ class LoginUserView(GenericAPIView):
     serializer_class = LoginSerializer
 
     def post(self, request):
-        print(request.data)
+   
         serializer = self.serializer_class(
             data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
@@ -199,7 +199,7 @@ class ProfileView(generics.UpdateAPIView):
         
         serializer = self.get_serializer(instance, data=data, partial=kwargs.get('partial', True))
         if not serializer.is_valid():
-            print("Serializer Hataları:", serializer.errors)
+       
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
@@ -309,8 +309,7 @@ class AddMembersView(generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         room = self.get_object()
 
-        print("Room:", room)
-        print("Request Data:", request.data)
+    
 
         user_ids = request.data.get('members', [])
 
@@ -329,7 +328,7 @@ class AddMembersView(generics.UpdateAPIView):
                 added_users.append(user.email)
 
         updated_members = room.members.all()
-        print("Updated Members:", updated_members)
+       
 
         members_data = [{"id": member.id, "first_name": member.first_name,
                          "last_name": member.last_name} for member in updated_members]
