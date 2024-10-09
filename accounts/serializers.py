@@ -215,12 +215,12 @@ class VerifyUserEmailSerializer(serializers.Serializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    # groupData = serializers.PrimaryKeyRelatedField(
-    #     queryset=Group.objects.all(), required=False
-    # )
-    # group = GroupSerializer(read_only=True)
-    # profil_picture = serializers.ImageField(
-    #     allow_empty_file=True, required=False)
+    groupData = serializers.PrimaryKeyRelatedField(
+        queryset=Group.objects.all(), required=False
+    )
+    group = GroupSerializer(read_only=True)
+    profil_picture = serializers.ImageField(
+        allow_empty_file=True, required=False)
 
     class Meta:
         model = User
