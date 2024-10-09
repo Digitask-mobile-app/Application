@@ -213,20 +213,6 @@ class LogoutUserSerializer(serializers.Serializer):
 class VerifyUserEmailSerializer(serializers.Serializer):
     otp = serializers.CharField(max_length=4)
 
-class ProfileSerializerForProfile(serializers.ModelSerializer):
-    groupData = serializers.PrimaryKeyRelatedField(
-        queryset=Group.objects.all(), required=False
-    )
-    group = GroupSerializer(read_only=True)
-    profil_picture = serializers.ImageField(
-        allow_empty_file=True, required=False)
-
-    class Meta:
-        model = User
-        fields = [
-            'id', 'email', 'first_name', 'last_name', 'phone',
-            'user_type', 'groupData', 'group', 'profil_picture'
-        ]
 
 class ProfileSerializer(serializers.ModelSerializer):
     groupData = serializers.PrimaryKeyRelatedField(
