@@ -174,6 +174,36 @@ def update_auto_increment():
             "UPDATE sqlite_sequence SET seq = (SELECT MAX(id) FROM myapp_task) WHERE name = 'myapp_task'")
 
 
+class ProfileImageUpdateView(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = ProfileImageSerializer
+
+
+    def get_object(self):
+        user = User.objects.get(id=self.request.user.id)
+        return user
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+    
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        data = request.data.copy()  
+
+        if data.get('profil_picture') in [None, '']:
+            data.pop('profil_picture', None)
+        
+        serializer = self.get_serializer(instance, data=data, partial=kwargs.get('partial', True))
+        if not serializer.is_valid():
+       
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
 class ProfileView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ProfileSerializer
@@ -193,9 +223,6 @@ class ProfileView(generics.UpdateAPIView):
         instance = self.get_object()
         data = request.data.copy()  # Veriyi kopyala
         
-        # Profil fotoğrafı null ise veri kümesinden kaldır
-        if data.get('profil_picture') in [None, '']:
-            data.pop('profil_picture', None)
         
         serializer = self.get_serializer(instance, data=data, partial=kwargs.get('partial', True))
         if not serializer.is_valid():

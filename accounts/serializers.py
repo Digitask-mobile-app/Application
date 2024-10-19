@@ -226,8 +226,34 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'email', 'first_name', 'last_name', 'phone',
-            'user_type', 'groupData', 'group', 'profil_picture'
+            'user_type', 'groupData', 'group'
         ]
+
+
+class ProfileImageSerializer(serializers.ModelSerializer):
+    groupData = serializers.PrimaryKeyRelatedField(
+        queryset=Group.objects.all(), required=False
+    )
+    group = GroupSerializer(read_only=True)
+    profil_picture = serializers.ImageField(
+        allow_empty_file=True, required=False)
+
+    class Meta:
+        model = User
+        fields = [
+            'id',  'profil_picture'
+        ]
+
+class ProfileImageSerializer(serializers.ModelSerializer):
+    profil_picture = serializers.ImageField(
+        allow_empty_file=True, required=False)
+
+    class Meta:
+        model = User
+        fields = [
+            'id', 'profil_picture'
+        ]
+
 
     # def update(self, instance, validated_data):
     #     group_data = validated_data.pop('groupData', None)
