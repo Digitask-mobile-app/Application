@@ -1,6 +1,6 @@
 from datetime import datetime
 from rest_framework import serializers, viewsets
-from .models import Task, Internet, Voice, TV, Item, History, Warehouse, HistoryIncrement
+from .models import Task, Internet, Voice, TV
 from accounts.models import User, Group, Meeting
 from django.db.models import Q
 from .filters import TaskFilter
@@ -212,93 +212,6 @@ class PerformanceSerializer(serializers.ModelSerializer):
             'problem': sorted_task_counts[sorted_task_types.index('problem')] if 'problem' in sorted_task_types else 0
         }
 
-
-class WarehouseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Warehouse
-        fields = '__all__'
-
-
-class ItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Item
-        fields = '__all__'
-        read_only_fields = ['created_by']
-
-
-class DecrementItemSerializer(serializers.Serializer):
-    item_id = serializers.IntegerField()
-    company = serializers.CharField(
-        max_length=255, required=False, allow_blank=True)
-    authorized_person = serializers.CharField(
-        max_length=255, required=False, allow_blank=True)
-    number = serializers.IntegerField()
-    texnik_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
-
-    def validate(self, data):
-        company = data.get('company')
-        authorized_person = data.get('authorized_person')
-        texnik_user = data.get('texnik_user')
-
-        if not (company or authorized_person or texnik_user):
-            raise serializers.ValidationError(
-                "At least one of 'company', 'authorized_person', or 'texnik_user' must be provided.")
-
-        return data
-
-
-class ItemUserSerializer(serializers.ModelSerializer):
-    group = GroupSerializer()
-
-    class Meta:
-        model = User
-        fields = ['id', 'first_name', 'last_name', 'group']
-
-
-class UserHistorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'first_name', 'last_name']
-
-
-class HistorySerializer(serializers.ModelSerializer):
-    item_warehouse = WarehouseSerializer()
-    texnik_user = ItemUserSerializer()
-    item_created_by = UserHistorySerializer(read_only=True)
-
-    class Meta:
-        model = History
-        fields = '__all__'
-
-
-class HistoryIncrementSerializer(serializers.ModelSerializer):
-    item_warehouse = WarehouseSerializer()
-    item_created_by = UserHistorySerializer(read_only=True)
-
-    class Meta:
-        model = HistoryIncrement
-        fields = '__all__'
-
-
-class IncrementItemSerializer(serializers.Serializer):
-    item_id = serializers.IntegerField()
-    product_provider = serializers.CharField(max_length=255, required=True)
-    number = serializers.IntegerField()
-
-    def validate(self, data):
-        if data['number'] <= 0:
-            raise serializers.ValidationError(
-                "The increment number must be positive.")
-        return data
-
-
-class WarehouseItemSerializer(serializers.ModelSerializer):
-    warehouse = WarehouseSerializer()
-    created_by = ItemUserSerializer()
-
-    class Meta:
-        model = Item
-        fields = '__all__'
 
 
 class CreatingMeetingSerializer(serializers.ModelSerializer):

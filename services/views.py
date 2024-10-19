@@ -2,7 +2,7 @@ from django.utils import timezone
 from django.http import JsonResponse
 from .models import Task, Item, History
 from .serializers import *
-from .filters import StatusAndTaskFilter, WarehouseItemFilter, HistoryFilter, IncrementHistoryFilter
+from .filters import StatusAndTaskFilter
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import ListAPIView, RetrieveAPIView
@@ -91,120 +91,6 @@ class PerformanceListView(generics.ListAPIView):
         return sorted_queryset
 
 
-# @receiver(pre_delete, sender=Item)
-# def warehouse_pre_delete(sender, instance, **kwargs):
-#     History.objects.create(
-#         item=instance,
-#         action='export'
-#     )
-
-class ItemImportView(generics.CreateAPIView):
-    queryset = Item.objects.all()
-    serializer_class = ItemSerializer
-    permission_classes = [IsAuthenticated]
-
-    def perform_create(self, serializer):
-        if not self.request.user.is_authenticated:
-            raise ValueError("İstifadəçinin autentifikasiyası yoxdur.")
-        serializer.save(created_by=self.request.user)
-
-
-class ItemListView(ListAPIView):
-    queryset = Item.objects.all()
-    serializer_class = WarehouseItemSerializer
-    filterset_class = WarehouseItemFilter
-    filter_backends = (DjangoFilterBackend,)
-
-
-class CreateWarehouseView(generics.CreateAPIView):
-    queryset = Warehouse.objects.all()
-    serializer_class = WarehouseSerializer
-
-
-class WarehouseListView(ListAPIView):
-    queryset = Warehouse.objects.all()
-    serializer_class = WarehouseSerializer
-
-
-class DecrementItemView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = DecrementItemSerializer
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        item_id = serializer.validated_data['item_id']
-        company = serializer.validated_data['company']
-        authorized_person = serializer.validated_data['authorized_person']
-        number = serializer.validated_data['number']
-        texnik_user = serializer.validated_data['texnik_user']
-
-        try:
-            item = Item.objects.get(id=item_id)
-            item.decrement(number, company, authorized_person,
-                           request.user, texnik_user)
-
-            # latest_history = History.objects.filter(item=item).order_by('-date').first()
-            # history_serializer = HistorySerializer(latest_history)
-            user_serializer = UserSerializer(request.user)
-
-            return Response({
-                "message": "Element uğurla azaldıldı.",
-                "request_user": user_serializer.data,
-                # "history": history_serializer.data
-            }, status=status.HTTP_200_OK)
-
-        except Item.DoesNotExist:
-            return Response({"error": "Element tapılmadı."}, status=status.HTTP_404_NOT_FOUND)
-        except ValueError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-class IncrementItemView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = IncrementItemSerializer
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        item_id = serializer.validated_data['item_id']
-        product_provider = serializer.validated_data['product_provider']
-        number = serializer.validated_data['number']
-
-        try:
-            item = Item.objects.get(id=item_id)
-            item.increment(number, product_provider, request.user)
-
-            return Response({
-                "message": "Element uğurla artırıldı."
-            }, status=status.HTTP_200_OK)
-
-        except Item.DoesNotExist:
-            return Response({"error": "Element tapılmadı."}, status=status.HTTP_404_NOT_FOUND)
-        except ValueError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-class TexnikUserListView(generics.ListAPIView):
-    queryset = User.objects.filter(user_type='Texnik')
-    serializer_class = ItemUserSerializer
-    permission_classes = [IsAuthenticated]
-
-
-class HistoryListView(generics.ListAPIView):
-    queryset = History.objects.all().order_by('-date')
-    serializer_class = HistorySerializer
-    filterset_class = HistoryFilter
-    filter_backends = [DjangoFilterBackend]
-
-
-class HistoryIncrementListView(generics.ListAPIView):
-    queryset = HistoryIncrement.objects.all().order_by('-date')
-    serializer_class = HistoryIncrementSerializer
-    filterset_class = IncrementHistoryFilter
-    filter_backends = [DjangoFilterBackend]
 
 
 class TaskUpdateAPIView(generics.UpdateAPIView):
@@ -338,18 +224,3 @@ class MeetingsApiView(generics.ListAPIView):
         now = timezone.now()
         return Meeting.objects.filter(date__gte=now)
 
-# @csrf_exempt
-# def export_item(request, id):
-#     if request.method == 'DELETE':
-#         try:
-#             warehouse_item = Warehouse.objects.get(id=id)
-#             History.objects.create(
-#                 warehouse_item=warehouse_item,
-#                 action='export'
-#             )
-#             warehouse_item.delete()
-#             return JsonResponse({"success": "Item exported successfully."})
-#         except Warehouse.DoesNotExist:
-#             return JsonResponse({"error": "Item not found."}, status=status.HTTP_404_NOT_FOUND)
-#     else:
-#         return JsonResponse({"error": "Invalid request method."}, status=status.HTTP_400_BAD_REQUEST)
