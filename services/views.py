@@ -212,6 +212,12 @@ class TaskUpdateAPIView(generics.UpdateAPIView):
     serializer_class = UpdateTaskSerializer
     http_method_names = ['patch']
 
+class TaskImageUpdateAPIView(generics.UpdateAPIView):
+    queryset = Task.objects.all()
+    serializer_class = UpdateTaskImageSerializer
+    http_method_names = ['patch']
+
+
 
 class CreateMeetingView(generics.CreateAPIView):
     serializer_class = CreatingMeetingSerializer
