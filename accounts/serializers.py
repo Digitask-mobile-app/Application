@@ -379,14 +379,6 @@ class PerformanceUserSerializer(serializers.ModelSerializer):
         fields = ['id', 'first_name', 'last_name', 'user_type']
 
 
-class RoomSerializer(serializers.ModelSerializer):
-    members = UserSerializer(many=True, read_only=True)
-    admin = UserSerializer(read_only=True)
-
-    class Meta:
-        model = Room
-        fields = ['id', 'name', 'members', 'admin']
-
 
 class CreateRoomSerializer(serializers.ModelSerializer):
     class Meta:
@@ -416,6 +408,21 @@ class MessageSerializer(serializers.ModelSerializer):
             else:
                 return 'received'
         return 'received'
+
+class RoomSerializer(serializers.ModelSerializer):
+    members = UserSerializer(many=True, read_only=True)
+    admin = UserSerializer(read_only=True)
+    last_message = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Room
+        fields = ['id', 'name', 'members', 'admin', 'last_message']
+
+    def get_last_message(self, obj):
+        last_message = obj.room_messages.order_by('-timestamp').first()
+        if last_message:
+            return MessageSerializer(last_message).data
+        return None
 
 
 class AddRemoveRoomSerializer(serializers.ModelSerializer):
