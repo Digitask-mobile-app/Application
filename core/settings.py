@@ -215,9 +215,9 @@ GDAL_LIBRARY_PATH = 'C:\\Program Files\\GDAL\\gdalxxx.dll'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+print(server_ip,'------------------')
 
-
-if server_ip == '192.168.31.32' or server_ip == '135.181.42.192':
+if server_ip == '192.168.31.32' or server_ip == '135.181.42.192' or server_ip == '192.168.0.104':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

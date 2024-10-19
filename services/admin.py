@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import Task, Internet, Voice, TV, PlumberTask, Item, History, Warehouse, HistoryIncrement
+from .models import Task, Internet, Voice, TV, PlumberTask
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import get_language
-from modeltranslation.admin import TranslationAdmin
+# from modeltranslation.admin import TranslationAdmin
 
 
 # class TaskAdminForm(forms.ModelForm):
@@ -66,7 +66,7 @@ from modeltranslation.admin import TranslationAdmin
 
 
 admin.site.register(PlumberTask)
-admin.site.register(Warehouse)
+
 
 
 class TvInline(admin.StackedInline):  
@@ -86,10 +86,6 @@ class TaskAdmin(admin.ModelAdmin):
     
 admin.site.register(Task,TaskAdmin)
 
-@admin.register(Item)
-class ItemAdmin(admin.ModelAdmin):
-    list_display = ('warehouse', 'equipment_name', 'brand', 'model', 'serial_number', 'number', 'size_length', 'mac', 'port_number', 'date')
-    search_fields = ('warehouse', 'equipment_name', 'brand', 'model', 'serial_number')
 
-admin.site.register(History)
-admin.site.register(HistoryIncrement)
+
+

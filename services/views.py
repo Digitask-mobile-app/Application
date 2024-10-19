@@ -1,6 +1,6 @@
 from django.utils import timezone
 from django.http import JsonResponse
-from .models import Task, Item, History
+from .models import Task
 from .serializers import *
 from .filters import StatusAndTaskFilter
 from rest_framework import generics
