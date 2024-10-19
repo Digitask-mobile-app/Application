@@ -229,6 +229,21 @@ class ProfileSerializer(serializers.ModelSerializer):
             'user_type', 'groupData', 'group'
         ]
 
+class ProfileReadSerializer(serializers.ModelSerializer):
+    groupData = serializers.PrimaryKeyRelatedField(
+        queryset=Group.objects.all(), required=False
+    )
+    group = GroupSerializer(read_only=True)
+    profil_picture = serializers.ImageField(
+        allow_empty_file=True, required=False)
+
+    class Meta:
+        model = User
+        fields = [
+            'id', 'email', 'first_name', 'last_name', 'phone',
+            'user_type', 'groupData', 'group', 'profil_picture'
+        ]
+
 
 class ProfileImageSerializer(serializers.ModelSerializer):
     groupData = serializers.PrimaryKeyRelatedField(
