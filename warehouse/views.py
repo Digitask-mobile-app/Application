@@ -31,8 +31,9 @@ class ItemViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Item.objects.filter(is_deleted=False)
         warehouse_id = self.request.query_params.get('warehouse')  
-        print(warehouse_id)
-
+        name = self.request.query_params.get('name')  
+        if name:
+            queryset = queryset.filter(equipment_name=name)
         if warehouse_id:
             queryset = queryset.filter(warehouse=warehouse_id) 
 

@@ -424,6 +424,8 @@ class MessageListView(generics.ListAPIView):
         context = super().get_serializer_context()
         context.update({'request': self.request})
         return context
+    
+    
 
 
 class RoomsApiView(generics.ListAPIView):
