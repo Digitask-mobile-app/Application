@@ -33,7 +33,7 @@ class ItemViewSet(viewsets.ModelViewSet):
         warehouse_id = self.request.query_params.get('warehouse')  
         name = self.request.query_params.get('name')  
         if name:
-            queryset = queryset.filter(equipment_name=name)
+            queryset = queryset.filter(equipment_name__icontains=name)
         if warehouse_id:
             queryset = queryset.filter(warehouse=warehouse_id) 
 
