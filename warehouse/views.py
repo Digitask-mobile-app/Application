@@ -38,7 +38,7 @@ class ItemViewSet(viewsets.ModelViewSet):
         if warehouse_id:
             queryset = queryset.filter(warehouse=warehouse_id) 
         if region:
-            queryset = queryset.filter(warehouse_region=region) 
+            queryset = queryset.filter(warehouse__region=region) 
 
         return queryset
 
