@@ -32,10 +32,13 @@ class ItemViewSet(viewsets.ModelViewSet):
         queryset = Item.objects.filter(is_deleted=False)
         warehouse_id = self.request.query_params.get('warehouse')  
         name = self.request.query_params.get('name')  
+        region = self.request.query_params.get('region')  
         if name:
             queryset = queryset.filter(equipment_name__icontains=name)
         if warehouse_id:
             queryset = queryset.filter(warehouse=warehouse_id) 
+        if region:
+            queryset = queryset.filter(warehouse_region=region) 
 
         return queryset
 
