@@ -24,6 +24,7 @@ class ItemSerializer(serializers.ModelSerializer):
 
 class WarehouseHistorySerializer(serializers.ModelSerializer):
     modified_by = WarehouseUserSerializer(read_only=True)
+    item = ItemSerializer()
 
     class Meta:
         model = WarehouseHistory

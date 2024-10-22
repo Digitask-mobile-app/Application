@@ -50,8 +50,8 @@ class WarehouseHistory(models.Model):
 
     old_count = models.PositiveIntegerField(null=True, blank=True)  
     new_count = models.PositiveIntegerField(null=True, blank=True)  
-
-    delivery_note = models.TextField(null=True,blank=True)
+    
+    delivery_note = models.TextField(null=True,blank=True,default="Qeyd yoxdur")
 
     task = models.OneToOneField(Task,on_delete=models.SET_NULL,null=True,blank=True)
     is_tv = models.BooleanField(default=False)
