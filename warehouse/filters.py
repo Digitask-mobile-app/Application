@@ -10,4 +10,5 @@ class WarehouseHistoryFilter(django_filters.FilterSet):
             'modified_by': ['exact'],
             'action': ['exact'], 
             'timestamp': ['date__gte', 'date__lte'], 
+            'item__warehouse': ['exact'] 
         }
