@@ -2,7 +2,7 @@ import django_filters
 from .models import WarehouseHistory
 
 class WarehouseHistoryFilter(django_filters.FilterSet):
-    action = django_filters.MultipleChoiceFilter()
+    action = django_filters.MultipleChoiceFilter(choices=WarehouseHistory.ACTION_CHOICES)
     class Meta:
         model = WarehouseHistory
         fields = {
