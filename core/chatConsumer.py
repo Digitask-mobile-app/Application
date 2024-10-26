@@ -64,7 +64,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         room = await database_sync_to_async(Room.objects.get)(id=room)
         message = await database_sync_to_async(Message.objects.create)(user=user, room=room, content=content)
 
-     
+        
         await self.channel_layer.group_send(
             f'room_{slugify(room.name)}',
             {

@@ -421,7 +421,11 @@ class RoomSerializer(serializers.ModelSerializer):
     def get_last_message(self, obj):
         last_message = obj.room_messages.order_by('-timestamp').first()
         if last_message:
-            return MessageSerializer(last_message).data
+            request_user = self.context.get('request').user
+            typeM = 'sent' if last_message.user == request_user else 'received'
+            last_message_data = MessageSerializer(last_message).data
+            last_message_data['typeM'] = typeM
+            return last_message_data
         return None
 
 
