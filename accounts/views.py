@@ -411,23 +411,31 @@ from django.db.models import Q
 
 class MessageListView(generics.ListAPIView):
     serializer_class = MessageSerializer
-    pagination_class = MessagePagination
     permission_classes = [permissions.IsAuthenticated]
-    filterset_class = MessageFilter
 
     def get_queryset(self):
         user = self.request.user
-        user_rooms = Room.objects.filter(members=user)
-        
-        # Her oda için en son 30 mesajı alıyoruz ve mesaj ID'lerini topluyoruz
-        message_ids = []
-        for room in user_rooms:
-            room_messages = Message.objects.filter(room=room).order_by('-timestamp')[:30]
-            message_ids.extend([msg.id for msg in room_messages])
-        
-        # Alınan ID'lere göre bir QuerySet döndürüyoruz
-        queryset = Message.objects.filter(id__in=message_ids).order_by('-timestamp')
-        return queryset
+        room_ids = self.request.query_params.getlist('room_id')
+        pages = self.request.query_params.getlist('page')
+
+        if not room_ids or not pages or len(room_ids) != len(pages):
+            return Response({"detail": "room_id and page parameters must be provided equally."}, status=status.HTTP_400_BAD_REQUEST)
+
+        messages = []
+
+        for room_id, page_str in zip(room_ids, pages):
+            try:
+                page = int(page_str)
+                room = Room.objects.get(id=room_id, members=user)
+                messages_per_page = page * 30 
+                room_messages = Message.objects.filter(room=room).order_by('-timestamp')[:messages_per_page]
+                messages.extend(room_messages)  
+            except (Room.DoesNotExist, ValueError):
+                continue 
+
+
+        sorted_messages = sorted(messages, key=lambda x: x.timestamp, reverse=True)
+        return sorted_messages
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
