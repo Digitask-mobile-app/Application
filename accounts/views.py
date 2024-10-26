@@ -415,11 +415,15 @@ class MessageListView(generics.ListAPIView):
     filterset_class = MessageFilter
 
     def get_queryset(self):
+        room_id = self.request.query_params.get('room')
+        page = self.request.query_params.get('page')
         user = self.request.user
         user_rooms = Room.objects.filter(members=user)
         message_ids = []
+        
         for room in user_rooms:
-            room_messages = Message.objects.filter(room=room).order_by('-timestamp')[:30]
+            count = 30*page if room.id == room_id and page else 30
+            room_messages = Message.objects.filter(room=room).order_by('-timestamp')[:count]
             message_ids.extend([msg.id for msg in room_messages])
         queryset = Message.objects.filter(id__in=message_ids).order_by('-timestamp')
         return queryset
