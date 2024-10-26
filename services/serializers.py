@@ -1,6 +1,6 @@
 from datetime import datetime
 from rest_framework import serializers, viewsets
-from .models import Task, Internet, Voice, TV
+from .models import Task, Internet, Voice, TV, WarehouseChange
 from accounts.models import User, Group, Meeting
 from django.db.models import Q
 from .filters import TaskFilter
@@ -360,3 +360,7 @@ class UpdateTaskImageSerializer(serializers.ModelSerializer):
         model = Task
         fields = ['id','passport']
         
+class WarehouseChangeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WarehouseChange
+        fields = '__all__'

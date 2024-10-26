@@ -2,8 +2,8 @@ from django.db import models
 from accounts.models import User, Group
 # from django.contrib.gis.db import models
 from django.utils import timezone
-from django.conf import settings
-from datetime import datetime
+from warehouse.models import Item
+
 
 TASK_TYPES = (
     ('connection', 'connection'),
@@ -99,6 +99,21 @@ class Voice(models.Model):
 
     def __str__(self):
         return self.task.registration_number
+    
+
+class WarehouseChange(models.Model):
+    task = models.ForeignKey(Task,on_delete=models.CASCADE,related_name='task_items')
+    item = models.ForeignKey(Item,on_delete=models.CASCADE,related_name='item_tasks')
+    count = models.PositiveIntegerField()
+    delivery_note = models.TextField(blank=True, null=True)
+    is_tv = models.BooleanField(default=False)
+    is_internet = models.BooleanField(default=False)
+    is_voice = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if not self.delivery_note:
+            self.delivery_note = f"{self.task.user.first_name} {self.task.user.last_name} tapsirig icrasinda - {self.item.equipment_name} mehsulundan {self.count} qeder istifade edildi"
+        super().save(*args, **kwargs)
     
 
 

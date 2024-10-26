@@ -1,6 +1,6 @@
 from django.utils import timezone
 from django.http import JsonResponse
-from .models import Task
+from .models import Task,WarehouseChange
 from .serializers import *
 from .filters import StatusAndTaskFilter
 from rest_framework import generics
@@ -14,7 +14,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
 from accounts.serializers import UserSerializer
 from accounts.models import Notification
-
+from warehouse.models import Item,Warehouse, WarehouseHistory
 
 class CreateTaskView(generics.CreateAPIView):
     serializer_class = TaskDetailSerializer
@@ -193,22 +193,51 @@ class UpdateTaskView(generics.UpdateAPIView):
     def perform_update(self, serializer):
         instance = serializer.save()
         instance = self.get_object()
-        user_email = self.request.user.email
+        user = self.request.user
+        self.create_status_notification(instance, user)
 
-        if instance.status == 'inprogress':
-            message = f' istifadəçi {instance.full_name} adlı müştərinin tapşırığını qəbul etdi.'
-        elif instance.status == 'started':
-            message = f' istifadəçi {instance.full_name} adlı müştərinin tapşırığının icrasına başladı.'
-        elif instance.status == 'completed':
-            message = f' istifadəçi {instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
+    def create_status_notification(self, task_instance, user):
+        if task_instance.status == 'inprogress':
+            message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını qəbul etdi.'
+        elif task_instance.status == 'started':
+            message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığının icrasına başladı.'
+        elif task_instance.status == 'completed':
+            message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
+            self.warehouse_item_decrement(task_instance,user)
         else:
-            message = f' istifadəçi {instance.full_name} adlı müştərinin tapşırığında {instance.status} statusuna keçid etdi.'
+            message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığında {task_instance.status} statusuna keçid etdi.'
+
         notification = Notification.objects.create(
-            message=message, user_email=user_email)
+            message=message, 
+            user_email=user.email
+        )
+        
         texnik_users = User.objects.filter(user_type='Ofis menecer')
         plumber_users = User.objects.filter(user_type='Texnik menecer')
         notification.users.set(texnik_users | plumber_users)
         notification.save()
+
+    def warehouse_item_decrement(self, task_instance, user):
+        warehouse_changes = task_instance.task_items.all()
+
+        for change in warehouse_changes:
+            current_count = change.item.count
+            new_count = max(0, current_count - change.count) 
+            change.item.count = new_count
+            change.item.save()
+
+            WarehouseHistory.objects.create(
+                item=change.item,
+                modified_by=user,
+                action='decrement',
+                old_count=current_count,
+                new_count=new_count,
+                task = task_instance.id,
+                is_tv = change.is_tv,
+                is_internet = change.is_internet,
+                is_voice = change.is_voice
+            )
+
 
 
 def health_check(request):
@@ -222,3 +251,6 @@ class MeetingsApiView(generics.ListAPIView):
         now = timezone.now()
         return Meeting.objects.filter(date__gte=now)
 
+class WarehouseChangeViewSet(viewsets.ModelViewSet):
+    queryset = WarehouseChange.objects.filter(is_deleted=False)
+    serializer_class = WarehouseChangeSerializer
