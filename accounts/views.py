@@ -410,7 +410,6 @@ from django.db.models import Q
 
 class MessageListView(generics.ListAPIView):
     serializer_class = MessageSerializer
-    pagination_class = MessagePagination
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
