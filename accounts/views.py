@@ -420,13 +420,10 @@ class MessageListView(generics.ListAPIView):
         message_ids = []
         
         for room in user_rooms:
-            print(room.id == room_id,room.id,room_id,page)
-       
             count = 30
             if room_id and page:
                 if str(room_id) == str(room.id):
                     count = 30*int(page)
-            print(count)
             room_messages = Message.objects.filter(room=room).order_by('-timestamp')[:count]
             message_ids.extend([msg.id for msg in room_messages])
         queryset = Message.objects.filter(id__in=message_ids).order_by('-timestamp')

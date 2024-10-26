@@ -172,8 +172,6 @@ class StatusConsumer(AsyncWebsocketConsumer):
             longitude = location.get('longitude')
 
             await self.update_user_location(user, latitude, longitude)
-        else:
-            print('location yoxdur')
         message = data.get('message', 'Bu ne ucun var bilmirem')
         await self.broadcast_message(message)
 

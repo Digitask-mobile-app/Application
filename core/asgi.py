@@ -34,7 +34,6 @@ class TokenAuthMiddleware:
         query_string = scope.get("query_string", b"").decode()
         query_params = parse_qs(query_string)
         token = query_params.get("token", [None])[0]
-        print(token,'token------------------')
         scope["user"] = await get_user_from_token(token)
         return await self.inner(scope, receive, send)
 

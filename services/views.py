@@ -185,7 +185,6 @@ class UpdateTaskView(generics.UpdateAPIView):
         return context
 
     def put(self, request, *args, **kwargs):
-        print(request.data, '--------------------------')
         return self.update(request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
@@ -204,7 +203,6 @@ class UpdateTaskView(generics.UpdateAPIView):
             message = f' istifadəçi {instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
         else:
             message = f' istifadəçi {instance.full_name} adlı müştərinin tapşırığında {instance.status} statusuna keçid etdi.'
-        print('ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc')
         notification = Notification.objects.create(
             message=message, user_email=user_email)
         texnik_users = User.objects.filter(user_type='Ofis menecer')

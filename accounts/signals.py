@@ -10,7 +10,6 @@ def user_status_update(sender, instance, created, **kwargs):
 
     if created:
         channel_layer = get_channel_layer()
-        print(created)
         async_to_sync(channel_layer.group_send)(
             'notification',
             {

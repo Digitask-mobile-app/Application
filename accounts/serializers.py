@@ -71,10 +71,8 @@ class LoginSerializer(serializers.ModelSerializer):
         if not user:
             raise AuthenticationFailed(
                 "Etibarsız etimadnamələr, yenidən cəhd edin.")
-        print(user, '-0--------------------')
 
         refresh = RefreshToken.for_user(user)
-        print(refresh)
         if remember_me:
             refresh.set_exp(lifetime=timedelta(days=30))
             access_token = refresh.access_token
@@ -83,7 +81,6 @@ class LoginSerializer(serializers.ModelSerializer):
             access_token = refresh.access_token
 
         is_admin = user.user_type in ['Ofis menecer', 'Texnik menecer']
-        print(is_admin)
         return {
             'email': user.email,
             'access_token': str(access_token),

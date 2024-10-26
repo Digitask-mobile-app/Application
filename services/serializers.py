@@ -327,13 +327,9 @@ class TaskStatusUpdateSerializer(serializers.ModelSerializer):
         fields = [ 'status']
 
     def update(self, instance, validated_data):
-        print('----1')
         request = self.context.get('request')
-        print('----2')
         instance.user = request.user
-        print(instance.user)
         instance.status = validated_data.get('status', instance.status)
-        print(instance.status)
         instance.save()
         return instance
 
