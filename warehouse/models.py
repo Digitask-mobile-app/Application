@@ -1,6 +1,6 @@
 from django.db import models
 from accounts.models import User, Group
-from services.models import Task
+
 from django.conf import settings
 
 
@@ -36,6 +36,7 @@ class Item(models.Model):
     
     
 class WarehouseHistory(models.Model):
+    from services.models import Task
     ACTION_CHOICES = [
         ('add', 'Add Item'),        
         ('remove', 'Remove Item'),   
