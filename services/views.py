@@ -195,6 +195,7 @@ class UpdateTaskView(generics.UpdateAPIView):
         instance = self.get_object()
         user = self.request.user
         self.create_status_notification(instance, user)
+        print('---------------0')
 
     def create_status_notification(self, task_instance, user):
         if task_instance.status == 'inprogress':
@@ -203,7 +204,9 @@ class UpdateTaskView(generics.UpdateAPIView):
             message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığının icrasına başladı.'
         elif task_instance.status == 'completed':
             message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
+            print('---------------1')
             self.warehouse_item_decrement(task_instance,user)
+            print('---------------2')
         else:
             message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığında {task_instance.status} statusuna keçid etdi.'
 
@@ -219,13 +222,13 @@ class UpdateTaskView(generics.UpdateAPIView):
 
     def warehouse_item_decrement(self, task_instance, user):
         warehouse_changes = task_instance.task_items.all()
-
+        print('---------------3')
         for change in warehouse_changes:
             current_count = change.item.count
             new_count = max(0, current_count - change.count) 
             change.item.count = new_count
             change.item.save()
-
+            print('---------------4')
             WarehouseHistory.objects.create(
                 item=change.item,
                 modified_by=user,
