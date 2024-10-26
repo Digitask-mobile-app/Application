@@ -14,12 +14,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         channel_layer = get_channel_layer()
 
         user = self.scope['user']
-        
-
-
+  
         if user.is_authenticated:
-            
-
+    
             await self.send(text_data=json.dumps({
                 'email': user.email
             }))
@@ -29,7 +26,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             for room_name in rooms: 
 
                 group_name = f'room_{slugify(room_name)}'
-                print(group_name,'ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg')
+
                 await channel_layer.group_add(
                     group_name,
                     self.channel_name

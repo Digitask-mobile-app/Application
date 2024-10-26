@@ -166,12 +166,10 @@ class StatusConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         user = self.scope['user']
         location = data.get('location', {})
-        print(location,'-------------')
+
         if location is not None and user.is_authenticated:
             latitude = location.get('latitude')
             longitude = location.get('longitude')
-            print(user.email,'+++++++++++++++++++++++++++')
-            print(latitude, longitude,'++++++++++++++++++++++++++++++++++++++++++++++')
 
             await self.update_user_location(user, latitude, longitude)
         else:
@@ -194,27 +192,13 @@ class StatusConsumer(AsyncWebsocketConsumer):
     def update_user_status(self, user, is_online):
         user.is_online = is_online
         user.timestamp = timezone.now()
-        user.save()
+        user.save(update_fields=['is_online', 'timestamp'])
 
     @database_sync_to_async
     def update_user_location(self, user, latitude, longitude):
         user.latitude = latitude
         user.longitude = longitude
-        user.save()
-        print(user.latitude,user.longitude,'locationssssssssssssssssssssssssssss')
+        user.save(update_fields=['latitude', 'longitude'])
 
 
-# await self.channel_layer.group_send(
-#                     "status",
-#                     {
-#                         "type": "status_message",  # Handler olarak kullanılacak tür
-#                         "message": {'------------------------------------------------': '----------------------------------------------'},
-#                     },
-#                 )
 
-    # async def status_message(self, event):
-    #     message = event['message']
-    #     await self.send(text_data=json.dumps({
-    #         'message': message
-    #     }))
-    
