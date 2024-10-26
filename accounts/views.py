@@ -412,7 +412,6 @@ class MessageListView(generics.ListAPIView):
     serializer_class = MessageSerializer
     pagination_class = MessagePagination
     permission_classes = [permissions.IsAuthenticated]
-    filterset_class = MessageFilter
 
     def get_queryset(self):
         room_id = self.request.query_params.get('room')
