@@ -39,3 +39,4 @@ urlpatterns = [
          name='meeting-detail'),
     path('healthcheck/', views.health_check),
 ]
+# s
