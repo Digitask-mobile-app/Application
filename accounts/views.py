@@ -420,7 +420,7 @@ class MessageListView(generics.ListAPIView):
         message_ids = []
         
         for room in user_rooms:
-            print(room.id == room_id,page)
+            print(room.id == room_id,room.id,room_id,page)
        
             count = 30
             if room_id and page:
