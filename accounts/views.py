@@ -424,7 +424,7 @@ class MessageListView(generics.ListAPIView):
        
             count = 30
             if room_id and page:
-                if room_id == room.id:
+                if str(room_id) == str(room.id):
                     count = 30*page
             print(count)
             room_messages = Message.objects.filter(room=room).order_by('-timestamp')[:count]
