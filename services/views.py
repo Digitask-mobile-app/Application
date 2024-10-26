@@ -252,5 +252,5 @@ class MeetingsApiView(generics.ListAPIView):
         return Meeting.objects.filter(date__gte=now)
 
 class WarehouseChangeViewSet(viewsets.ModelViewSet):
-    queryset = WarehouseChange.objects.filter(is_deleted=False)
+    queryset = WarehouseChange.objects.filter()
     serializer_class = WarehouseChangeSerializer
