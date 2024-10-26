@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Task, Internet, Voice, TV, PlumberTask
+from .models import Task, Internet, Voice, TV, PlumberTask,WarehouseChange
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import get_language
@@ -85,6 +85,7 @@ class TaskAdmin(admin.ModelAdmin):
     inlines = [TvInline,InternetInline,VoiceInline]
     
 admin.site.register(Task,TaskAdmin)
+admin.site.register(WarehouseChange)
 
 
 
