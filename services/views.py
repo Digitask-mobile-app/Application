@@ -235,11 +235,12 @@ class UpdateTaskView(generics.UpdateAPIView):
                 action='decrement',
                 old_count=current_count,
                 new_count=new_count,
-                task = task_instance.id,
+                task = task_instance,
                 is_tv = change.is_tv,
                 is_internet = change.is_internet,
                 is_voice = change.is_voice
             )
+            
 
 
 
