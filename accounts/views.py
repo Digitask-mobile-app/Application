@@ -416,9 +416,6 @@ class MessageListView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        room_ids = self.request.query_params.getlist('room_ids', default=['1'])
-        room_pages = Counter(room_ids)
-        print(room_pages.items())
         user_rooms = Room.objects.filter(members=user)
         message_ids = []
         for room in user_rooms:
