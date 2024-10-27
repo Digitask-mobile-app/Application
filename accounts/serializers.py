@@ -381,7 +381,7 @@ class CreateRoomSerializer(serializers.ModelSerializer):
     members = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True)
     class Meta:
         model = Room
-        fields = ['name']
+        fields = ['name','members']
 
 
 class UserMessageSerializer(serializers.ModelSerializer):
