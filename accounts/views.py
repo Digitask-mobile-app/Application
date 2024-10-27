@@ -417,7 +417,7 @@ class CustomPageNumberPagination(PageNumberPagination):
     max_page_size = 100  
 
 class MessagesListView(generics.ListAPIView):
-    queryset = Message.objects.all()
+    queryset = Message.objects.all().order_by('-timestamp')
     serializer_class = MessageSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
