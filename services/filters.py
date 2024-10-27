@@ -1,5 +1,5 @@
 import django_filters
-from .models import status_task, TASK_TYPES, Task
+from .models import status_task, TASK_TYPES, Task, WarehouseChange
 from django_filters import rest_framework as filters
 from django import forms
 from accounts.models import User
@@ -97,6 +97,6 @@ class UserFilter(django_filters.FilterSet):
 class TaskWarehouseFilter(django_filters.FilterSet):
 
     class Meta:
-        model = Task
+        model = WarehouseChange
         fields = ['task']
 
