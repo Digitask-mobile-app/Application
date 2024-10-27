@@ -256,11 +256,11 @@ class MeetingsApiView(generics.ListAPIView):
         return Meeting.objects.filter(date__gte=now)
 
 class WarehouseChangeViewSet(viewsets.ModelViewSet):
-    queryset = WarehouseChange.objects.filter()
+    queryset = WarehouseChange.objects.all()
     serializer_class = WarehouseChangeSerializer
 
 class TaskWarehouseListView(generics.ListAPIView):
-    queryset = WarehouseChange.objects.filter()
+    queryset = WarehouseChange.objects.all()
     serializer_class = WarehouseChangeSerializer
     filterset_class = TaskWarehouseFilter
     filter_backends = (DjangoFilterBackend,)
