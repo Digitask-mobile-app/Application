@@ -309,9 +309,12 @@ class AddGroup(generics.CreateAPIView):
     queryset = Room.objects.all()
 
     def perform_create(self, serializer):
-        room = serializer.save()
-
-        room.members.add(self.request.user)
+        room = serializer.save(admin=self.request.user) 
+        members = self.request.data.get('members')
+        if members:
+            room.members.set(members)  # set the members
+        room.save()
+        
 
 
 class AddGroup(generics.CreateAPIView):
