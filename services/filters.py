@@ -94,5 +94,9 @@ class UserFilter(django_filters.FilterSet):
 
 
 
+class TaskWarehouseFilter(django_filters.FilterSet):
 
+    class Meta:
+        model = Task
+        fields = ['task']
 

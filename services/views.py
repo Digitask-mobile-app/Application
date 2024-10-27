@@ -2,7 +2,7 @@ from django.utils import timezone
 from django.http import JsonResponse
 from .models import Task,WarehouseChange
 from .serializers import *
-from .filters import StatusAndTaskFilter
+from .filters import StatusAndTaskFilter,TaskWarehouseFilter
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import ListAPIView, RetrieveAPIView
@@ -258,3 +258,9 @@ class MeetingsApiView(generics.ListAPIView):
 class WarehouseChangeViewSet(viewsets.ModelViewSet):
     queryset = WarehouseChange.objects.filter()
     serializer_class = WarehouseChangeSerializer
+
+class TaskWarehouseListView(generics.ListAPIView):
+    queryset = WarehouseChange.objects.filter()
+    serializer_class = WarehouseChangeSerializer
+    filterset_class = TaskWarehouseFilter
+    filter_backends = (DjangoFilterBackend,)
