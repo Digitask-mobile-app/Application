@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from .serializers import UserSerializer
-from .filters import UserFilter, UserTypeFilter, MessageFilter
+from .filters import UserFilter, UserTypeFilter, MessageFilter, MessagesFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from django.db.models import Q
@@ -407,6 +407,19 @@ class MessagePagination(PageNumberPagination):
 
 
 from django.db.models import Q
+
+class CustomPageNumberPagination(PageNumberPagination):
+    page_size = 10 
+    page_size_query_param = 'size' 
+    max_page_size = 100  
+    
+class MessagesListView(generics.ListAPIView):
+    serializer_class = MessageSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MessagesFilter
+    pagination_class = CustomPageNumberPagination
+
 
 class MessageListView(generics.ListAPIView):
     serializer_class = MessageSerializer

@@ -24,3 +24,11 @@ class MessageFilter(filters.FilterSet):
     class Meta:
         model = Message
         fields = ['room']
+
+
+class MessagesFilter(filters.FilterSet):
+    room = filters.NumberFilter(field_name='room__id')
+
+    class Meta:
+        model = Message
+        fields = ['room']

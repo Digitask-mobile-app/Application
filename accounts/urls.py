@@ -38,6 +38,8 @@ urlpatterns = [
     path('rooms/<int:id>/remove-members/',
          views.RemoveMembersView.as_view(), name='remove-members'),
     path('messages/', views.MessageListView.as_view(), name='message-list'),
+    path('messages_mobile/', views.MessagesListView.as_view(), name='message-list_mobile'),
+    
     path('RoomsApiView/', views.RoomsApiView.as_view(), name='RoomsApiView'),
     path('notifications/mark-as-read/', views.MarkNotificationsAsReadView.as_view(),
          name='mark-notifications-as-read'),
