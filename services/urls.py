@@ -40,6 +40,6 @@ urlpatterns = [
     path('meeting/<int:id>/', views.MeetingDetailView.as_view(),
          name='meeting-detail'),
     path('healthcheck/', views.health_check),
-    path('TaskWarehouseListView/', views.TaskWarehouseListView, name='TaskWarehouseListView'),
+    path('TaskWarehouseListView/', views.TaskWarehouseListView.as_view(), name='TaskWarehouseListView'),
 ]
 # s
