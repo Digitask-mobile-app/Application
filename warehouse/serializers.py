@@ -17,7 +17,6 @@ class WarehouseSerializer(serializers.ModelSerializer):
 
 
 class ItemSerializer(serializers.ModelSerializer):
-    warehouse = WarehouseSerializer()
     class Meta:
         model = Item
         fields = '__all__'
