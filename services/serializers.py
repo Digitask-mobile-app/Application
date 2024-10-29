@@ -57,7 +57,6 @@ class WarehouseChangeTaskSerializer(serializers.ModelSerializer):
 
 class TaskSerializer(serializers.ModelSerializer):
     group = GroupSerializer(many=True)
-    task_items = WarehouseChangeTaskSerializer(many=True)
     first_name = serializers.SerializerMethodField()
     last_name = serializers.SerializerMethodField()
     email = serializers.SerializerMethodField()
@@ -110,6 +109,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
     has_internet = serializers.SerializerMethodField()
     has_voice = serializers.SerializerMethodField()
     has_tv = serializers.SerializerMethodField()
+    task_items = WarehouseChangeTaskSerializer(many=True)
 
     class Meta:
         model = Task
@@ -117,7 +117,8 @@ class TaskDetailSerializer(serializers.ModelSerializer):
             'id', 'user', 'full_name', 'task_type', 'registration_number',
             'contact_number', 'location', 'note', 'date', 'start_time', 'end_time', 'status',
             'tv', 'voice', 'internet', 'services', 'first_name', 'last_name', 'phone', 'group', 'latitude', 'longitude',
-            "is_tv", "is_voice", "is_internet", "passport",'has_tv','has_voice','has_internet'
+            "is_tv", "is_voice", "is_internet", "passport",'has_tv','has_voice','has_internet',
+            'task_items'
         ]
 
     def get_services(self, obj):
