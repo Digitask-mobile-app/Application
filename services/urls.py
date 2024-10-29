@@ -41,5 +41,6 @@ urlpatterns = [
          name='meeting-detail'),
     path('healthcheck/', views.health_check),
     path('TaskWarehouseListView/', views.TaskWarehouseListView.as_view(), name='TaskWarehouseListView'),
+    path('warehouse_changes/bulk_create/', views.WarehouseChangeBulkCreateView.as_view(), name='warehousechange-bulk-create'),
 ]
 # s

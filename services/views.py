@@ -264,3 +264,12 @@ class TaskWarehouseListView(generics.ListAPIView):
     serializer_class = WarehouseChangeSerializer
     filterset_class = TaskWarehouseFilter
     filter_backends = (DjangoFilterBackend,)
+
+
+class WarehouseChangeBulkCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = WarehouseChangeSerializer(data=request.data, many=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
