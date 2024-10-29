@@ -50,9 +50,14 @@ class VoiceUpdateSerializer(serializers.ModelSerializer):
         model = Voice
         fields = '__all__'
 
+class WarehouseChangeTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WarehouseChange
+        fields = '__all__'
 
 class TaskSerializer(serializers.ModelSerializer):
     group = GroupSerializer(many=True)
+    task_items = WarehouseChangeTaskSerializer(many=True)
     first_name = serializers.SerializerMethodField()
     last_name = serializers.SerializerMethodField()
     email = serializers.SerializerMethodField()
