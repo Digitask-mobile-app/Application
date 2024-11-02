@@ -50,10 +50,16 @@ class VoiceUpdateSerializer(serializers.ModelSerializer):
         model = Voice
         fields = '__all__'
 
+
 class WarehouseChangeTaskSerializer(serializers.ModelSerializer):
+    warehouse_name = serializers.SerializerMethodField()
+
     class Meta:
         model = WarehouseChange
         fields = '__all__'
+
+    def get_warehouse_name(self, obj):
+        return obj.item.warehouse.name if obj.item and obj.item.warehouse else None
 
 class TaskSerializer(serializers.ModelSerializer):
     group = GroupSerializer(many=True)
