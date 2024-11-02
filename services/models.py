@@ -112,8 +112,7 @@ class WarehouseChange(models.Model):
     is_voice = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        if not self.delivery_note:
-            self.delivery_note = f"{self.task.user.first_name} {self.task.user.last_name} tapsirig icrasinda - {self.item.equipment_name} mehsulundan {self.count} qeder istifade edildi"
+        self.delivery_note = f"{self.task.user.first_name} {self.task.user.last_name} tapsirig icrasinda - {self.item.equipment_name} mehsulundan {self.count} qeder istifade edildi"
         super().save(*args, **kwargs)
     
 

@@ -367,12 +367,17 @@ class UpdateTaskSerializer(serializers.ModelSerializer):
         
 
 class UpdateTaskImageSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Task
         fields = ['id','passport']
+        
         
 class WarehouseChangeSerializer(serializers.ModelSerializer):
     class Meta:
         model = WarehouseChange
         fields = '__all__'
+
+class WarehouseBulkChangeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WarehouseChange
+        exclude = ['delivery_note']
