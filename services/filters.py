@@ -36,6 +36,8 @@ class StatusAndTaskFilter(django_filters.FilterSet):
     def filter_by_month(self, queryset, name, value):
         return queryset.filter(date__month=value)
     
+    def filter_by_year(self, queryset, name, value):
+        return queryset.filter(date__year=value)
     
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
