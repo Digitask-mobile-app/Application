@@ -106,13 +106,14 @@ class WarehouseChange(models.Model):
     task = models.ForeignKey(Task,on_delete=models.CASCADE,related_name='task_items')
     item = models.ForeignKey(Item,on_delete=models.CASCADE,related_name='item_tasks')
     count = models.PositiveIntegerField()
-    delivery_note = models.TextField(blank=True, null=True)
+    delivery_note = models.TextField(blank=True, null=True, default="qeyd yoxdur")
     is_tv = models.BooleanField(default=False)
     is_internet = models.BooleanField(default=False)
     is_voice = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        self.delivery_note = f"{self.task.user.first_name} {self.task.user.last_name} tapsirig icrasinda - {self.item.equipment_name} mehsulundan {self.count} qeder istifade edildi"
+        if self.task.user:
+            self.delivery_note = f"{self.task.user.first_name} {self.task.user.last_name} tapsirig icrasinda - {self.item.equipment_name} mehsulundan {self.count} qeder istifade edildi"
         super().save(*args, **kwargs)
     
 
