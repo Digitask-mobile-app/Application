@@ -26,7 +26,8 @@ MONTH_CHOICES = [
 class StatusAndTaskFilter(django_filters.FilterSet):
     status = django_filters.MultipleChoiceFilter(choices=status_task, field_name='status')
     task_type = django_filters.ChoiceFilter(choices=TASK_TYPES, field_name='task_type')
-    month = DateFilter(field_name='date', lookup_expr='month')
+    month = django_filters.ChoiceFilter(choices=MONTH_CHOICES, method='filter_by_month', field_name='date')
+    year = django_filters.ChoiceFilter(method='filter_by_year', field_name='date')    
 
     class Meta:
         model = Task
