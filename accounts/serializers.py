@@ -225,6 +225,16 @@ class ProfileSerializer(serializers.ModelSerializer):
             'user_type', 'groupData', 'group'
         ]
 
+
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = [
+            'id', 'email', 'first_name', 'last_name', 'phone',
+            'user_type', 'group'
+        ]
+
 class ProfileReadSerializer(serializers.ModelSerializer):
     groupData = serializers.PrimaryKeyRelatedField(
         queryset=Group.objects.all(), required=False

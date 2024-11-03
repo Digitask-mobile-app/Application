@@ -205,7 +205,7 @@ class ProfileImageUpdateView(generics.UpdateAPIView):
 
 class ProfileView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = ProfileSerializer
+    serializer_class = ProfileUpdateSerializer
 
 
     def get_object(self):
