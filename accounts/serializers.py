@@ -232,7 +232,7 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'email', 'first_name', 'last_name', 'phone',
-            'user_type', 'group'
+            'user_type', 'group', 'profil_picture'
         ]
 
 class ProfileReadSerializer(serializers.ModelSerializer):
