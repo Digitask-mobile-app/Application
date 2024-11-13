@@ -228,8 +228,8 @@ class UpdateTaskView(generics.UpdateAPIView):
             new_count = max(0, current_count - change.count) 
             change.item.count = new_count
             change.item.save()
-        
-            WarehouseHistory.objects.create(
+            if current_count < change.count:
+                WarehouseHistory.objects.create(
                 item=change.item,
                 modified_by=user,
                 action='decrement',
@@ -238,8 +238,24 @@ class UpdateTaskView(generics.UpdateAPIView):
                 task = task_instance,
                 is_tv = change.is_tv,
                 is_internet = change.is_internet,
-                is_voice = change.is_voice
-            )
+                is_voice = change.is_voice,
+                has_problem = True,
+                must_change = change.count
+                )
+            else:
+                WarehouseHistory.objects.create(
+                    item=change.item,
+                    modified_by=user,
+                    action='decrement',
+                    old_count=current_count,
+                    new_count=new_count,
+                    task = task_instance,
+                    is_tv = change.is_tv,
+                    is_internet = change.is_internet,
+                    is_voice = change.is_voice,
+                    has_problem = False,
+                    must_change = 0
+                )
             
 
 
