@@ -54,7 +54,7 @@ class WarehouseHistory(models.Model):
     
     delivery_note = models.TextField(null=True,blank=True,default="Qeyd yoxdur")
 
-    task = models.OneToOneField(Task,on_delete=models.SET_NULL,null=True,blank=True)
+    task = models.ForeignKey(Task,on_delete=models.CASCADE,null=True,blank=True)
     is_tv = models.BooleanField(default=False)
     is_internet = models.BooleanField(default=False)
     is_voice = models.BooleanField(default=False)
