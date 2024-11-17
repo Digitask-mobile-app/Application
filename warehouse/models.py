@@ -33,6 +33,9 @@ class Item(models.Model):
 
     def __str__(self):
         return self.equipment_name
+
+    class Meta:
+        ordering = ['equipment_name']
     
     
 class WarehouseHistory(models.Model):
