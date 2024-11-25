@@ -39,6 +39,9 @@ CORS_ALLOWED_ORIGINS = [
     'http://78.47.82.5',
     'http://78.47.82.5:8080',
     'http://78.47.82.5:8002',
+    "http://37.61.77.5/",
+    "http://37.61.77.5",
+    "http://37.61.77.5:100"
 ]
 
 # Application definition
