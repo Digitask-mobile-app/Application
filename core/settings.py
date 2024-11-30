@@ -130,21 +130,21 @@ if server_ip == '192.168.31.32' or server_ip == '135.181.42.192':
         "default": {
             "BACKEND": "channels_redis.core.RedisChannelLayer",
             "CONFIG": {
-                "hosts": [('127.0.0.1', 6379)],
+                "hosts": [('127.0.0.1', 6380)],
             },
 
         },
     }
 else:
     REDIS_HOST = os.getenv('REDIS_HOST', '127.0.0.1')
-    REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
+    REDIS_PORT = int(os.getenv('REDIS_PORT', 6380))
     REDIS_PASSWORD = os.getenv('REDIS_PASSWORD', None)
 
     CHANNEL_LAYERS = {
         "default": {
             "BACKEND": "channels_redis.core.RedisChannelLayer",
             "CONFIG": {
-                "hosts": [('redis://:G5iFxpsxkbxQ615A@redis:6379/0', 6379)],
+                "hosts": [('redis://:G5iFxpsxkbxQ615A@redis:6380/0', 6380)],
             },
         },
     }
