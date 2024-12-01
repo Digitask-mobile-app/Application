@@ -131,23 +131,32 @@ if server_ip == '192.168.31.32' or server_ip == '135.181.42.192':
             "BACKEND": "channels_redis.core.RedisChannelLayer",
             "CONFIG": {
                 "hosts": [('127.0.0.1', 6380)],
+                # "password": "G5iFxpsxkbxQ615A",
             },
 
         },
     }
 else:
-    REDIS_HOST = os.getenv('REDIS_HOST', '127.0.0.1')
-    REDIS_PORT = int(os.getenv('REDIS_PORT', 6380))
-    REDIS_PASSWORD = os.getenv('REDIS_PASSWORD', None)
-
     CHANNEL_LAYERS = {
-        "default": {
-            "BACKEND": "channels_redis.core.RedisChannelLayer",
-            "CONFIG": {
-                "hosts": [('redis://:G5iFxpsxkbxQ615A@redis:6380/0', 6380)],
-            },
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [("127.0.0.1", 6380)],  # Redis'in çalıştığı host ve port
         },
-    }
+    },
+}
+    # REDIS_HOST = os.getenv('REDIS_HOST', '127.0.0.1')
+    # REDIS_PORT = int(os.getenv('REDIS_PORT', 6380))
+    # REDIS_PASSWORD = os.getenv('REDIS_PASSWORD', None)
+
+    # CHANNEL_LAYERS = {
+    #     "default": {
+    #         "BACKEND": "channels_redis.core.RedisChannelLayer",
+    #         "CONFIG": {
+    #             "hosts": [('redis://:G5iFxpsxkbxQ615A@redis:6380/0', 6380)],
+    #         },
+    #     },
+    # }
 
 
 CORS_ORIGIN_WHITELIST = [
