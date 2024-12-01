@@ -124,6 +124,13 @@ class Meeting(models.Model):
     def __str__(self):
         return f"{self.title}-{self.meeting_type}"
 
+notify_type = (
+    ("waiting", 'waiting'),
+    ("inprogress", "inprogress"),
+    ("started", "started"),
+    ("completed", "completed"),
+    ("created", "created")
+)
 
 class Notification(models.Model):
     task = models.ForeignKey('services.Task',on_delete=models.SET_NULL,related_name='task_notifications',null=True,blank=True)
@@ -132,6 +139,7 @@ class Notification(models.Model):
     read = models.ManyToManyField(User, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     user_email = models.EmailField(null=True,blank=True)
+    action = models.CharField(max_length=100,null=True,blank=True,choices=notify_type)
 
     def __str__(self):
         return f"Notification - {self.message[:20]}"

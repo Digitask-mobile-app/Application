@@ -31,6 +31,7 @@ class CreateTaskView(generics.CreateAPIView):
         notification = Notification.objects.create(
             task=task_instance,
             message=message, 
+            action='create'
         )
         
         texnik_users = User.objects.filter(user_type='Ofis menecer')
@@ -172,6 +173,7 @@ class CreateTaskView(generics.CreateAPIView):
         notification = Notification.objects.create(
             task=task_instance,
             message=message, 
+            action='create'
         )
         
         texnik_users = User.objects.filter(user_type='Ofis menecer')
@@ -253,7 +255,8 @@ class UpdateTaskView(generics.UpdateAPIView):
         notification = Notification.objects.create(
             task=task_instance.id,
             message=message, 
-            user_email=user.email
+            user_email=user.email,
+            action=task_instance.status
         )
         
         users_excluding_texnik_and_plumber = User.objects.exclude(user_type__in=['Ofis menecer', 'Texnik menecer'])
