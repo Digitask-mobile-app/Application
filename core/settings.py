@@ -124,27 +124,28 @@ def get_ip_address():
 
 
 server_ip = get_ip_address()
-
-if server_ip == '192.168.31.32' or server_ip == '135.181.42.192':
+print(server_ip)
+if server_ip == '135.181.42.192':
     CHANNEL_LAYERS = {
         "default": {
             "BACKEND": "channels_redis.core.RedisChannelLayer",
             "CONFIG": {
-                "hosts": [('127.0.0.1', 6380)],
-                # "password": "G5iFxpsxkbxQ615A",
+                "hosts": [('127.0.0.1', 6379)],
             },
 
         },
     }
+    
 else:
     CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [("127.0.0.1", 6380)],  # Redis'in çalıştığı host ve port
+        'default': {
+            'BACKEND': 'channels_redis.core.RedisChannelLayer',
+            'CONFIG': {
+                "hosts": [("127.0.0.1", 6380)],  # Redis'in çalıştığı host ve port
+            },
         },
-    },
-}
+    }
+
     # REDIS_HOST = os.getenv('REDIS_HOST', '127.0.0.1')
     # REDIS_PORT = int(os.getenv('REDIS_PORT', 6380))
     # REDIS_PASSWORD = os.getenv('REDIS_PASSWORD', None)
