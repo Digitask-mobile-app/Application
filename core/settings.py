@@ -124,7 +124,7 @@ def get_ip_address():
 
 
 server_ip = get_ip_address()
-print(server_ip)
+
 if server_ip == '135.181.42.192':
     CHANNEL_LAYERS = {
         "default": {
