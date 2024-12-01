@@ -36,7 +36,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         message = event['message']
         if user.is_authenticated:
             message = await self.get_notifications(user)
-       
+            print(message,'---------')
             await self.send(text_data=json.dumps({
                 'message': message
             }))
