@@ -1,8 +1,5 @@
 from django.db import models
-
-
 from django.conf import settings
-
 
 class Warehouse(models.Model):
     name = models.CharField(max_length=255)
@@ -39,8 +36,6 @@ class Item(models.Model):
     
     
 class WarehouseHistory(models.Model):
-    from services.models import Task    
-    from accounts.models import User
     ACTION_CHOICES = [
         ('add', 'Add Item'),        
         ('remove', 'Remove Item'),   
@@ -49,7 +44,7 @@ class WarehouseHistory(models.Model):
     ]
 
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='history')
-    modified_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    modified_by = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True)
     action = models.CharField(max_length=20, choices=ACTION_CHOICES)
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -58,7 +53,7 @@ class WarehouseHistory(models.Model):
     
     delivery_note = models.TextField(null=True,blank=True,default="Qeyd yoxdur")
 
-    task = models.ForeignKey(Task,on_delete=models.CASCADE,null=True,blank=True)
+    task = models.ForeignKey('services.Task',on_delete=models.CASCADE,null=True,blank=True)
     is_tv = models.BooleanField(default=False)
     is_internet = models.BooleanField(default=False)
     is_voice = models.BooleanField(default=False)
