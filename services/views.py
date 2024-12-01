@@ -19,6 +19,28 @@ from warehouse.models import Item,Warehouse, WarehouseHistory
 class CreateTaskView(generics.CreateAPIView):
     serializer_class = TaskDetailSerializer
 
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        instance = self.get_object()
+        user = self.request.user
+        self.create_status_notification(instance)
+
+       
+    def create_status_notification(self, task_instance):
+        message = f'Yeni tapşırıq əlavə edildi. Qeydiyyat nömrəsi {task_instance.registration_number} Tapşırıq siyahısını nəzərdən keçirməniz rica olunur!'
+
+        notification = Notification.objects.create(
+            task=task_instance.id,
+            message=message, 
+        )
+        
+        texnik_users = User.objects.filter(user_type='Ofis menecer')
+        plumber_users = User.objects.filter(user_type='Texnik menecer')
+        notification.users.set(texnik_users | plumber_users)
+        notification.save()
+
+#ssssssssssssssssssssssssssssssss
+
 
 class CreateGroupView(generics.CreateAPIView):
     serializer_class = GroupSerializer
@@ -206,18 +228,17 @@ class UpdateTaskView(generics.UpdateAPIView):
             message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
      
             self.warehouse_item_decrement(task_instance,user)
-         
         else:
             message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığında {task_instance.status} statusuna keçid etdi.'
 
         notification = Notification.objects.create(
+            task=task_instance.id,
             message=message, 
             user_email=user.email
         )
         
-        texnik_users = User.objects.filter(user_type='Ofis menecer')
-        plumber_users = User.objects.filter(user_type='Texnik menecer')
-        notification.users.set(texnik_users | plumber_users)
+        users_excluding_texnik_and_plumber = User.objects.exclude(user_type__in=['Ofis menecer', 'Texnik menecer'])
+        notification.users.set(users_excluding_texnik_and_plumber)
         notification.save()
 
     def warehouse_item_decrement(self, task_instance, user):

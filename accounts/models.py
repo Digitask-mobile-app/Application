@@ -125,11 +125,13 @@ class Meeting(models.Model):
 
 
 class Notification(models.Model):
+    from services.models import Task
+    task = models.ForeignKey(Task,on_delete=models.SET_NULL,related_name='task_notifications',null=True,blank=True)
     message = models.TextField()
     users = models.ManyToManyField(User, related_name='notifications')
     read = models.ManyToManyField(User, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    user_email = models.EmailField()
+    user_email = models.EmailField(null=True,blank=True)
 
     def __str__(self):
         return f"Notification - {self.message[:20]}"
