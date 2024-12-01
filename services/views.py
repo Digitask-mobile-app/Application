@@ -22,13 +22,13 @@ class CreateTaskView(generics.CreateAPIView):
     def perform_create(self, serializer):
         instance = serializer.save()
         instance = self.get_object()
-        user = self.request.user
+        print(instance)
         self.create_status_notification(instance)
 
        
     def create_status_notification(self, task_instance):
         message = f'Yeni tapşırıq əlavə edildi. Qeydiyyat nömrəsi {task_instance.registration_number} Tapşırıq siyahısını nəzərdən keçirməniz rica olunur!'
-
+        print(message,'---')
         notification = Notification.objects.create(
             task=task_instance.id,
             message=message, 
@@ -38,7 +38,7 @@ class CreateTaskView(generics.CreateAPIView):
         plumber_users = User.objects.filter(user_type='Texnik menecer')
         notification.users.set(texnik_users | plumber_users)
         notification.save()
-
+        print('11')
 #ssssssssssssssssssssssssssssssss
 
 
@@ -317,21 +317,16 @@ from django.db.models.functions import TruncDay, TruncMonth
 class TaskReportAPIView(APIView):
     def get(self, request):
         # Parametreleri al
-        date = request.query_params.get('date')  # YYYY-MM-DD formatında
-        month = request.query_params.get('month')  # YYYY-MM formatında
-        task_type = request.query_params.get('task_type')  # tv, internet, voice
-        status = request.query_params.get('status')  # waiting, completed, vb.
-
-        # Filtreleme
+        date = request.query_params.get('date') 
+        month = request.query_params.get('month') 
+        task_type = request.query_params.get('task_type') 
+        status = request.query_params.get('status')  
         tasks = Task.objects.all()
-
-        # Günlük veya aylık filtreleme
         if date:
             tasks = tasks.filter(date=date)
         elif month:
             tasks = tasks.filter(date__month=month.split('-')[1], date__year=month.split('-')[0])
 
-        # Görev türü filtreleme
         if task_type:
             if task_type == 'tv':
                 tasks = tasks.filter(is_tv=True)
@@ -340,14 +335,11 @@ class TaskReportAPIView(APIView):
             elif task_type == 'voice':
                 tasks = tasks.filter(is_voice=True)
 
-        # Durum filtreleme
         if status:
             tasks = tasks.filter(status=status)
 
-        # Grup ve sayımla durumlara göre veri çıkarımı
         task_summary = tasks.values('status').annotate(count=Count('id'))
 
-        # Günlük/Aylık toplamlar
         if date:
             summary_by_date = tasks.annotate(day=TruncDay('date')).values('day', 'status').annotate(count=Count('id'))
         elif month:
@@ -355,7 +347,6 @@ class TaskReportAPIView(APIView):
         else:
             summary_by_date = []
 
-        # Sonuçları JSON olarak döndür
         return Response({
             "total_tasks": tasks.count(),
             "status_summary": list(task_summary),
