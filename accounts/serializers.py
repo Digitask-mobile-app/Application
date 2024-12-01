@@ -445,7 +445,7 @@ class AddRemoveRoomSerializer(serializers.ModelSerializer):
 class UpdateReadStatusSerializer(serializers.Serializer):
     notification_ids = serializers.ListField(child=serializers.IntegerField())
 
-class NotifySerializer(serializers.Serializer):
+class NotifySerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = '__all__'
