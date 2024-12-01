@@ -21,7 +21,6 @@ class CreateTaskView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         instance = serializer.save()
-        instance = self.get_object()
         print(instance)
         self.create_status_notification(instance)
 
@@ -30,7 +29,7 @@ class CreateTaskView(generics.CreateAPIView):
         message = f'Yeni tapşırıq əlavə edildi. Qeydiyyat nömrəsi {task_instance.registration_number} Tapşırıq siyahısını nəzərdən keçirməniz rica olunur!'
         print(message,'---')
         notification = Notification.objects.create(
-            task=task_instance.id,
+            task=task_instance,
             message=message, 
         )
         
