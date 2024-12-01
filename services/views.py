@@ -160,6 +160,26 @@ class CreateTaskView(generics.CreateAPIView):
     serializer_class = CreateTaskSerializer
     queryset = Task.objects.all()
 
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        print(instance)
+        self.create_status_notification(instance)
+
+       
+    def create_status_notification(self, task_instance):
+        message = f'Yeni tapşırıq əlavə edildi. Qeydiyyat nömrəsi {task_instance.registration_number} Tapşırıq siyahısını nəzərdən keçirməniz rica olunur!'
+        print(message,'---')
+        notification = Notification.objects.create(
+            task=task_instance,
+            message=message, 
+        )
+        
+        texnik_users = User.objects.filter(user_type='Ofis menecer')
+        plumber_users = User.objects.filter(user_type='Texnik menecer')
+        notification.users.set(texnik_users | plumber_users)
+        notification.save()
+        print('11')
+
 
 class CreateTvView(generics.CreateAPIView):
     queryset = TV.objects.all()
