@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from .serializers import UserSerializer
-from .filters import UserFilter, UserTypeFilter, MessageFilter, MessagesFilter
+from .filters import UserFilter, UserTypeFilter, MessageFilter, MessagesFilter, NotificationFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from django.db.models import Q
@@ -479,3 +479,9 @@ class MarkNotificationsAsReadView(APIView):
 
             return Response({'status': 'Notifications updated'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class NotificationListView(generics.ListAPIView):
+    queryset = Notification.objects.all()
+    serializer_class = NotifySerializer
+    filter_class = NotificationFilter 

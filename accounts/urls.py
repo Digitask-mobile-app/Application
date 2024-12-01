@@ -41,6 +41,7 @@ urlpatterns = [
     path('messages_mobile/', views.MessagesListView.as_view(), name='message-list_mobile'),
     
     path('RoomsApiView/', views.RoomsApiView.as_view(), name='RoomsApiView'),
+    path('reportsListView/', views.NotificationListView.as_view(), name='NotificationListView'),
     path('notifications/mark-as-read/', views.MarkNotificationsAsReadView.as_view(),
          name='mark-notifications-as-read'),
 ]
