@@ -2,7 +2,7 @@ from django.db import models
 from accounts.models import User, Group
 # from django.contrib.gis.db import models
 from django.utils import timezone
-from warehouse.models import Item
+
 
 
 TASK_TYPES = (
@@ -102,7 +102,7 @@ class Voice(models.Model):
     
 
 class WarehouseChange(models.Model):
-    
+    from warehouse.models import Item
     task = models.ForeignKey(Task,on_delete=models.CASCADE,related_name='task_items')
     item = models.ForeignKey(Item,on_delete=models.CASCADE,related_name='item_tasks')
     count = models.PositiveIntegerField()
