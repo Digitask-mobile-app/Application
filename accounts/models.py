@@ -4,6 +4,7 @@ from .managers import UserManager
 from django.contrib.auth.models import Group, Permission
 from rest_framework_simplejwt.tokens import RefreshToken
 from .validators import validate_phone_number
+from services.models import Task
 
 MEETING_TYPES = (
     ('Şənlik', 'Şənlik'),
@@ -125,7 +126,7 @@ class Meeting(models.Model):
 
 
 class Notification(models.Model):
-    from services.models import Task
+
     task = models.ForeignKey(Task,on_delete=models.SET_NULL,related_name='task_notifications',null=True,blank=True)
     message = models.TextField()
     users = models.ManyToManyField(User, related_name='notifications')
