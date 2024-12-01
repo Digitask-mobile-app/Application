@@ -47,7 +47,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         from accounts.models import Notification
         notifications = Notification.objects.all().order_by('-created_at')[:8]
         if user.user_type=='Texnik' or user.user_type =='Plumber':
-            notifications = notifications.filter(action='create').order_by('-created_at')[:8]
+            notifications = Notification.objects.filter(action='create').order_by('-created_at')[:8]
 
         response_data = []
 
