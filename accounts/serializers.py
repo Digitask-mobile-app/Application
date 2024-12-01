@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
-from .models import User, OneTimePassword, Group, Room, Message
+from .models import User, OneTimePassword, Group, Room, Message, Notification
 from services.serializers import GroupSerializer
 from rest_framework import serializers
 from django.contrib.auth import authenticate
@@ -447,5 +447,5 @@ class UpdateReadStatusSerializer(serializers.Serializer):
 
 class NotifySerializer(serializers.Serializer):
     class Meta:
-        model = Room
+        model = Notification
         fields = '__all__'
