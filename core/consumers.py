@@ -41,13 +41,21 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                 'message': message
             }))
 
+# USER_TYPE = (
+#     ("Texnik", "Texnik"),
+#     ("Plumber", "Plumber"),
+#     ("Ofis menecer", "Ofis menecer"),
+#     ("Texnik menecer", "Texnik menecer"),
+# )
+
     @database_sync_to_async
     def get_notifications(self, user):
         from accounts.models import Notification
 
         notifications = Notification.objects.filter(
             users=user).order_by('-created_at')[:5]
-
+        print(user,'-------------')
+        print(user.user_type,'-------------')
         response_data = []
 
         for notification in notifications:
