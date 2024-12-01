@@ -52,4 +52,4 @@ class NotificationFilter(filters.FilterSet):
             year, month = value.split('-')
             return queryset.filter(created_at__year=year, created_at__month=month)
         except ValueError:
-            return queryset.none()
+            return queryset
