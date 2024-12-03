@@ -140,6 +140,7 @@ class Notification(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user_email = models.EmailField(null=True,blank=True)
     action = models.CharField(max_length=100,null=True,blank=True,choices=notify_type)
+    report = models.TextField(null=True,blank=True)
 
     def __str__(self):
         return f"Notification - {self.message[:20]}"

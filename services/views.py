@@ -165,10 +165,12 @@ class CreateTaskView(generics.CreateAPIView):
        
     def create_status_notification(self, task_instance):
         message = f'Yeni tapşırıq əlavə edildi. Qeydiyyat nömrəsi {task_instance.registration_number} Tapşırıq siyahısını nəzərdən keçirməniz rica olunur!'
+        report = f'Yeni {task_instance.task_type} tapşırığı əlavə olundu.Xidmət növü {task_instance.get_service()}, qeydiyyat nömrəsi isə {task_instance.registration_number}'
         notification = Notification.objects.create(
             task=task_instance,
             message=message, 
-            action='create'
+            action='create',
+            report=report
         )
         
         texnik_users = User.objects.filter(user_type='Ofis menecer')
@@ -241,16 +243,18 @@ class UpdateTaskView(generics.UpdateAPIView):
             message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığının icrasına başladı.'
         elif task_instance.status == 'completed':
             message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
-     
             self.warehouse_item_decrement(task_instance,user)
         else:
             message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığında {task_instance.status} statusuna keçid etdi.'
+
+        report = message + f' Qeydiyyat nömrəsi {task_instance.registration_number}'
 
         notification = Notification.objects.create(
             task=task_instance.id,
             message=message, 
             user_email=user.email,
-            action=task_instance.status
+            action=task_instance.status,
+            report=report
         )
         
         users_excluding_texnik_and_plumber = User.objects.exclude(user_type__in=['Ofis menecer', 'Texnik menecer'])
