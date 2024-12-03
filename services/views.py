@@ -237,6 +237,8 @@ class UpdateTaskView(generics.UpdateAPIView):
        
 
     def create_status_notification(self, task_instance, user):
+        print('-----------------0')
+        print(user)
         user_name = user.full_name if user.full_name else user.email
         print(user_name,'------------1')
         if task_instance.status == 'inprogress':
