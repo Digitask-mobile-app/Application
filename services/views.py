@@ -237,18 +237,19 @@ class UpdateTaskView(generics.UpdateAPIView):
        
 
     def create_status_notification(self, task_instance, user):
+        user_name = user.full_name if user.full_name else user.email
         if task_instance.status == 'inprogress':
-            message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını qəbul etdi.'
+            message = f'{user_name} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını qəbul etdi.'
         elif task_instance.status == 'started':
-            message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığının icrasına başladı.'
+            message = f'{user_name} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığının icrasına başladı.'
         elif task_instance.status == 'completed':
-            message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
+            message = f'{user_name} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
             self.warehouse_item_decrement(task_instance,user)
         else:
-            message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığında {task_instance.status} statusuna keçid etdi.'
-        print(message,'---1')
-        report = message + f' Qeydiyyat nömrəsi {task_instance.registration_number}'
-        print(report,'---2')
+            message = f'{user_name} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığında {task_instance.status} statusuna keçid etdi.'
+
+        report = message + f' Qeydiyyat nömrəsi {task_instance.registration_number}!'
+
         notification = Notification.objects.create(
             task=task_instance,
             message=message, 
@@ -256,11 +257,11 @@ class UpdateTaskView(generics.UpdateAPIView):
             action=task_instance.status,
             report=report
         )
-        print('---3')
+
         users_excluding_texnik_and_plumber = User.objects.exclude(user_type__in=['Ofis menecer', 'Texnik menecer'])
-        print('---4')
+
         notification.users.set(users_excluding_texnik_and_plumber)
-        print('---5')
+
         notification.save()
 
     def warehouse_item_decrement(self, task_instance, user):
