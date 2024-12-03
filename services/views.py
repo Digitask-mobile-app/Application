@@ -250,7 +250,7 @@ class UpdateTaskView(generics.UpdateAPIView):
         report = message + f' Qeydiyyat nömrəsi {task_instance.registration_number}'
         print(report,'---2')
         notification = Notification.objects.create(
-            task=task_instance.id,
+            task=task_instance,
             message=message, 
             user_email=user.email,
             action=task_instance.status,
