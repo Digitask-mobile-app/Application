@@ -239,6 +239,7 @@ class UpdateTaskView(generics.UpdateAPIView):
     def create_status_notification(self, task_instance, user):
         print('-----------------0')
         print(user)
+        print(object(user))
         print('-----------------01')
         print(user.email)
         print('-----------------012')
