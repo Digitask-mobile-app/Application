@@ -237,16 +237,9 @@ class UpdateTaskView(generics.UpdateAPIView):
        
 
     def create_status_notification(self, task_instance, user):
-        print('-----------------0')
-        print(user)
-        print(object(user))
-        print('-----------------01')
-        print(user.email)
-        print('-----------------012')
-        print(user.full_name)
-        print('-----------------013')
-        user_name = user.full_name if user.full_name else user.email
-        print(user_name,'------------1')
+
+        user_name = user.email
+        
         if task_instance.status == 'inprogress':
             message = f'{user_name} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını qəbul etdi.'
         elif task_instance.status == 'started':
@@ -256,9 +249,9 @@ class UpdateTaskView(generics.UpdateAPIView):
             self.warehouse_item_decrement(task_instance,user)
         else:
             message = f'{user_name} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığında {task_instance.status} statusuna keçid etdi.'
-        print(message,'-----------2')
+  
         report = message + f' Qeydiyyat nömrəsi {task_instance.registration_number}!'
-        print(report,'---------------4')
+   
         notification = Notification.objects.create(
             task=task_instance,
             message=message, 
@@ -266,7 +259,7 @@ class UpdateTaskView(generics.UpdateAPIView):
             action=task_instance.status,
             report=report
         )
-        print('-------------5')
+
         users_excluding_texnik_and_plumber = User.objects.exclude(user_type__in=['Ofis menecer', 'Texnik menecer'])
 
         notification.users.set(users_excluding_texnik_and_plumber)
