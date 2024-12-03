@@ -11,7 +11,7 @@ from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 from rest_framework.authtoken.models import Token
 from datetime import timedelta
-
+from services.models import Task
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
@@ -445,7 +445,13 @@ class AddRemoveRoomSerializer(serializers.ModelSerializer):
 class UpdateReadStatusSerializer(serializers.Serializer):
     notification_ids = serializers.ListField(child=serializers.IntegerField())
 
+class TaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = '__all__'
+
 class NotifySerializer(serializers.ModelSerializer):
+    task = TaskSerializer()
     class Meta:
         model = Notification
         fields = '__all__'

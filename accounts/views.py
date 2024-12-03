@@ -480,8 +480,13 @@ class MarkNotificationsAsReadView(APIView):
             return Response({'status': 'Notifications updated'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class CustomPagination(PageNumberPagination):
+    page_size = 10  
+    page_size_query_param = 'page_size'  
+    max_page_size = 100  
 
 class NotificationListView(generics.ListAPIView):
     queryset = Notification.objects.all()
     serializer_class = NotifySerializer
     filter_class = NotificationFilter 
+    pagination_class = CustomPagination
