@@ -246,9 +246,9 @@ class UpdateTaskView(generics.UpdateAPIView):
             self.warehouse_item_decrement(task_instance,user)
         else:
             message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığında {task_instance.status} statusuna keçid etdi.'
-
+        print(message,'---1')
         report = message + f' Qeydiyyat nömrəsi {task_instance.registration_number}'
-
+        print(report,'---2')
         notification = Notification.objects.create(
             task=task_instance.id,
             message=message, 
@@ -256,9 +256,11 @@ class UpdateTaskView(generics.UpdateAPIView):
             action=task_instance.status,
             report=report
         )
-        
+        print('---3')
         users_excluding_texnik_and_plumber = User.objects.exclude(user_type__in=['Ofis menecer', 'Texnik menecer'])
+        print('---4')
         notification.users.set(users_excluding_texnik_and_plumber)
+        print('---5')
         notification.save()
 
     def warehouse_item_decrement(self, task_instance, user):
