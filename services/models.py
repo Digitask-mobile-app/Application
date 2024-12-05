@@ -69,6 +69,7 @@ class Internet(models.Model):
     photo_modem = models.ImageField(
         upload_to='internet/', null=True, blank=True)
     modem_SN = models.CharField(max_length=100, null=True, blank=True)
+    splitter_port = models.TextField(null=True,blank=True)
     # optical_cable = models.CharField(max_length=100, null=True, blank=True)
     # fastconnector = models.CharField(max_length=100, null=True, blank=True)
     siqnal = models.CharField(max_length=100, null=True, blank=True)

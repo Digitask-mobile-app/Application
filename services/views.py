@@ -251,7 +251,7 @@ class UpdateTaskView(generics.UpdateAPIView):
             message = f'{user_name} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığında {task_instance.status} statusuna keçid etdi.'
   
         report = message + f' Qeydiyyat nömrəsi {task_instance.registration_number}!'
-   
+        
         notification = Notification.objects.create(
             task=task_instance,
             message=message, 
