@@ -1,4 +1,4 @@
-from django_filters import rest_framework as filters
+from django_filters import rest_framework as filters, DateFilter
 from .models import User,USER_TYPE,Message
 
 class UserFilter(filters.FilterSet):
@@ -38,10 +38,19 @@ class MessagesFilter(filters.FilterSet):
 from .models import Notification
 
 
+class CustomDateFilter(DateFilter):
+    def filter(self, qs, value):
+        if value:
+            filter_lookups = {
+                f"{self.field_name}__month": value.month,
+                f"{self.field_name}__year": value.year,
+            }
+            qs = qs.filter(**filter_lookups)
+        return qs
+
 class NotificationFilter(filters.FilterSet):
-    year = filters.NumberFilter(field_name='created_at', lookup_expr='year', label='Year')
-    month = filters.NumberFilter(field_name='created_at', lookup_expr='month', label='Month')
+    date = CustomDateFilter(field_name='created_at', label='Month and Year (YYYY-MM-DD)')
 
     class Meta:
         model = Notification
-        fields = ['year', 'month']
+        fields = ['date']
