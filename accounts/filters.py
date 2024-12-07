@@ -39,17 +39,9 @@ from .models import Notification
 
 
 class NotificationFilter(filters.FilterSet):
-    date = filters.DateFilter(field_name='created_at', lookup_expr='exact', label='Exact Date')
-    month = filters.CharFilter(field_name='created_at', method='filter_by_month', label='Month (YYYY-MM)')
+    year = filters.NumberFilter(field_name='created_at', lookup_expr='year', label='Year')
+    month = filters.NumberFilter(field_name='created_at', lookup_expr='month', label='Month')
 
     class Meta:
         model = Notification
-        fields = ['date', 'month']
-
-    def filter_by_month(self, queryset, name, value):
-        # Ay ve yıl formatında filtreleme yapar (YYYY-MM)
-        try:
-            year, month = value.split('-')
-            return queryset.filter(created_at__year=year, created_at__month=month)
-        except ValueError:
-            return queryset
+        fields = ['year', 'month']
