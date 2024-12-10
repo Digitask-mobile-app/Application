@@ -488,5 +488,15 @@ class CustomPagination(PageNumberPagination):
 class NotificationListView(generics.ListAPIView):
     queryset = Notification.objects.all()
     serializer_class = NotifySerializer
-    filter_class = NotificationFilter 
     pagination_class = CustomPagination
+
+    def get_queryset(self):
+        queryset = Notification.objects.all()
+        month = self.request.query_params.get('created_at_month')
+        year = self.request.query_params.get('created_at_year')
+        if month:
+            queryset = queryset.filter(created_at__month=month)
+        if year:
+            queryset = queryset.filter(created_at__year=year)
+
+        return queryset
