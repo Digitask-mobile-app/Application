@@ -339,32 +339,43 @@ from django.db.models.functions import TruncDay, TruncMonth
 
 class TaskReportAPIView(APIView):
     def get(self, request, *args, **kwargs):
+        queryset = Task.objects.all()
+
+        month = self.request.query_params.get('month')
+        year = self.request.query_params.get('year')
+        if month:
+            queryset = queryset.filter(date__month=month)
+        if year:
+            queryset = queryset.filter(date__year=year)
+
+        total = queryset.count()
         # TV tasks
-        tv_tasks_total = Task.objects.filter(is_tv=True).count()
-        tv_tasks_by_status = Task.objects.filter(is_tv=True).values('status').annotate(count=Count('id'))
+        tv_tasks_total = queryset.filter(is_tv=True).count()
+        tv_tasks_by_status = queryset.filter(is_tv=True).values('status').annotate(count=Count('id'))
 
         # Internet tasks
-        internet_tasks_total = Task.objects.filter(is_internet=True).count()
-        internet_tasks_by_status = Task.objects.filter(is_internet=True).values('status').annotate(count=Count('id'))
+        internet_tasks_total = queryset.filter(is_internet=True).count()
+        internet_tasks_by_status = queryset.filter(is_internet=True).values('status').annotate(count=Count('id'))
 
         # Voice tasks
-        voice_tasks_total = Task.objects.filter(is_voice=True).count()
-        voice_tasks_by_status = Task.objects.filter(is_voice=True).values('status').annotate(count=Count('id'))
+        voice_tasks_total = queryset.filter(is_voice=True).count()
+        voice_tasks_by_status = queryset.filter(is_voice=True).values('status').annotate(count=Count('id'))
 
         # TV and Internet tasks
-        tv_and_internet_total = Task.objects.filter(is_tv=True, is_internet=True).count()
-        tv_and_internet_by_status = Task.objects.filter(is_tv=True, is_internet=True).values('status').annotate(count=Count('id'))
+        tv_and_internet_total = queryset.filter(is_tv=True, is_internet=True).count()
+        tv_and_internet_by_status = queryset.filter(is_tv=True, is_internet=True).values('status').annotate(count=Count('id'))
 
         # TV and Voice tasks
-        tv_and_voice_total = Task.objects.filter(is_tv=True, is_voice=True).count()
-        tv_and_voice_by_status = Task.objects.filter(is_tv=True, is_voice=True).values('status').annotate(count=Count('id'))
+        tv_and_voice_total = queryset.filter(is_tv=True, is_voice=True).count()
+        tv_and_voice_by_status = queryset.filter(is_tv=True, is_voice=True).values('status').annotate(count=Count('id'))
 
         # Internet and Voice tasks
-        internet_and_voice_total = Task.objects.filter(is_internet=True, is_voice=True).count()
-        internet_and_voice_by_status = Task.objects.filter(is_internet=True, is_voice=True).values('status').annotate(count=Count('id'))
+        internet_and_voice_total = queryset.filter(is_internet=True, is_voice=True).count()
+        internet_and_voice_by_status = queryset.filter(is_internet=True, is_voice=True).values('status').annotate(count=Count('id'))
 
         # Nəticə
         return Response({
+            "total":total,
             "tv_tasks": {
                 "total": tv_tasks_total,
                 "by_status": list(tv_tasks_by_status),
