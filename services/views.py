@@ -338,40 +338,31 @@ from django.utils.timezone import now
 from django.db.models.functions import TruncDay, TruncMonth
 
 class TaskReportAPIView(APIView):
-    def get(self, request):
-        # Parametreleri al
-        date = request.query_params.get('date') 
-        month = request.query_params.get('month') 
-        task_type = request.query_params.get('task_type') 
-        status = request.query_params.get('status')  
-        tasks = Task.objects.all()
-        if date:
-            tasks = tasks.filter(date=date)
-        elif month:
-            tasks = tasks.filter(date__month=month.split('-')[1], date__year=month.split('-')[0])
+    def get(self, request, *args, **kwargs):
+        # Ümumi task sayı
+        total_tasks = Task.objects.count()
 
-        if task_type:
-            if task_type == 'tv':
-                tasks = tasks.filter(is_tv=True)
-            elif task_type == 'internet':
-                tasks = tasks.filter(is_internet=True)
-            elif task_type == 'voice':
-                tasks = tasks.filter(is_voice=True)
+        # Xüsusi task sayıları
+        tv_tasks = Task.objects.filter(is_tv=True).count()
+        internet_tasks = Task.objects.filter(is_internet=True).count()
+        voice_tasks = Task.objects.filter(is_voice=True).count()
 
-        if status:
-            tasks = tasks.filter(status=status)
+        # Kombinasiyalar
+        tv_and_internet = Task.objects.filter(is_tv=True, is_internet=True).count()
+        tv_and_voice = Task.objects.filter(is_tv=True, is_voice=True).count()
+        internet_and_voice = Task.objects.filter(is_internet=True, is_voice=True).count()
 
-        task_summary = tasks.values('status').annotate(count=Count('id'))
+        # Statuslara görə qruplaşdırma
+        status_counts = Task.objects.values('status').annotate(count=Count('id'))
 
-        if date:
-            summary_by_date = tasks.annotate(day=TruncDay('date')).values('day', 'status').annotate(count=Count('id'))
-        elif month:
-            summary_by_date = tasks.annotate(month=TruncMonth('date')).values('month', 'status').annotate(count=Count('id'))
-        else:
-            summary_by_date = []
-
+        # Nəticə
         return Response({
-            "total_tasks": tasks.count(),
-            "status_summary": list(task_summary),
-            "date_summary": list(summary_by_date),
+            "total_tasks": total_tasks,
+            "tv_tasks": tv_tasks,
+            "internet_tasks": internet_tasks,
+            "voice_tasks": voice_tasks,
+            "tv_and_internet": tv_and_internet,
+            "tv_and_voice": tv_and_voice,
+            "internet_and_voice": internet_and_voice,
+            "status_counts": status_counts,
         })
