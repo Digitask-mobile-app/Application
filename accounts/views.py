@@ -492,8 +492,8 @@ class NotificationListView(generics.ListAPIView):
 
     def get_queryset(self):
         queryset = Notification.objects.all()
-        month = self.request.query_params.get('created_at_month')
-        year = self.request.query_params.get('created_at_year')
+        month = self.request.query_params.get('month')
+        year = self.request.query_params.get('year')
         if month:
             queryset = queryset.filter(created_at__month=month)
         if year:
