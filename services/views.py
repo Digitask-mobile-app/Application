@@ -339,30 +339,54 @@ from django.db.models.functions import TruncDay, TruncMonth
 
 class TaskReportAPIView(APIView):
     def get(self, request, *args, **kwargs):
-        # Ümumi task sayı
-        total_tasks = Task.objects.count()
+        # TV tasks
+        tv_tasks_total = Task.objects.filter(is_tv=True).count()
+        tv_tasks_by_status = Task.objects.filter(is_tv=True).values('status').annotate(count=Count('id'))
 
-        # Xüsusi task sayıları
-        tv_tasks = Task.objects.filter(is_tv=True).count()
-        internet_tasks = Task.objects.filter(is_internet=True).count()
-        voice_tasks = Task.objects.filter(is_voice=True).count()
+        # Internet tasks
+        internet_tasks_total = Task.objects.filter(is_internet=True).count()
+        internet_tasks_by_status = Task.objects.filter(is_internet=True).values('status').annotate(count=Count('id'))
 
-        # Kombinasiyalar
-        tv_and_internet = Task.objects.filter(is_tv=True, is_internet=True).count()
-        tv_and_voice = Task.objects.filter(is_tv=True, is_voice=True).count()
-        internet_and_voice = Task.objects.filter(is_internet=True, is_voice=True).count()
+        # Voice tasks
+        voice_tasks_total = Task.objects.filter(is_voice=True).count()
+        voice_tasks_by_status = Task.objects.filter(is_voice=True).values('status').annotate(count=Count('id'))
 
-        # Statuslara görə qruplaşdırma
-        status_counts = Task.objects.values('status').annotate(count=Count('id'))
+        # TV and Internet tasks
+        tv_and_internet_total = Task.objects.filter(is_tv=True, is_internet=True).count()
+        tv_and_internet_by_status = Task.objects.filter(is_tv=True, is_internet=True).values('status').annotate(count=Count('id'))
+
+        # TV and Voice tasks
+        tv_and_voice_total = Task.objects.filter(is_tv=True, is_voice=True).count()
+        tv_and_voice_by_status = Task.objects.filter(is_tv=True, is_voice=True).values('status').annotate(count=Count('id'))
+
+        # Internet and Voice tasks
+        internet_and_voice_total = Task.objects.filter(is_internet=True, is_voice=True).count()
+        internet_and_voice_by_status = Task.objects.filter(is_internet=True, is_voice=True).values('status').annotate(count=Count('id'))
 
         # Nəticə
         return Response({
-            "total_tasks": total_tasks,
-            "tv_tasks": tv_tasks,
-            "internet_tasks": internet_tasks,
-            "voice_tasks": voice_tasks,
-            "tv_and_internet": tv_and_internet,
-            "tv_and_voice": tv_and_voice,
-            "internet_and_voice": internet_and_voice,
-            "status_counts": status_counts,
+            "tv_tasks": {
+                "total": tv_tasks_total,
+                "by_status": list(tv_tasks_by_status),
+            },
+            "internet_tasks": {
+                "total": internet_tasks_total,
+                "by_status": list(internet_tasks_by_status),
+            },
+            "voice_tasks": {
+                "total": voice_tasks_total,
+                "by_status": list(voice_tasks_by_status),
+            },
+            "tv_and_internet": {
+                "total": tv_and_internet_total,
+                "by_status": list(tv_and_internet_by_status),
+            },
+            "tv_and_voice": {
+                "total": tv_and_voice_total,
+                "by_status": list(tv_and_voice_by_status),
+            },
+            "internet_and_voice": {
+                "total": internet_and_voice_total,
+                "by_status": list(internet_and_voice_by_status),
+            },
         })
