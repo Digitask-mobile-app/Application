@@ -49,8 +49,9 @@ class CustomDateFilter(DateFilter):
         return qs
 
 class NotificationFilter(filters.FilterSet):
-    date = CustomDateFilter(field_name='created_at', label='Month and Year (YYYY-MM-DD)')
+    created_at_month = filters.NumberFilter(field_name='created_at__month', lookup_expr='exact')
+    created_at_year = filters.NumberFilter(field_name='created_at__year', lookup_expr='exact')
 
     class Meta:
         model = Notification
-        fields = ['date']
+        fields = ['created_at_month', 'created_at_year']
