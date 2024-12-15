@@ -325,13 +325,19 @@ class MainPageUserSerializer(serializers.ModelSerializer):
         upcoming_meetings = Meeting.objects.filter(participants=obj, date__gte=now)
         data = MeetingSerializer(upcoming_meetings, many=True).data
         return data
-
-
-class CreateTaskSerializer(serializers.ModelSerializer):
     
+class CreateTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = '__all__'
+
+    def create(self, validated_data):
+        # 'group' verisini request'ten çekiyoruz
+        groups = self.context['request'].data.getlist('group[]')  # multipart verisi için getlist
+        task = Task.objects.create(**validated_data)  # Task'i oluştur
+        if groups:
+            task.group.set(groups)  # Many-to-Many ilişkiyi ayarla
+        return task
 
 
 class TaskStatusUpdateSerializer(serializers.ModelSerializer):
