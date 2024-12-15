@@ -17,7 +17,7 @@ from accounts.models import Notification
 from warehouse.models import Item,Warehouse, WarehouseHistory
 
 class CreateTaskView(generics.CreateAPIView):
-    serializer_class = TaskDetailSerializer
+    serializer_class = CreateTaskSerializer
 
     def perform_create(self, serializer):
         instance = serializer.save()
