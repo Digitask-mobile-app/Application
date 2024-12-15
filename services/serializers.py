@@ -333,8 +333,9 @@ class CreateTaskSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # Many-to-Many alanını ayıkla
+
         groups = validated_data.pop('group', None)  # group alanını çıkar
-        
+        print(groups,'--------')
         # Task nesnesini oluştur
         task = Task.objects.create(**validated_data)
 
