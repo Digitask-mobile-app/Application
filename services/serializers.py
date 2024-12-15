@@ -330,19 +330,24 @@ class CreateTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = '__all__'
+        
+    def to_internal_value(self, data):
+        # `group[]` verisini işlemek için elle çekiyoruz
+        groups = data.getlist('group[]')  # group[]'leri liste olarak alıyoruz
+        data._mutable = True  # Eğer QueryDict immutable ise değiştirilebilir yapıyoruz
+        data.setlist('group', groups)  # group[]'leri 'group' anahtarına atıyoruz
+        return super().to_internal_value(data)
 
     def create(self, validated_data):
-        # Many-to-Many alanını ayıkla
-
-        groups = validated_data.pop('group', None)  # group alanını çıkar
-        print(groups,'--------')
+        # Many-to-Many alanını çıkart
+        groups = validated_data.pop('group', None)  
+        
         # Task nesnesini oluştur
         task = Task.objects.create(**validated_data)
-
-        # Eğer group varsa, Many-to-Many ilişkisini kur
-        if groups:
-            task.group.set(groups)  # set kullanımı Many-to-Many için gerekli
         
+        # Eğer groups varsa Many-to-Many ilişkisini ayarla
+        if groups:
+            task.group.set(groups)
         return task
 
 
