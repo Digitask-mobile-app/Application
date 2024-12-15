@@ -332,11 +332,16 @@ class CreateTaskSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        # 'group' verisini request'ten çekiyoruz
-        groups = self.context['request'].data.getlist('group[]')  # multipart verisi için getlist
-        task = Task.objects.create(**validated_data)  # Task'i oluştur
+        # Many-to-Many alanını ayıkla
+        groups = validated_data.pop('group', None)  # group alanını çıkar
+        
+        # Task nesnesini oluştur
+        task = Task.objects.create(**validated_data)
+
+        # Eğer group varsa, Many-to-Many ilişkisini kur
         if groups:
-            task.group.set(groups)  # Many-to-Many ilişkiyi ayarla
+            task.group.set(groups)  # set kullanımı Many-to-Many için gerekli
+        
         return task
 
 
