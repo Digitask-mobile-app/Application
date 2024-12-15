@@ -328,10 +328,7 @@ class MainPageUserSerializer(serializers.ModelSerializer):
 
 
 class CreateTaskSerializer(serializers.ModelSerializer):
-    group = serializers.PrimaryKeyRelatedField(
-        queryset=Group.objects.all(), many=True
-    )
-
+    
     class Meta:
         model = Task
         fields = '__all__'

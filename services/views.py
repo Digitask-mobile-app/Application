@@ -16,26 +16,26 @@ from accounts.serializers import UserSerializer
 from accounts.models import Notification
 from warehouse.models import Item,Warehouse, WarehouseHistory
 
-class CreateTaskView(generics.CreateAPIView):
-    serializer_class = CreateTaskSerializer
+# class CreateTaskView(generics.CreateAPIView):
+#     serializer_class = CreateTaskSerializer
 
-    def perform_create(self, serializer):
-        instance = serializer.save()
-        self.create_status_notification(instance)
+#     def perform_create(self, serializer):
+#         instance = serializer.save()
+#         self.create_status_notification(instance)
 
        
-    def create_status_notification(self, task_instance):
-        message = f'Yeni tapşırıq əlavə edildi. Qeydiyyat nömrəsi {task_instance.registration_number} Tapşırıq siyahısını nəzərdən keçirməniz rica olunur!'
-        notification = Notification.objects.create(
-            task=task_instance,
-            message=message, 
-            action='create'
-        )
+#     def create_status_notification(self, task_instance):
+#         message = f'Yeni tapşırıq əlavə edildi. Qeydiyyat nömrəsi {task_instance.registration_number} Tapşırıq siyahısını nəzərdən keçirməniz rica olunur!'
+#         notification = Notification.objects.create(
+#             task=task_instance,
+#             message=message, 
+#             action='create'
+#         )
         
-        texnik_users = User.objects.filter(user_type='Ofis menecer')
-        plumber_users = User.objects.filter(user_type='Texnik menecer')
-        notification.users.set(texnik_users | plumber_users)
-        notification.save()
+#         texnik_users = User.objects.filter(user_type='Ofis menecer')
+#         plumber_users = User.objects.filter(user_type='Texnik menecer')
+#         notification.users.set(texnik_users | plumber_users)
+#         notification.save()
 #ssssssssssssssssssssssssssssssss
 
 
