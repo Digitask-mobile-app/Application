@@ -39,6 +39,11 @@ class TVUpdateSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class TVUpdateImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TV
+        fields = ['id','photo_modem']
+
 class VoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Voice

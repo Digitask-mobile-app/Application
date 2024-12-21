@@ -189,6 +189,31 @@ class UpdateTvView(generics.UpdateAPIView):
     serializer_class = TVUpdateSerializer
     http_method_names = ['patch']
 
+class UpdateTvImageView(generics.UpdateAPIView):
+    queryset = TV.objects.all()
+    serializer_class = TVUpdateImageSerializer
+    http_method_names = ['patch']
+
+
+    def partial_update(self, request, *args, **kwargs):
+        if 'photo_modem' not in request.data:
+            return Response({'error': 'photo_modem field is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        photo_file = request.FILES.get('photo_modem')
+        if not photo_file or not photo_file.content_type.startswith('image/'):
+            return Response({'error': 'Invalid file type. Only image files are allowed.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            response = super().partial_update(request, *args, **kwargs)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        updated_instance = self.get_object()
+        if updated_instance.photo_modem != photo_file.name:
+            return Response({'error': 'Failed to update photo_modem field.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        return response
+
 
 class CreateInternetView(generics.CreateAPIView):
     queryset = Internet.objects.all()
