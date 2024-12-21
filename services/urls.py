@@ -27,7 +27,7 @@ urlpatterns = [
     path('create_task/', views.CreateTaskView.as_view(), name='create_task'),
     path('create_tv/', views.CreateTvView.as_view(), name='creat_tv'),
     path('update_tv/<int:pk>/', views.UpdateTvView.as_view(), name='update_tv'),
-    path('update_tv/<int:pk>/', views.UpdateTvImageView.as_view(), name='update_tv'),
+    path('update_tv_image/<int:pk>/', views.UpdateTvImageView.as_view(), name='update_tv'),
     
     path('create_internet/', views.CreateInternetView.as_view(),
          name='creat_internet'),
