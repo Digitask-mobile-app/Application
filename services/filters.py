@@ -28,6 +28,8 @@ class StatusAndTaskFilter(django_filters.FilterSet):
     task_type = django_filters.ChoiceFilter(choices=TASK_TYPES, field_name='task_type')
     month = django_filters.ChoiceFilter(choices=MONTH_CHOICES, method='filter_by_month', field_name='date')
     year = django_filters.NumberFilter(method='filter_by_year', field_name='date')
+    region = django_filters.CharFilter(field_name='region__name', lookup_expr='icontains')
+    registration_number = django_filters.CharFilter(field_name='registration_number', lookup_expr='icontains')
 
     class Meta:
         model = Task
