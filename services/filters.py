@@ -33,7 +33,7 @@ class StatusAndTaskFilter(django_filters.FilterSet):
 
     class Meta:
         model = Task
-        fields = ['status', 'task_type', 'month']
+        fields = ['status', 'task_type', 'month','region','registration_number']
 
     def filter_by_month(self, queryset, name, value):
         return queryset.filter(date__month=value)
