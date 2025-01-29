@@ -89,7 +89,7 @@ class PerformanceListView(generics.ListAPIView):
     filter_backends = (DjangoFilterBackend,)
 
     def get_queryset(self):
-        queryset = User.objects.filter(user_type="Texnik")
+        queryset = User.objects.all()
 
         users_with_totals = []
 
@@ -173,9 +173,8 @@ class CreateTaskView(generics.CreateAPIView):
             report=report
         )
         
-        texnik_users = User.objects.filter(user_type='Ofis menecer')
-        plumber_users = User.objects.filter(user_type='Texnik menecer')
-        notification.users.set(texnik_users | plumber_users)
+
+        notification.users.set(User.objects.all())
         notification.save()
 
 
@@ -285,7 +284,7 @@ class UpdateTaskView(generics.UpdateAPIView):
             report=report
         )
 
-        users_excluding_texnik_and_plumber = User.objects.exclude(user_type__in=['Ofis menecer', 'Texnik menecer'])
+        users_excluding_texnik_and_plumber = User.objects.all()
 
         notification.users.set(users_excluding_texnik_and_plumber)
 

@@ -22,7 +22,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'first_name', 'last_name', 'group',
-                  "user_type", 'username', 'password', 'password2', 'phone']
+                  "position", 'username', 'password', 'password2', 'phone']
 
     def validate(self, attrs):
         password = attrs.get('password', '')
@@ -40,7 +40,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             password=validated_data.get('password'),
             group=validated_data.get('group'),
             username=validated_data.get('username'),
-            user_type=validated_data.get('user_type'),
+            position=validated_data.get('position'),
             phone=validated_data.get('phone'),
         )
         return user
