@@ -13,16 +13,22 @@ MEETING_TYPES = (
     ('Seminar', 'Seminar'),
 )
 
-
-USER_TYPE = (
-    ("Texnik", "Texnik"),
-    ("Plumber", "Plumber"),
-    ("Ofis menecer", "Ofis menecer"),
-    ("Texnik menecer", "Texnik menecer"),
-)
-
 AUTH_PROVIDERS = {'email': 'email'}
 
+USER_PERMISSIONS = (
+    ('no_access', 'no_access'),
+    ('read_only','read_only'),
+    ('read_write','read_write')
+)
+
+class Position(models.Model):
+    name = models.CharField(max_length=200)
+    warehouse_permission = models.CharField(max_length=200,choices=USER_PERMISSIONS)
+    users_permission = models.CharField(max_length=200,choices=USER_PERMISSIONS)
+    tasks_permission = models.CharField(max_length=200,choices=USER_PERMISSIONS)
+
+    def __str__(self):
+        return self.name
 
 class Group(models.Model):
     group = models.CharField(max_length=200)
@@ -38,7 +44,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=255)
     username = models.CharField(max_length=30, unique=False)
     phone = models.CharField(max_length=15, validators=[validate_phone_number])
-    user_type = models.CharField(max_length=20, choices=USER_TYPE)
+    position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True,blank=True)
     group = models.ForeignKey(
         Group, on_delete=models.CASCADE, blank=True, null=True)
     timestamp = models.DateTimeField(null=True, blank=True)
@@ -86,22 +92,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def get_full_name(self):
         return f"{self.first_name.title()} {self.last_name.title()}"
-
-    @property
-    def is_texnik(self):
-        return self.user_type == "Texnik"
-
-    @property
-    def is_plumber(self):
-        return self.user_type == "Plumber"
-
-    @property
-    def is_ofis_menecer(self):
-        return self.user_type == "Ofis menecer"
-
-    @property
-    def is_texnik_menecer(self):
-        return self.user_type == "Texnik menecer"
 
     def has_started_task(self):
         return self.user_tasks.filter(status='started').exists()

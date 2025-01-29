@@ -63,6 +63,13 @@ class Task(Status):
             return 'Voice'
         return None
 
+class Internet_packages(models.Model):
+    name = models.CharField(max_length=300)
+    price = models.CharField(max_length=300)
+
+    def __str__(self):
+        return self.name
+
 class Internet(models.Model):
     task = models.OneToOneField(
         Task, on_delete=models.CASCADE, related_name='internet')
@@ -73,7 +80,7 @@ class Internet(models.Model):
     # optical_cable = models.CharField(max_length=100, null=True, blank=True)
     # fastconnector = models.CharField(max_length=100, null=True, blank=True)
     siqnal = models.CharField(max_length=100, null=True, blank=True)
-    internet_packs = models.CharField(max_length=100, blank=True, null=True)
+    internet_packs = models.ForeignKey(Internet_packages, on_delete=models.CASCADE, null=True,blank=True)
 
     def __str__(self):
         return self.task.registration_number
