@@ -63,7 +63,7 @@ class VoiceUpdateSerializer(serializers.ModelSerializer):
 
 class WarehouseChangeTaskSerializer(serializers.ModelSerializer):
     warehouse_name = serializers.SerializerMethodField()
-    item = TaskSerializer()
+    item = ItemSerializer()
 
     class Meta:
         model = WarehouseChange
