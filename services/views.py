@@ -343,6 +343,10 @@ class WarehouseChangeViewSet(viewsets.ModelViewSet):
     queryset = WarehouseChange.objects.all()
     serializer_class = WarehouseChangeSerializer
 
+class InternetPacksViewSet(viewsets.ModelViewSet):
+    queryset = Internet_packages.objects.all()
+    serializer_class = InternetPackSerializer
+
 class TaskWarehouseListView(generics.ListAPIView):
     queryset = WarehouseChange.objects.all()
     serializer_class = WarehouseChangeSerializer

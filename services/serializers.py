@@ -1,13 +1,18 @@
 from datetime import datetime
 from rest_framework import serializers, viewsets
-from .models import Task, Internet, Voice, TV, WarehouseChange
+from .models import Task, Internet, Voice, TV, WarehouseChange, Internet_packages
 from accounts.models import User, Group, Meeting
 from django.db.models import Q
 from .filters import TaskFilter
 from django.db.models import Count
 from datetime import date
 from django.utils import timezone
+from warehouse.serializers import ItemSerializer
 
+class InternetPackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Internet_packages
+        fields = '__all__'
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
@@ -58,13 +63,14 @@ class VoiceUpdateSerializer(serializers.ModelSerializer):
 
 class WarehouseChangeTaskSerializer(serializers.ModelSerializer):
     warehouse_name = serializers.SerializerMethodField()
-
+    task_items = ItemSerializer(many=True)
     class Meta:
         model = WarehouseChange
         fields = '__all__'
 
     def get_warehouse_name(self, obj):
         return obj.item.warehouse.name if obj.item and obj.item.warehouse else None
+
 
 class TaskSerializer(serializers.ModelSerializer):
     group = GroupSerializer(many=True)

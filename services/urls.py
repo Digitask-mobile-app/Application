@@ -3,12 +3,11 @@ from . import views
 from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 router.register(r'warehouse_change', views.WarehouseChangeViewSet)  
+router.register(r'internet_packs', views.InternetPacksViewSet)  
 
 
 urlpatterns = [
     path('warehouse/', include(router.urls)),   
-
-
     path('tasks/', views.TaskListView.as_view(), name='tasks'),
     path('usertasks/', views.UserTaskListView.as_view(), name='user_tasks'),
     path('task/<int:id>/', views.TaskDetailView.as_view(), name='task-detail'),
