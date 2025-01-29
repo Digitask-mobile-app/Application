@@ -52,14 +52,14 @@ class LoginSerializer(serializers.ModelSerializer):
     access_token = serializers.CharField(max_length=255, read_only=True)
     refresh_token = serializers.CharField(max_length=255, read_only=True)
     remember_me = serializers.BooleanField(default=False, write_only=True)
-    user_type = serializers.CharField(max_length=20, read_only=True)
+    position = serializers.CharField(max_length=20, read_only=True)
     is_admin = serializers.BooleanField(read_only=True)
     phone = serializers.CharField(max_length=15, read_only=True)
 
     class Meta:
         model = User
         fields = ['email', 'password', 'access_token',
-                  'refresh_token', 'user_type', 'is_admin', 'remember_me', 'phone']
+                  'refresh_token', 'position', 'is_admin', 'remember_me', 'phone']
 
     def validate(self, attrs):
         email = attrs.get('email')
@@ -80,13 +80,10 @@ class LoginSerializer(serializers.ModelSerializer):
         else:
             access_token = refresh.access_token
 
-        is_admin = user.user_type in ['Ofis menecer', 'Texnik menecer']
         return {
             'email': user.email,
             'access_token': str(access_token),
             'refresh_token': str(refresh),
-            'user_type': user.user_type,
-            'is_admin': is_admin,
             'phone': user.phone,
         }
 
@@ -222,7 +219,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'email', 'first_name', 'last_name', 'phone',
-            'user_type', 'groupData', 'group'
+            'position', 'groupData', 'group'
         ]
 
 
@@ -232,7 +229,7 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'email', 'first_name', 'last_name', 'phone',
-            'user_type', 'group', 'profil_picture'
+            'position', 'group', 'profil_picture'
         ]
 
 class ProfileReadSerializer(serializers.ModelSerializer):
@@ -247,7 +244,7 @@ class ProfileReadSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'email', 'first_name', 'last_name', 'phone',
-            'user_type', 'groupData', 'group', 'profil_picture'
+            'position', 'groupData', 'group', 'profil_picture'
         ]
 
 
@@ -300,7 +297,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'email', 'first_name', 'last_name',
-                  'phone', 'user_type', 'group', 'username']
+                  'phone', 'position', 'group', 'username']
 
 
 class UserFilterSerializer(serializers.ModelSerializer):
@@ -309,7 +306,7 @@ class UserFilterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'email', 'first_name',
-                  'last_name',  'user_type', 'group']
+                  'last_name',  'position', 'group']
 
 
 class UpdateUserSerializer(serializers.ModelSerializer):
@@ -324,14 +321,14 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'id', 'email', 'phone', 'user_type', 'username',
+            'id', 'email', 'phone', 'position', 'username',
             'group', 'group_id', 'password', 'password2',
             'first_name', 'last_name'
         ]
         extra_kwargs = {
             'email': {'required': False},
             'phone': {'required': False, 'allow_blank': True, 'allow_null': True},
-            'user_type': {'required': False, 'allow_blank': True, 'allow_null': True},
+            'position': {'required': False, 'allow_blank': True, 'allow_null': True},
             'username': {'required': False, 'allow_blank': True, 'allow_null': True},
             'group_id': {'required': False, 'allow_null': True},
             'password': {'required': False},
@@ -382,7 +379,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 class PerformanceUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'user_type']
+        fields = ['id', 'first_name', 'last_name', 'position']
 
 
 

@@ -71,7 +71,7 @@ class TaskSerializer(serializers.ModelSerializer):
     first_name = serializers.SerializerMethodField()
     last_name = serializers.SerializerMethodField()
     email = serializers.SerializerMethodField()
-    user_type = serializers.SerializerMethodField()
+    position = serializers.SerializerMethodField()
     has_internet = serializers.SerializerMethodField()
     has_voice = serializers.SerializerMethodField()
     has_tv = serializers.SerializerMethodField()
@@ -90,8 +90,8 @@ class TaskSerializer(serializers.ModelSerializer):
     def get_email(self, obj):
         return obj.user.email if obj.user else None
 
-    def get_user_type(self, obj):
-        return obj.user.user_type if obj.user else None
+    def get_position(self, obj):
+        return obj.user.position.name if obj.user else None
     
     def get_has_internet(self, obj):
         return hasattr(obj, 'internet') and obj.internet is not None
@@ -176,7 +176,7 @@ class PerformanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'user_type', 'first_name',
+        fields = ['id', 'position', 'first_name',
                   'last_name', 'group', 'task_count']
 
     def get_group(self, obj):
@@ -265,61 +265,59 @@ class MainPageUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'group', 'user_type', 'is_staff',
+        fields = ('first_name', 'last_name', 'group', 'position', 'is_staff',
                   'is_superuser', 'task_details', 'completed_tasks', 'meetings', 'ongoing_tasks')
 
     def get_task_details(self, obj):
-        if obj.user_type == 'Texnik' or obj.user_type == 'Plumber':
-            problem_count = Task.objects.filter(task_type='problem').count()
-            connection_count = Task.objects.filter(
-                task_type='connection').count()
-            response = {
-                'problem_count': problem_count,
-                'connection_count': connection_count
-            }
-        elif obj.is_staff or obj.is_superuser:
-            tv_task_count = Task.objects.filter(is_tv=True).count()
-            internet_task_count = Task.objects.filter(is_internet=True).count()
-            voice_task_count = Task.objects.filter(is_voice=True).count()
-            problem_count = Task.objects.filter(task_type='problem').count()
-            connection_count = Task.objects.filter(
-                task_type='connection').count()
-
-            response = {
-                'tv_count': tv_task_count,
-                'internet_count': internet_task_count,
-                'voice_count': voice_task_count,
-                'problem_count': problem_count,
-                'connection_count': connection_count
-            }
-        else:
-            tv_task_count = Task.objects.filter(user=obj, is_tv=True).count()
-            internet_task_count = Task.objects.filter(
-                user=obj, is_internet=True).count()
-            voice_task_count = Task.objects.filter(
-                user=obj, is_voice=True).count()
-            response = {
-                'tv_count': tv_task_count,
-                'internet_count': internet_task_count,
-                'voice_count': voice_task_count
-            }
+        # if obj.position.name == 'Texnik' or obj.position == 'Plumber':
+        #     problem_count = Task.objects.filter(task_type='problem').count()
+        #     connection_count = Task.objects.filter(
+        #         task_type='connection').count()
+        #     response = {
+        #         'problem_count': problem_count,
+        #         'connection_count': connection_count
+        #     }
+        tv_task_count = Task.objects.filter(is_tv=True).count()
+        internet_task_count = Task.objects.filter(is_internet=True).count()
+        voice_task_count = Task.objects.filter(is_voice=True).count()
+        problem_count = Task.objects.filter(task_type='problem').count()
+        connection_count = Task.objects.filter(
+            task_type='connection').count()
+        response = {
+            'tv_count': tv_task_count,
+            'internet_count': internet_task_count,
+            'voice_count': voice_task_count,
+            'problem_count': problem_count,
+            'connection_count': connection_count
+        }
+        # else:
+        #     tv_task_count = Task.objects.filter(user=obj, is_tv=True).count()
+        #     internet_task_count = Task.objects.filter(
+        #         user=obj, is_internet=True).count()
+        #     voice_task_count = Task.objects.filter(
+        #         user=obj, is_voice=True).count()
+        #     response = {
+        #         'tv_count': tv_task_count,
+        #         'internet_count': internet_task_count,
+        #         'voice_count': voice_task_count
+        #     }
         return response
 
     def get_completed_tasks(self, obj):
-        if obj.user_type == 'Texnik' or obj.user_type == 'Plumber':
-            completed_tasks = Task.objects.filter(
-                user=obj, status__in=['completed'])
-        else:
-            completed_tasks = Task.objects.filter(status__in=['completed'])
+        # if obj.user_type == 'Texnik' or obj.user_type == 'Plumber':
+        #     completed_tasks = Task.objects.filter(
+        #         user=obj, status__in=['completed'])
+        # else:
+        completed_tasks = Task.objects.filter(status__in=['completed'])
         data = TaskSerializer(completed_tasks, many=True).data
         return data
 
     def get_ongoing_tasks(self, obj):
-        if obj.user_type == 'Texnik' or obj.user_type == 'Plumber':
-            ongoing_tasks = Task.objects.filter(
-                user=obj, status__in=['started', 'inprogress'])
-        else:
-            ongoing_tasks = Task.objects.filter(
+        # if obj.user_type == 'Texnik' or obj.user_type == 'Plumber':
+        #     ongoing_tasks = Task.objects.filter(
+        #         user=obj, status__in=['started', 'inprogress'])
+        # else:
+        ongoing_tasks = Task.objects.filter(
                 status__in=['started', 'inprogress'])
         data = TaskSerializer(ongoing_tasks, many=True).data
         return data
