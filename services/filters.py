@@ -45,15 +45,14 @@ class StatusAndTaskFilter(django_filters.FilterSet):
         queryset = super().filter_queryset(queryset)
         
         if self.request.user.is_authenticated:
-            if self.request.user.is_texnik:
-                valid_statuses = ['waiting']  
-                texnik_tasks = queryset.filter(user=self.request.user)
-                waiting_tasks = queryset.filter(status__in=valid_statuses)
-                
-                combined_queryset = texnik_tasks | waiting_tasks
-                combined_queryset = combined_queryset.distinct()
-                
-                return combined_queryset
+            valid_statuses = ['waiting']  
+            texnik_tasks = queryset.filter(user=self.request.user)
+            waiting_tasks = queryset.filter(status__in=valid_statuses)
+            
+            combined_queryset = texnik_tasks | waiting_tasks
+            combined_queryset = combined_queryset.distinct()
+            
+            return combined_queryset
             
         return queryset
 
