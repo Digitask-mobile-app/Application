@@ -66,6 +66,7 @@ class Task(Status):
 class Internet_packages(models.Model):
     name = models.CharField(max_length=300)
     price = models.CharField(max_length=300)
+    speed = models.CharField(max_length=300, null=True,blank=True)
 
     def __str__(self):
         return self.name
