@@ -99,13 +99,10 @@ class TaskSerializer(serializers.ModelSerializer):
         return obj.user.email if obj.user else None
 
     def get_position(self, obj):
-        if not obj.user:
-            raise NotAuthenticated("İstifadəçi daxil olmayıb") 
-        if obj.user.position:
-            return obj.user.position.name
-        else:
-            return "Position yoxdur"
-        
+        if not obj.user or obj.user.is_staff:
+            raise NotAuthenticated("İstifadəçi daxil olmayıb")
+        return obj.user.position.name if obj.user.position else "position yoxdur"
+    
     def get_has_internet(self, obj):
         return hasattr(obj, 'internet') and obj.internet is not None
 
