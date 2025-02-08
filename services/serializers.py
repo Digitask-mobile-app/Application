@@ -8,11 +8,14 @@ from django.db.models import Count
 from datetime import date
 from django.utils import timezone
 from warehouse.serializers import ItemSerializer
+from rest_framework.exceptions import NotAuthenticated
+
 
 class InternetPackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Internet_packages
         fields = '__all__'
+
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
@@ -47,7 +50,8 @@ class TVUpdateSerializer(serializers.ModelSerializer):
 class TVUpdateImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = TV
-        fields = ['id','photo_modem']
+        fields = ['id', 'photo_modem']
+
 
 class VoiceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -83,7 +87,6 @@ class TaskSerializer(serializers.ModelSerializer):
     has_voice = serializers.SerializerMethodField()
     has_tv = serializers.SerializerMethodField()
 
-
     class Meta:
         model = Task
         fields = '__all__'
@@ -101,7 +104,7 @@ class TaskSerializer(serializers.ModelSerializer):
         if not obj.user:
             raise NotAuthenticated("İstifadəçi daxil olmayıb")
         return obj.user.position.name if obj.user.position else "position yoxdur"
-    
+
     def get_has_internet(self, obj):
         return hasattr(obj, 'internet') and obj.internet is not None
 
@@ -137,7 +140,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
             'id', 'user', 'full_name', 'task_type', 'registration_number',
             'contact_number', 'location', 'note', 'date', 'start_time', 'end_time', 'status',
             'tv', 'voice', 'internet', 'services', 'first_name', 'last_name', 'phone', 'group', 'latitude', 'longitude',
-            "is_tv", "is_voice", "is_internet", "passport",'has_tv','has_voice','has_internet',
+            "is_tv", "is_voice", "is_internet", "passport", 'has_tv', 'has_voice', 'has_internet',
             'task_items'
         ]
 
@@ -168,7 +171,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
         except AttributeError as e:
             print(f"Error getting phone: {e}")
             return None
-        
+
     def get_has_internet(self, obj):
         return hasattr(obj, 'internet') and obj.internet is not None
 
@@ -237,7 +240,6 @@ class PerformanceSerializer(serializers.ModelSerializer):
             'connection': sorted_task_counts[sorted_task_types.index('connection')] if 'connection' in sorted_task_types else 0,
             'problem': sorted_task_counts[sorted_task_types.index('problem')] if 'problem' in sorted_task_types else 0
         }
-
 
 
 class CreatingMeetingSerializer(serializers.ModelSerializer):
@@ -327,36 +329,39 @@ class MainPageUserSerializer(serializers.ModelSerializer):
         #         user=obj, status__in=['started', 'inprogress'])
         # else:
         ongoing_tasks = Task.objects.filter(
-                status__in=['started', 'inprogress'])
+            status__in=['started', 'inprogress'])
         data = TaskSerializer(ongoing_tasks, many=True).data
         return data
-    
+
     def get_meetings(self, obj):
         now = timezone.now()
         # Filter meetings to include only those that are in the future
-        upcoming_meetings = Meeting.objects.filter(participants=obj, date__gte=now)
+        upcoming_meetings = Meeting.objects.filter(
+            participants=obj, date__gte=now)
         data = MeetingSerializer(upcoming_meetings, many=True).data
         return data
-    
+
+
 class CreateTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = '__all__'
-        
+
     def to_internal_value(self, data):
         # `group[]` verisini işlemek için elle çekiyoruz
         groups = data.getlist('group[]')  # group[]'leri liste olarak alıyoruz
         data._mutable = True  # Eğer QueryDict immutable ise değiştirilebilir yapıyoruz
-        data.setlist('group', groups)  # group[]'leri 'group' anahtarına atıyoruz
+        # group[]'leri 'group' anahtarına atıyoruz
+        data.setlist('group', groups)
         return super().to_internal_value(data)
 
     def create(self, validated_data):
         # Many-to-Many alanını çıkart
-        groups = validated_data.pop('group', None)  
-        
+        groups = validated_data.pop('group', None)
+
         # Task nesnesini oluştur
         task = Task.objects.create(**validated_data)
-        
+
         # Eğer groups varsa Many-to-Many ilişkisini ayarla
         if groups:
             task.group.set(groups)
@@ -366,7 +371,7 @@ class CreateTaskSerializer(serializers.ModelSerializer):
 class TaskStatusUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = [ 'status']
+        fields = ['status']
 
     def update(self, instance, validated_data):
         request = self.context.get('request')
@@ -394,18 +399,19 @@ class UpdateTaskSerializer(serializers.ModelSerializer):
         except Exception as e:
             print(f"Error getting services: {e}")
             return None
-        
+
 
 class UpdateTaskImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ['id','passport']
-        
-        
+        fields = ['id', 'passport']
+
+
 class WarehouseChangeSerializer(serializers.ModelSerializer):
     class Meta:
         model = WarehouseChange
         fields = '__all__'
+
 
 class WarehouseBulkChangeSerializer(serializers.ModelSerializer):
     class Meta:
