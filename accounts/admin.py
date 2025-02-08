@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext, gettext_lazy as _
-from .models import User, OneTimePassword, Group, Meeting,Notification,Room,Message
+from .models import User, OneTimePassword, Group, Meeting, Notification, Room, Message, Position
 from django.urls import reverse
 from django.utils.html import format_html
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
@@ -10,8 +10,10 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name', 'phone', 'position', 'group','timestamp','is_online','latitude','longitude','profil_picture')}),
-        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'phone', 'position',
+         'group', 'timestamp', 'is_online', 'latitude', 'longitude', 'profil_picture')}),
+        (_('Permissions'), {'fields': ('is_active', 'is_staff',
+         'is_superuser', 'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login',)}),
     )
     add_fieldsets = (
@@ -20,7 +22,8 @@ class UserAdmin(BaseUserAdmin):
             'fields': ('email', 'password1', 'password2'),
         }),
     )
-    list_display = ('email', 'first_name', 'last_name', 'phone','latitude','longitude', 'position','timestamp','is_online', 'group', 'is_active', 'is_staff', 'is_superuser')
+    list_display = ('email', 'first_name', 'last_name', 'phone', 'latitude', 'longitude',
+                    'position', 'timestamp', 'is_online', 'group', 'is_active', 'is_staff', 'is_superuser')
     search_fields = ('email', 'first_name', 'last_name', 'phone')
     ordering = ('email',)
 
@@ -47,3 +50,4 @@ admin.site.register(Meeting)
 admin.site.register(Notification)
 admin.site.register(Message)
 admin.site.register(Room)
+admin.site.register(Position)

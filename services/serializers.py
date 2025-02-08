@@ -8,7 +8,6 @@ from django.db.models import Count
 from datetime import date
 from django.utils import timezone
 from warehouse.serializers import ItemSerializer
-from rest_framework.exceptions import NotAuthenticated
 
 class InternetPackSerializer(serializers.ModelSerializer):
     class Meta:
@@ -99,7 +98,7 @@ class TaskSerializer(serializers.ModelSerializer):
         return obj.user.email if obj.user else None
 
     def get_position(self, obj):
-        if not obj.user or not obj.user.is_staff:
+        if not obj.user:
             raise NotAuthenticated("İstifadəçi daxil olmayıb")
         return obj.user.position.name if obj.user.position else "position yoxdur"
     
