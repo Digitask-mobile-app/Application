@@ -82,7 +82,6 @@ class TaskSerializer(serializers.ModelSerializer):
     first_name = serializers.SerializerMethodField()
     last_name = serializers.SerializerMethodField()
     email = serializers.SerializerMethodField()
-    position = serializers.SerializerMethodField()
     has_internet = serializers.SerializerMethodField()
     has_voice = serializers.SerializerMethodField()
     has_tv = serializers.SerializerMethodField()
@@ -99,11 +98,6 @@ class TaskSerializer(serializers.ModelSerializer):
 
     def get_email(self, obj):
         return obj.user.email if obj.user else None
-
-    def get_position(self, obj):
-        if not obj.user:
-            raise NotAuthenticated("İstifadəçi daxil olmayıb")
-        return obj.user.position.name if obj.user.position else "position yoxdur"
 
     def get_has_internet(self, obj):
         return hasattr(obj, 'internet') and obj.internet is not None
