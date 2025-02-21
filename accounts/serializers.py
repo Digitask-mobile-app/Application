@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
-from .models import User, OneTimePassword, Group, Room, Message, Notification
+from .models import User, OneTimePassword, Group, Room, Message, Notification, Position
 from services.serializers import GroupSerializer
 from rest_framework import serializers
 from django.contrib.auth import authenticate
@@ -45,6 +45,10 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         )
         return user
 
+class PositionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Position
+        fields = '__all__'
 
 class LoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=155, min_length=6)
@@ -52,9 +56,9 @@ class LoginSerializer(serializers.ModelSerializer):
     access_token = serializers.CharField(max_length=255, read_only=True)
     refresh_token = serializers.CharField(max_length=255, read_only=True)
     remember_me = serializers.BooleanField(default=False, write_only=True)
-    position = serializers.CharField(max_length=20, read_only=True)
     is_admin = serializers.BooleanField(read_only=True)
     phone = serializers.CharField(max_length=15, read_only=True)
+    position = PositionSerializer()
 
     class Meta:
         model = User
