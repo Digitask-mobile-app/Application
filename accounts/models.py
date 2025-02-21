@@ -18,7 +18,8 @@ AUTH_PROVIDERS = {'email': 'email'}
 USER_PERMISSIONS = (
     ('no_access', 'no_access'),
     ('read_only','read_only'),
-    ('read_write','read_write')
+    ('read_write','read_write'),
+    ('is_admin','is_admin')
 )
 
 class Position(models.Model):
