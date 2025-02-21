@@ -58,7 +58,7 @@ class LoginSerializer(serializers.ModelSerializer):
     remember_me = serializers.BooleanField(default=False, write_only=True)
     is_admin = serializers.BooleanField(read_only=True)
     phone = serializers.CharField(max_length=15, read_only=True)
-    position = PositionSerializer()
+    position = PositionSerializer(read_only=True)
 
     class Meta:
         model = User
