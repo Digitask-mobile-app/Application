@@ -89,6 +89,7 @@ class LoginSerializer(serializers.ModelSerializer):
             'access_token': str(access_token),
             'refresh_token': str(refresh),
             'phone': user.phone,
+            'position': user.position
         }
 
 
