@@ -244,6 +244,7 @@ class ProfileReadSerializer(serializers.ModelSerializer):
     group = GroupSerializer(read_only=True)
     profil_picture = serializers.ImageField(
         allow_empty_file=True, required=False)
+    position = PositionSerializer()
 
     class Meta:
         model = User
