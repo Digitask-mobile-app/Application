@@ -8,7 +8,7 @@ from django.db.models import Count
 from datetime import date
 from django.utils import timezone
 from warehouse.serializers import ItemSerializer
-from accounts.serializers import PositionSerializer
+
 
 class InternetPackSerializer(serializers.ModelSerializer):
     class Meta:
@@ -176,6 +176,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
 
 
 class PerformanceSerializer(serializers.ModelSerializer):
+    from accounts.serializers import PositionSerializer
     group = serializers.SerializerMethodField()
     task_count = serializers.SerializerMethodField()
     position = PositionSerializer()
