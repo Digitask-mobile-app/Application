@@ -78,8 +78,6 @@ class Internet(models.Model):
         upload_to='internet/', null=True, blank=True)
     modem_SN = models.CharField(max_length=100, null=True, blank=True)
     splitter_port = models.TextField(null=True,blank=True)
-    # optical_cable = models.CharField(max_length=100, null=True, blank=True)
-    # fastconnector = models.CharField(max_length=100, null=True, blank=True)
     siqnal = models.CharField(max_length=100, null=True, blank=True)
     internet_packs = models.ForeignKey(Internet_packages, on_delete=models.CASCADE, null=True,blank=True)
 

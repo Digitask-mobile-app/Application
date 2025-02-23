@@ -43,18 +43,19 @@ class StatusAndTaskFilter(django_filters.FilterSet):
     
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
-        
+        user = self.request.user
         if self.request.user.is_authenticated:
-            valid_statuses = ['waiting']  
-            texnik_tasks = queryset.filter(user=self.request.user)
-            waiting_tasks = queryset.filter(status__in=valid_statuses)
-            
-            combined_queryset = texnik_tasks | waiting_tasks
-            combined_queryset = combined_queryset.distinct()
-            
-            return combined_queryset
-            
-        return queryset
+            if user.position and user.position.tasks_permission == 'read_write':
+                valid_statuses = ['waiting']  
+                waiting_tasks = queryset.filter(status__in=valid_statuses)
+                texnik_tasks = queryset.filter(user=self.request.user)
+                combined_queryset = texnik_tasks | waiting_tasks
+                combined_queryset = combined_queryset.distinct()
+                return combined_queryset
+            elif user.position and user.position.tasks_permission == 'read_only':
+                return queryset
+            return []         
+        return []
 
 class TaskFilter(django_filters.FilterSet):
     start_date = django_filters.DateFilter(field_name='date', lookup_expr='gte', label='Start Date', widget=forms.DateInput(attrs={'type': 'date'}))
