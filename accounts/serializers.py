@@ -298,7 +298,7 @@ class ProfileImageSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     group = GroupSerializer()
-
+    position = PositionSerializer()
     class Meta:
         model = User
         fields = ['id', 'email', 'first_name', 'last_name',
