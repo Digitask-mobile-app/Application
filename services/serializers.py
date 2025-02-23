@@ -199,6 +199,7 @@ class PerformanceSerializer(serializers.ModelSerializer):
         position = {}
         if obj.position and obj.position.name:
             position['name']=obj.position.name
+            position['id']=obj.position.id
         return position
 
     def get_task_count(self, obj):
