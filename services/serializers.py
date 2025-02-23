@@ -176,14 +176,13 @@ class TaskDetailSerializer(serializers.ModelSerializer):
 
 
 class PerformanceSerializer(serializers.ModelSerializer):
-    from accounts.serializers import PositionSerializer
     group = serializers.SerializerMethodField()
     task_count = serializers.SerializerMethodField()
-    position = PositionSerializer()
+    position_name = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'position', 'first_name',
+        fields = ['id', 'position_name', 'first_name',
                   'last_name', 'group', 'task_count']
 
     def get_group(self, obj):
@@ -195,6 +194,12 @@ class PerformanceSerializer(serializers.ModelSerializer):
                 'region': obj.group.region
             }
         return group_data
+    
+    def get_position_name(self, obj):
+        position = {}
+        if obj.position and obj.position.name:
+            position['name']=obj.position.name
+        return position
 
     def get_task_count(self, obj):
         start_date = self.context['request'].query_params.get('start_date')
