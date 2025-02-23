@@ -8,8 +8,7 @@ from django.db.models import Count
 from datetime import date
 from django.utils import timezone
 from warehouse.serializers import ItemSerializer
-from rest_framework.exceptions import NotAuthenticated
-
+from accounts.serializers import PositionSerializer
 
 class InternetPackSerializer(serializers.ModelSerializer):
     class Meta:
@@ -179,6 +178,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
 class PerformanceSerializer(serializers.ModelSerializer):
     group = serializers.SerializerMethodField()
     task_count = serializers.SerializerMethodField()
+    position = PositionSerializer()
 
     class Meta:
         model = User
