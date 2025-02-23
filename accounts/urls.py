@@ -1,10 +1,14 @@
 from unicodedata import name
-from django.urls import path
+from django.urls import path,include
 from . import views
-
+from rest_framework.routers import DefaultRouter
+router = DefaultRouter()
+router.register(r'positions', views.PositionModelViewSet)  
 from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
 
 urlpatterns = [
+     path('positions/', include(router.urls)), 
+
     path('register/', views.RegisterView.as_view(), name='register'),
     path('gettoken/', TokenObtainPairView.as_view(), name='gettoken'),
     path('login/', views.LoginUserView.as_view(), name='login-user'),

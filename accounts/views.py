@@ -12,13 +12,12 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from .serializers import UserSerializer
-from .filters import UserFilter, UserTypeFilter, MessageFilter, MessagesFilter, NotificationFilter
+from .filters import UserFilter, UserTypeFilter, MessagesFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
-from django_filters import rest_framework as filters
-from collections import Counter
+from rest_framework import viewsets
 
 class RegisterView(GenericAPIView):
     serializer_class = UserRegisterSerializer
@@ -499,3 +498,7 @@ class NotificationListView(generics.ListAPIView):
             queryset = queryset.filter(created_at__year=year)
 
         return queryset
+
+class PositionModelViewSet(viewsets.ModelViewSet):
+    queryset = Position.objects.all()
+    serializer_class = PositionSerializer

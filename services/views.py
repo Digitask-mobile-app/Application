@@ -12,9 +12,8 @@ from accounts.models import User
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
-from accounts.serializers import UserSerializer
 from accounts.models import Notification
-from warehouse.models import Item,Warehouse, WarehouseHistory
+from warehouse.models import  WarehouseHistory
 
 # class CreateTaskView(generics.CreateAPIView):
 #     serializer_class = CreateTaskSerializer
@@ -429,3 +428,4 @@ class TaskReportAPIView(APIView):
                 "by_status": list(internet_and_voice_by_status),
             },
         })
+    
