@@ -9,7 +9,7 @@ from rest_framework import generics
 from .filters import WarehouseHistoryFilter
 
 class WarehouseViewSet(viewsets.ModelViewSet):
-    queryset = Warehouse.objects.filter(is_deleted=False)
+    queryset = Warehouse.objects.filter()
     serializer_class = WarehouseSerializer
 
     def destroy(self, request, *args, **kwargs):
