@@ -28,6 +28,11 @@ class InternetSerializer(serializers.ModelSerializer):
         model = Internet
         fields = '__all__'
 
+class CreateInternetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Internet
+        fields = '__all__'
+
 
 class InternetUpdateSerializer(serializers.ModelSerializer):
     class Meta:

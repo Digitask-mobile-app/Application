@@ -215,7 +215,7 @@ class UpdateTvImageView(generics.UpdateAPIView):
 
 class CreateInternetView(generics.CreateAPIView):
     queryset = Internet.objects.all()
-    serializer_class = InternetSerializer
+    serializer_class = CreateInternetSerializer
 
 
 class UpdateInternetView(generics.UpdateAPIView):
