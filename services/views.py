@@ -429,3 +429,8 @@ class TaskReportAPIView(APIView):
             },
         })
     
+class MapTaskListView(generics.ListAPIView):
+    serializer_class = MapTaskSerializer
+
+    def get_queryset(self):
+        return Task.objects.filter(user=self.request.user, status__in=["inprogress", "started"])

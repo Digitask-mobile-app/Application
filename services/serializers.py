@@ -418,3 +418,9 @@ class WarehouseBulkChangeSerializer(serializers.ModelSerializer):
     class Meta:
         model = WarehouseChange
         exclude = ['delivery_note']
+        
+
+class MapTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        exclude = ['full_name','registration_number','latitude','longitude']

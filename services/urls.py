@@ -44,5 +44,7 @@ urlpatterns = [
     path('TaskWarehouseListView/', views.TaskWarehouseListView.as_view(), name='TaskWarehouseListView'),
     path('warehouse_changes/bulk_create/', views.WarehouseChangeBulkCreateView.as_view(), name='warehousechange-bulk-create'),
      path('api/task-report/', views.TaskReportAPIView.as_view(), name='task-report'),
+     path('map-tasks/', views.MapTaskListView.as_view(), name='map-tasks'),
+     
 ]
 # s
