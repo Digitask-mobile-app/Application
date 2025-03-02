@@ -433,4 +433,10 @@ class MapTaskListView(generics.ListAPIView):
     serializer_class = MapTaskSerializer
 
     def get_queryset(self):
-        return Task.objects.filter(user=self.request.user, status__in=["inprogress", "started"])
+        email = self.request.query_params.get("email") 
+        if not email:
+            return []
+        return Task.objects.filter(
+           user__email=email,
+            status__in=["inprogress", "started"]
+        )
