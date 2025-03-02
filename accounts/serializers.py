@@ -334,7 +334,6 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'email': {'required': False},
             'phone': {'required': False, 'allow_blank': True, 'allow_null': True},
-            'position': {'required': False, 'allow_blank': True, 'allow_null': True},
             'username': {'required': False, 'allow_blank': True, 'allow_null': True},
             'group_id': {'required': False, 'allow_null': True},
             'password': {'required': False},
