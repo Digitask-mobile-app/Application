@@ -327,6 +327,10 @@ class AddGroup(generics.CreateAPIView):
         room.admin = user
         room.save()
 
+class RemoveGroup(generics.DestroyAPIView):
+    serializer_class = RemoveRoomSerializer
+    queryset = Room.objects.all()
+
 
 class AddMembersView(generics.UpdateAPIView):
     queryset = Room.objects.all()

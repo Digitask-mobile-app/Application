@@ -395,6 +395,12 @@ class CreateRoomSerializer(serializers.ModelSerializer):
         fields = ['name','members']
 
 
+class RemoveRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = '__all__'
+
+
 class UserMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

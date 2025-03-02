@@ -37,6 +37,8 @@ urlpatterns = [
     path('userListFilter/', views.UserFilterListView.as_view(),
          name='UserFilterListView'),
     path('add_group/', views.AddGroup.as_view(), name='AddGroup'),
+    path('remove_group/<int:pk>/', views.RemoveGroup.as_view(), name='RemoveGroup'),
+    
     path('rooms/<int:id>/add-members/',
          views.AddMembersView.as_view(), name='add-members'),
     path('rooms/<int:id>/remove-members/',
