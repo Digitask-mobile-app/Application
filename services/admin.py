@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Task, Internet, Voice, TV, PlumberTask,WarehouseChange
+from .models import Task, Internet, Voice, TV, PlumberTask,WarehouseChange,Internet_packages
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import get_language
@@ -86,7 +86,6 @@ class TaskAdmin(admin.ModelAdmin):
     
 admin.site.register(Task,TaskAdmin)
 admin.site.register(WarehouseChange)
-
-
+admin.site.register(Internet_packages)
 
 
