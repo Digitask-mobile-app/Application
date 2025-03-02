@@ -23,7 +23,7 @@ class GroupSerializer(serializers.ModelSerializer):
 
 
 class InternetSerializer(serializers.ModelSerializer):
-    internet_packs = InternetPackSerializer(many=True)
+    internet_packs = InternetPackSerializer()
     class Meta:
         model = Internet
         fields = '__all__'
