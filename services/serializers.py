@@ -423,4 +423,4 @@ class WarehouseBulkChangeSerializer(serializers.ModelSerializer):
 class MapTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        exclude = ['full_name','registration_number','latitude','longitude']
+        fields = ['full_name','registration_number','latitude','longitude']
