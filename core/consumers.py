@@ -36,11 +36,10 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         message = event['message']
         if user.is_authenticated:
             message = await self.get_notifications(user)
-       
+
             await self.send(text_data=json.dumps({
                 'message': message
             }))
-
 
     @database_sync_to_async
     def get_notifications(self, user):
@@ -118,15 +117,18 @@ class UserListConsumer(AsyncWebsocketConsumer):
         from accounts.models import User
         response = {}
         for user in User.objects.all():
-            if user.is_online: 
+            if user.is_online:
                 if user.has_started_task():
                     started_tasks = user.user_tasks.filter(status='started')
-                    response[str(user.id)] = {'status': 'online', 'location': {'latitude': user.latitude, 'longitude': user.longitude}, 'user': {'email': user.email},'started_task':[{"location":{'latitude': started_task.latitude, 'longitude': started_task.longitude},'full_name':started_task.full_name} for started_task in started_tasks]}
-                else:    
-                    response[str(user.id)] = {'status': 'online', 'location': {'latitude': user.latitude, 'longitude': user.longitude}, 'user': {'email': user.email}}
-            
+                    response[str(user.id)] = {'status': 'online', 'location': {'latitude': user.latitude, 'longitude': user.longitude}, 'user': {'email': user.email}, 'started_task': [
+                        {"location": {'latitude': started_task.latitude, 'longitude': started_task.longitude}, 'full_name': started_task.full_name} for started_task in started_tasks], 'date': user.timestamp}
+                else:
+                    response[str(user.id)] = {'status': 'online', 'location': {
+                        'latitude': user.latitude, 'longitude': user.longitude}, 'user': {'email': user.email}, 'date': user.timestamp}
+
             else:
-                response[str(user.id)] = {'status': 'offline', 'location': {}, 'user': {'email': user.email}}
+                response[str(user.id)] = {'status': 'offline', 'location': {}, 'user': {
+                    'email': user.email}, 'date': user.timestamp}
         return response
 
 
@@ -145,14 +147,13 @@ class StatusConsumer(AsyncWebsocketConsumer):
         if user.is_authenticated:
             await self.update_user_status(user, True)
 
-
         await self.broadcast_message({user.id: 'online'})
 
     async def disconnect(self, close_code):
         user = self.scope['user']
 
         if user.is_authenticated:
-        
+
             await self.update_user_status(user, False)
         channel_layer = get_channel_layer()
         await channel_layer.group_discard(
@@ -196,6 +197,3 @@ class StatusConsumer(AsyncWebsocketConsumer):
         user.latitude = latitude
         user.longitude = longitude
         user.save(update_fields=['latitude', 'longitude'])
-
-
-
