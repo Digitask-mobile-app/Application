@@ -127,7 +127,8 @@ class UserListConsumer(AsyncWebsocketConsumer):
                         'latitude': user.latitude, 'longitude': user.longitude}, 'user': {'email': user.email}, 'date': str(user.timestamp)}
 
             else:
-                response[str(user.id)] = {'status': 'offline', 'location': {}, 'user': {
+                response[str(user.id)] = {'status': 'offline', 'location': {
+                    'latitude': user.latitude, 'longitude': user.longitude}, 'user': {
                     'email': user.email, 'date': str(user.timestamp)}}
         return response
 
