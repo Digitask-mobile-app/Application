@@ -24,9 +24,11 @@ class GroupSerializer(serializers.ModelSerializer):
 
 class InternetSerializer(serializers.ModelSerializer):
     internet_packs = InternetPackSerializer()
+
     class Meta:
         model = Internet
         fields = '__all__'
+
 
 class CreateInternetSerializer(serializers.ModelSerializer):
     class Meta:
@@ -55,6 +57,18 @@ class TVUpdateSerializer(serializers.ModelSerializer):
 class TVUpdateImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = TV
+        fields = ['id', 'photo_modem']
+
+
+class InternetUpdateImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Internet
+        fields = ['id', 'photo_modem']
+
+
+class VoiceUpdateImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Voice
         fields = ['id', 'photo_modem']
 
 
@@ -200,12 +214,12 @@ class PerformanceSerializer(serializers.ModelSerializer):
                 'region': obj.group.region
             }
         return group_data
-    
+
     def get_position_name(self, obj):
         position = {}
         if obj.position and obj.position.name:
-            position['name']=obj.position.name
-            position['id']=obj.position.id
+            position['name'] = obj.position.name
+            position['id'] = obj.position.id
         return position
 
     def get_task_count(self, obj):
@@ -424,9 +438,9 @@ class WarehouseBulkChangeSerializer(serializers.ModelSerializer):
     class Meta:
         model = WarehouseChange
         exclude = ['delivery_note']
-        
+
 
 class MapTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ['full_name','registration_number','latitude','longitude']
+        fields = ['full_name', 'registration_number', 'latitude', 'longitude']

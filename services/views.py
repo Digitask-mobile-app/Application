@@ -1,8 +1,10 @@
+from django.utils.timezone import now
+from django.db.models.functions import TruncDay, TruncMonth
 from django.utils import timezone
 from django.http import JsonResponse
-from .models import Task,WarehouseChange
+from .models import Task, WarehouseChange
 from .serializers import *
-from .filters import StatusAndTaskFilter,TaskWarehouseFilter
+from .filters import StatusAndTaskFilter, TaskWarehouseFilter
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import ListAPIView, RetrieveAPIView
@@ -13,7 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
 from accounts.models import Notification
-from warehouse.models import  WarehouseHistory
+from warehouse.models import WarehouseHistory
 
 # class CreateTaskView(generics.CreateAPIView):
 #     serializer_class = CreateTaskSerializer
@@ -22,20 +24,20 @@ from warehouse.models import  WarehouseHistory
 #         instance = serializer.save()
 #         self.create_status_notification(instance)
 
-       
+
 #     def create_status_notification(self, task_instance):
 #         message = f'Yeni tapşırıq əlavə edildi. Qeydiyyat nömrəsi {task_instance.registration_number} Tapşırıq siyahısını nəzərdən keçirməniz rica olunur!'
 #         notification = Notification.objects.create(
 #             task=task_instance,
-#             message=message, 
+#             message=message,
 #             action='create'
 #         )
-        
+
 #         texnik_users = User.objects.filter(user_type='Ofis menecer')
 #         plumber_users = User.objects.filter(user_type='Texnik menecer')
 #         notification.users.set(texnik_users | plumber_users)
 #         notification.save()
-#ssssssssssssssssssssssssssssssss
+# ssssssssssssssssssssssssssssssss
 
 
 class CreateGroupView(generics.CreateAPIView):
@@ -109,18 +111,16 @@ class PerformanceListView(generics.ListAPIView):
         return sorted_queryset
 
 
-
-
 class TaskUpdateAPIView(generics.UpdateAPIView):
     queryset = Task.objects.all()
     serializer_class = UpdateTaskSerializer
     http_method_names = ['patch']
 
+
 class TaskImageUpdateAPIView(generics.UpdateAPIView):
     queryset = Task.objects.all()
     serializer_class = UpdateTaskImageSerializer
     http_method_names = ['patch']
-
 
 
 class CreateMeetingView(generics.CreateAPIView):
@@ -161,17 +161,15 @@ class CreateTaskView(generics.CreateAPIView):
         instance = serializer.save()
         self.create_status_notification(instance)
 
-       
     def create_status_notification(self, task_instance):
         message = f'Yeni tapşırıq əlavə edildi. Qeydiyyat nömrəsi {task_instance.registration_number} Tapşırıq siyahısını nəzərdən keçirməniz rica olunur!'
         report = f'Yeni {task_instance.task_type} tapşırığı əlavə olundu.Xidmət növü {task_instance.get_service()}, qeydiyyat nömrəsi isə {task_instance.registration_number}'
         notification = Notification.objects.create(
             task=task_instance,
-            message=message, 
+            message=message,
             action='create',
             report=report
         )
-        
 
         notification.users.set(User.objects.all())
         notification.save()
@@ -187,11 +185,11 @@ class UpdateTvView(generics.UpdateAPIView):
     serializer_class = TVUpdateSerializer
     http_method_names = ['patch']
 
+
 class UpdateTvImageView(generics.UpdateAPIView):
     queryset = TV.objects.all()
     serializer_class = TVUpdateImageSerializer
     http_method_names = ['patch']
-
 
     def partial_update(self, request, *args, **kwargs):
         if 'photo_modem' not in request.data:
@@ -209,7 +207,57 @@ class UpdateTvImageView(generics.UpdateAPIView):
         updated_instance = self.get_object()
         if updated_instance.photo_modem != photo_file.name:
             return Response({'error': 'Failed to update photo_modem field.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
+
+        return response
+
+
+class UpdateInternetImageView(generics.UpdateAPIView):
+    queryset = Internet.objects.all()
+    serializer_class = InternetUpdateImageSerializer
+    http_method_names = ['patch']
+
+    def partial_update(self, request, *args, **kwargs):
+        if 'photo_modem' not in request.data:
+            return Response({'error': 'photo_modem field is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        photo_file = request.FILES.get('photo_modem')
+        if not photo_file or not photo_file.content_type.startswith('image/'):
+            return Response({'error': 'Invalid file type. Only image files are allowed.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            response = super().partial_update(request, *args, **kwargs)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        updated_instance = self.get_object()
+        if updated_instance.photo_modem != photo_file.name:
+            return Response({'error': 'Failed to update photo_modem field.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return response
+
+
+class UpdateVoiceImageView(generics.UpdateAPIView):
+    queryset = Voice.objects.all()
+    serializer_class = VoiceUpdateImageSerializer
+    http_method_names = ['patch']
+
+    def partial_update(self, request, *args, **kwargs):
+        if 'photo_modem' not in request.data:
+            return Response({'error': 'photo_modem field is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        photo_file = request.FILES.get('photo_modem')
+        if not photo_file or not photo_file.content_type.startswith('image/'):
+            return Response({'error': 'Invalid file type. Only image files are allowed.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            response = super().partial_update(request, *args, **kwargs)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        updated_instance = self.get_object()
+        if updated_instance.photo_modem != photo_file.name:
+            return Response({'error': 'Failed to update photo_modem field.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         return response
 
 
@@ -257,27 +305,27 @@ class UpdateTaskView(generics.UpdateAPIView):
         instance = self.get_object()
         user = self.request.user
         self.create_status_notification(instance, user)
-       
 
     def create_status_notification(self, task_instance, user):
 
         user_name = user.email
-        
+
         if task_instance.status == 'inprogress':
             message = f'{user_name} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını qəbul etdi.'
         elif task_instance.status == 'started':
             message = f'{user_name} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığının icrasına başladı.'
         elif task_instance.status == 'completed':
             message = f'{user_name} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
-            self.warehouse_item_decrement(task_instance,user)
+            self.warehouse_item_decrement(task_instance, user)
         else:
             message = f'{user_name} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığında {task_instance.status} statusuna keçid etdi.'
-  
-        report = message + f' Qeydiyyat nömrəsi {task_instance.registration_number}!'
-        
+
+        report = message + \
+            f' Qeydiyyat nömrəsi {task_instance.registration_number}!'
+
         notification = Notification.objects.create(
             task=task_instance,
-            message=message, 
+            message=message,
             user_email=user.email,
             action=task_instance.status,
             report=report
@@ -291,25 +339,25 @@ class UpdateTaskView(generics.UpdateAPIView):
 
     def warehouse_item_decrement(self, task_instance, user):
         warehouse_changes = task_instance.task_items.all()
-     
+
         for change in warehouse_changes:
             current_count = change.item.count
-            new_count = max(0, current_count - change.count) 
+            new_count = max(0, current_count - change.count)
             change.item.count = new_count
             change.item.save()
             if current_count < change.count:
                 WarehouseHistory.objects.create(
-                item=change.item,
-                modified_by=user,
-                action='decrement',
-                old_count=current_count,
-                new_count=new_count,
-                task = task_instance,
-                is_tv = change.is_tv,
-                is_internet = change.is_internet,
-                is_voice = change.is_voice,
-                has_problem = True,
-                must_change = change.count
+                    item=change.item,
+                    modified_by=user,
+                    action='decrement',
+                    old_count=current_count,
+                    new_count=new_count,
+                    task=task_instance,
+                    is_tv=change.is_tv,
+                    is_internet=change.is_internet,
+                    is_voice=change.is_voice,
+                    has_problem=True,
+                    must_change=change.count
                 )
             else:
                 WarehouseHistory.objects.create(
@@ -318,14 +366,14 @@ class UpdateTaskView(generics.UpdateAPIView):
                     action='decrement',
                     old_count=current_count,
                     new_count=new_count,
-                    task = task_instance,
-                    is_tv = change.is_tv,
-                    is_internet = change.is_internet,
-                    is_voice = change.is_voice,
-                    has_problem = False,
-                    must_change = 0
+                    task=task_instance,
+                    is_tv=change.is_tv,
+                    is_internet=change.is_internet,
+                    is_voice=change.is_voice,
+                    has_problem=False,
+                    must_change=0
                 )
-            
+
 
 def health_check(request):
     return JsonResponse({"status": "ok"}, status=200)
@@ -338,13 +386,16 @@ class MeetingsApiView(generics.ListAPIView):
         now = timezone.now()
         return Meeting.objects.filter(date__gte=now)
 
+
 class WarehouseChangeViewSet(viewsets.ModelViewSet):
     queryset = WarehouseChange.objects.all()
     serializer_class = WarehouseChangeSerializer
 
+
 class InternetPacksViewSet(viewsets.ModelViewSet):
     queryset = Internet_packages.objects.all()
     serializer_class = InternetPackSerializer
+
 
 class TaskWarehouseListView(generics.ListAPIView):
     queryset = WarehouseChange.objects.all()
@@ -360,9 +411,7 @@ class WarehouseChangeBulkCreateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-from django.utils.timezone import now 
-from django.db.models.functions import TruncDay, TruncMonth
+
 
 class TaskReportAPIView(APIView):
     def get(self, request, *args, **kwargs):
@@ -378,31 +427,39 @@ class TaskReportAPIView(APIView):
         total = queryset.count()
         # TV tasks
         tv_tasks_total = queryset.filter(is_tv=True).count()
-        tv_tasks_by_status = queryset.filter(is_tv=True).values('status').annotate(count=Count('id'))
+        tv_tasks_by_status = queryset.filter(is_tv=True).values(
+            'status').annotate(count=Count('id'))
 
         # Internet tasks
         internet_tasks_total = queryset.filter(is_internet=True).count()
-        internet_tasks_by_status = queryset.filter(is_internet=True).values('status').annotate(count=Count('id'))
+        internet_tasks_by_status = queryset.filter(
+            is_internet=True).values('status').annotate(count=Count('id'))
 
         # Voice tasks
         voice_tasks_total = queryset.filter(is_voice=True).count()
-        voice_tasks_by_status = queryset.filter(is_voice=True).values('status').annotate(count=Count('id'))
+        voice_tasks_by_status = queryset.filter(is_voice=True).values(
+            'status').annotate(count=Count('id'))
 
         # TV and Internet tasks
-        tv_and_internet_total = queryset.filter(is_tv=True, is_internet=True).count()
-        tv_and_internet_by_status = queryset.filter(is_tv=True, is_internet=True).values('status').annotate(count=Count('id'))
+        tv_and_internet_total = queryset.filter(
+            is_tv=True, is_internet=True).count()
+        tv_and_internet_by_status = queryset.filter(
+            is_tv=True, is_internet=True).values('status').annotate(count=Count('id'))
 
         # TV and Voice tasks
         tv_and_voice_total = queryset.filter(is_tv=True, is_voice=True).count()
-        tv_and_voice_by_status = queryset.filter(is_tv=True, is_voice=True).values('status').annotate(count=Count('id'))
+        tv_and_voice_by_status = queryset.filter(
+            is_tv=True, is_voice=True).values('status').annotate(count=Count('id'))
 
         # Internet and Voice tasks
-        internet_and_voice_total = queryset.filter(is_internet=True, is_voice=True).count()
-        internet_and_voice_by_status = queryset.filter(is_internet=True, is_voice=True).values('status').annotate(count=Count('id'))
+        internet_and_voice_total = queryset.filter(
+            is_internet=True, is_voice=True).count()
+        internet_and_voice_by_status = queryset.filter(
+            is_internet=True, is_voice=True).values('status').annotate(count=Count('id'))
 
         # Nəticə
         return Response({
-            "total":total,
+            "total": total,
             "tv_tasks": {
                 "total": tv_tasks_total,
                 "by_status": list(tv_tasks_by_status),
@@ -428,15 +485,16 @@ class TaskReportAPIView(APIView):
                 "by_status": list(internet_and_voice_by_status),
             },
         })
-    
+
+
 class MapTaskListView(generics.ListAPIView):
     serializer_class = MapTaskSerializer
 
     def get_queryset(self):
-        email = self.request.query_params.get("email") 
+        email = self.request.query_params.get("email")
         if not email:
             return []
         return Task.objects.filter(
-           user__email=email,
+            user__email=email,
             status__in=["inprogress", "started"]
         )
