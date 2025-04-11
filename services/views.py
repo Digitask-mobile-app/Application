@@ -326,7 +326,7 @@ class UpdateTaskView(generics.UpdateAPIView):
             message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
             self.warehouse_item_decrement(task_instance, user)
         else:
-            message = f' {user_display} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığında {task_instance.status} statusuna keçid etdi.'
+            message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığında {task_instance.status} statusuna keçid etdi.'
 
         report = message + \
             f' Qeydiyyat nömrəsi {task_instance.registration_number}!'
