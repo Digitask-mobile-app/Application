@@ -19,6 +19,7 @@ from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import viewsets
 
+
 class RegisterView(GenericAPIView):
     serializer_class = UserRegisterSerializer
     permission_classes = [IsAdminUser]
@@ -64,7 +65,7 @@ class LoginUserView(GenericAPIView):
     serializer_class = LoginSerializer
 
     def post(self, request):
-   
+
         serializer = self.serializer_class(
             data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
@@ -176,7 +177,6 @@ class ProfileImageUpdateView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ProfileImageSerializer
 
-
     def get_object(self):
         user = User.objects.get(id=self.request.user.id)
         return user
@@ -186,26 +186,34 @@ class ProfileImageUpdateView(generics.UpdateAPIView):
 
     def patch(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
-    
+
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        data = request.data.copy()  
+        data = request.data.copy()
 
         if data.get('profil_picture') in [None, '']:
             data.pop('profil_picture', None)
-        
-        serializer = self.get_serializer(instance, data=data, partial=kwargs.get('partial', True))
+
+        serializer = self.get_serializer(
+            instance, data=data, partial=kwargs.get('partial', True))
         if not serializer.is_valid():
-       
+
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
 
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.profil_picture.delete(save=False)  # Dosyayı sil
+        instance.profil_picture = None
+        instance.save()
+        return Response({'detail': 'Profil şəkli silindi.'}, status=status.HTTP_204_NO_CONTENT)
+
+
 class ProfileView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ProfileUpdateSerializer
-
 
     def get_object(self):
         user = User.objects.get(id=self.request.user.id)
@@ -216,15 +224,15 @@ class ProfileView(generics.UpdateAPIView):
 
     def patch(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
-    
+
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         data = request.data.copy()  # Veriyi kopyala
-        
-        
-        serializer = self.get_serializer(instance, data=data, partial=kwargs.get('partial', True))
+
+        serializer = self.get_serializer(
+            instance, data=data, partial=kwargs.get('partial', True))
         if not serializer.is_valid():
-       
+
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
@@ -307,12 +315,11 @@ class AddGroup(generics.CreateAPIView):
     queryset = Room.objects.all()
 
     def perform_create(self, serializer):
-        room = serializer.save(admin=self.request.user) 
+        room = serializer.save(admin=self.request.user)
         members = self.request.data.get('members')
         if members:
             room.members.set(members)  # set the members
         room.save()
-        
 
 
 class AddGroup(generics.CreateAPIView):
@@ -327,6 +334,7 @@ class AddGroup(generics.CreateAPIView):
         room.admin = user
         room.save()
 
+
 class RemoveGroup(generics.DestroyAPIView):
     serializer_class = RemoveRoomSerializer
     queryset = Room.objects.all()
@@ -339,8 +347,6 @@ class AddMembersView(generics.UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         room = self.get_object()
-
-    
 
         user_ids = request.data.get('members', [])
 
@@ -359,7 +365,6 @@ class AddMembersView(generics.UpdateAPIView):
                 added_users.append(user.email)
 
         updated_members = room.members.all()
-       
 
         members_data = [{"id": member.id, "first_name": member.first_name,
                          "last_name": member.last_name} for member in updated_members]
@@ -411,12 +416,11 @@ class MessagePagination(PageNumberPagination):
     max_page_size = 100
 
 
-from django.db.models import Q
-
 class CustomPageNumberPagination(PageNumberPagination):
-    page_size = 10 
-    page_size_query_param = 'size' 
-    max_page_size = 100  
+    page_size = 10
+    page_size_query_param = 'size'
+    max_page_size = 100
+
 
 class MessagesListView(generics.ListAPIView):
     queryset = Message.objects.all().order_by('-timestamp')
@@ -437,23 +441,23 @@ class MessageListView(generics.ListAPIView):
         user = self.request.user
         user_rooms = Room.objects.filter(members=user)
         message_ids = []
-        
+
         for room in user_rooms:
             count = 30
             if room_id and page:
                 if str(room_id) == str(room.id):
                     count = 30*int(page)
-            room_messages = Message.objects.filter(room=room).order_by('-timestamp')[:count]
+            room_messages = Message.objects.filter(
+                room=room).order_by('-timestamp')[:count]
             message_ids.extend([msg.id for msg in room_messages])
-        queryset = Message.objects.filter(id__in=message_ids).order_by('-timestamp')
+        queryset = Message.objects.filter(
+            id__in=message_ids).order_by('-timestamp')
         return queryset
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context.update({'request': self.request})
         return context
-    
-    
 
 
 class RoomsApiView(generics.ListAPIView):
@@ -482,10 +486,12 @@ class MarkNotificationsAsReadView(APIView):
             return Response({'status': 'Notifications updated'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class CustomPagination(PageNumberPagination):
-    page_size = 10  
-    page_size_query_param = 'page_size'  
-    max_page_size = 100  
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
 
 class NotificationListView(generics.ListAPIView):
     queryset = Notification.objects.all()
@@ -502,6 +508,7 @@ class NotificationListView(generics.ListAPIView):
             queryset = queryset.filter(created_at__year=year)
 
         return queryset
+
 
 class PositionModelViewSet(viewsets.ModelViewSet):
     queryset = Position.objects.all()

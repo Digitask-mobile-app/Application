@@ -53,6 +53,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                 'id': notification.id,
                 'message': notification.message,
                 'user_email': notification.user_email,
+                'user_first_name': notification.user_email,
+                'user_last_name': notification.user_email,
                 'created_at': notification.created_at.isoformat(),
                 'read_by': notification.is_read_by(user),
             })
@@ -120,16 +122,16 @@ class UserListConsumer(AsyncWebsocketConsumer):
             if user.is_online:
                 if user.has_started_task():
                     started_tasks = user.user_tasks.filter(status='started')
-                    response[str(user.id)] = {'status': 'online', 'location': {'latitude': user.latitude, 'longitude': user.longitude}, 'user': {'email': user.email, 'date': str(user.timestamp)}, 'started_task': [
+                    response[str(user.id)] = {'status': 'online', 'location': {'latitude': user.latitude, 'longitude': user.longitude}, 'user': {'email': user.email, 'first_name': user.first_name, 'last_name': user.last_name, 'date': str(user.timestamp)}, 'started_task': [
                         {"location": {'latitude': started_task.latitude, 'longitude': started_task.longitude}, 'full_name': started_task.full_name} for started_task in started_tasks]}
                 else:
                     response[str(user.id)] = {'status': 'online', 'location': {
-                        'latitude': user.latitude, 'longitude': user.longitude}, 'user': {'email': user.email}, 'date': str(user.timestamp)}
+                        'latitude': user.latitude, 'longitude': user.longitude}, 'user': {'email': user.email, 'first_name': user.first_name, 'last_name': user.last_name}, 'date': str(user.timestamp)}
 
             else:
                 response[str(user.id)] = {'status': 'offline', 'location': {
                     'latitude': user.latitude, 'longitude': user.longitude}, 'user': {
-                    'email': user.email, 'date': str(user.timestamp)}}
+                    'email': user.email, 'first_name': user.first_name, 'last_name': user.last_name, 'date': str(user.timestamp)}}
         return response
 
 
