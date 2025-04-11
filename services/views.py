@@ -319,11 +319,11 @@ class UpdateTaskView(generics.UpdateAPIView):
             user_display = user_email
 
         if task_instance.status == 'inprogress':
-            message = f' {user_display} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını qəbul etdi.'
+            message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını qəbul etdi.'
         elif task_instance.status == 'started':
-            message = f' {user_display} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığının icrasına başladı.'
+            message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığının icrasına başladı.'
         elif task_instance.status == 'completed':
-            message = f' {user_display} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
+            message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
             self.warehouse_item_decrement(task_instance, user)
         else:
             message = f' {user_display} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığında {task_instance.status} statusuna keçid etdi.'
