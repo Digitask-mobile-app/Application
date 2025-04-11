@@ -311,12 +311,12 @@ class UpdateTaskView(generics.UpdateAPIView):
         user_first_name = user.first_name or ''
         user_last_name = user.last_name or ''
 
-        if user_first_name and user_last_name:
-            user_display = f' {user_first_name} {user_last_name} ({user_email})'
-        elif user_first_name or user_last_name:
-            user_display = f' {user_first_name}{user_last_name} ({user_email})'
-        else:
-            user_display = user_email
+        # if user_first_name and user_last_name:
+        #     user_display = f' {user_first_name} {user_last_name} ({user_email})'
+        # elif user_first_name or user_last_name:
+        #     user_display = f' {user_first_name}{user_last_name} ({user_email})'
+        # else:
+        #     user_display = user_email
 
         if task_instance.status == 'inprogress':
             message = f' istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını qəbul etdi.'
