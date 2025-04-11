@@ -319,14 +319,14 @@ class UpdateTaskView(generics.UpdateAPIView):
             user_display = user_email
 
         if task_instance.status == 'inprogress':
-            message = f'{user_display} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını qəbul etdi.'
+            message = f' {user_display} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını qəbul etdi.'
         elif task_instance.status == 'started':
-            message = f'{user_display} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığının icrasına başladı.'
+            message = f' {user_display} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığının icrasına başladı.'
         elif task_instance.status == 'completed':
-            message = f'{user_display} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
+            message = f' {user_display} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığını uğurla başa vurdu.'
             self.warehouse_item_decrement(task_instance, user)
         else:
-            message = f'{user_display} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığında {task_instance.status} statusuna keçid etdi.'
+            message = f' {user_display} istifadəçi {task_instance.full_name} adlı müştərinin tapşırığında {task_instance.status} statusuna keçid etdi.'
 
         report = message + \
             f' Qeydiyyat nömrəsi {task_instance.registration_number}!'
@@ -335,6 +335,8 @@ class UpdateTaskView(generics.UpdateAPIView):
             task=task_instance,
             message=message,
             user_email=user.email,
+            user_first_name=user.first_name,
+            user_last_name=user.last_name,
             action=task_instance.status,
             report=report
         )
