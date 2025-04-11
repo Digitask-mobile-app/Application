@@ -53,8 +53,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                 'id': notification.id,
                 'message': notification.message,
                 'user_email': notification.user_email,
-                'user_first_name': notification.user_email,
-                'user_last_name': notification.user_email,
+                'user_first_name': notification.user_first_name,
+                'user_last_name': notification.user_last_name,
                 'created_at': notification.created_at.isoformat(),
                 'read_by': notification.is_read_by(user),
             })
