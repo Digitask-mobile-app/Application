@@ -147,14 +147,13 @@ if server_ip == '135.181.42.192':
 
         },
     }
-
+    
 else:
     CHANNEL_LAYERS = {
         'default': {
             'BACKEND': 'channels_redis.core.RedisChannelLayer',
             'CONFIG': {
-                # Redis'in çalıştığı host ve port
-                "hosts": [("127.0.0.1", 6380)],
+                "hosts": [("127.0.0.1", 6380)],  # Redis'in çalıştığı host ve port
             },
         },
     }
@@ -246,11 +245,16 @@ GDAL_LIBRARY_PATH = 'C:\\Program Files\\GDAL\\gdalxxx.dll'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'mydatabase',  # This is where you put the name of the db file.
-        # If one doesn't exist, it will be created at migration time.
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB', 'mydatabase'),
+        'USER': os.getenv('POSTGRES_USER', 'digitask'), 
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'Caspera-12345'), 
+        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),  
+        'PORT': os.getenv('POSTGRES_PORT', '5432'),  
     }
 }
+
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
@@ -366,4 +370,4 @@ CORS_ALLOW_HEADERS = [
 
 
 # django.setup()
-# 22
+#22
