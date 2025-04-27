@@ -5,7 +5,8 @@ from accounts.models import Region
 
 class Warehouse(models.Model):
     name = models.CharField(max_length=255)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE)
+    region = models.ForeignKey(
+        Region, on_delete=models.CASCADE, blank=True, null=True)
     is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
