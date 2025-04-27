@@ -1,14 +1,15 @@
+from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
 from unicodedata import name
-from django.urls import path,include
+from django.urls import path, include
 from . import views
 from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
-router.register(r'positions', views.PositionModelViewSet)  
-from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
+router.register(r'positions', views.PositionModelViewSet)
+router.register(r'regions', views.RegionModelViewSet)
 
 urlpatterns = [
-     path('positions/', include(router.urls)), 
-
+    path('positions/', include(router.urls)),
+    path('', include(router.urls)),
     path('register/', views.RegisterView.as_view(), name='register'),
     path('gettoken/', TokenObtainPairView.as_view(), name='gettoken'),
     path('login/', views.LoginUserView.as_view(), name='login-user'),
@@ -28,8 +29,9 @@ urlpatterns = [
     path('delete-user/<int:user_id>/', views.delete_user, name='delete_user'),
     path('profile/', views.ProfileRetrieveView.as_view(), name='profile-retrieve'),
     path('profile_update/', views.ProfileView.as_view(), name='profile-update'),
-    path('profile_image_update/', views.ProfileImageUpdateView.as_view(), name='profile-image-update'),
-    
+    path('profile_image_update/', views.ProfileImageUpdateView.as_view(),
+         name='profile-image-update'),
+
     path('users/', views.UserListView.as_view(), name='user-list'),
     path('update_user/<int:pk>/', views.UpdateUserView.as_view(), name='user-update'),
     path('delete_user/<int:user_id>/',
@@ -38,16 +40,18 @@ urlpatterns = [
          name='UserFilterListView'),
     path('add_group/', views.AddGroup.as_view(), name='AddGroup'),
     path('remove_group/<int:pk>/', views.RemoveGroup.as_view(), name='RemoveGroup'),
-    
+
     path('rooms/<int:id>/add-members/',
          views.AddMembersView.as_view(), name='add-members'),
     path('rooms/<int:id>/remove-members/',
          views.RemoveMembersView.as_view(), name='remove-members'),
     path('messages/', views.MessageListView.as_view(), name='message-list'),
-    path('messages_mobile/', views.MessagesListView.as_view(), name='message-list_mobile'),
-    
+    path('messages_mobile/', views.MessagesListView.as_view(),
+         name='message-list_mobile'),
+
     path('RoomsApiView/', views.RoomsApiView.as_view(), name='RoomsApiView'),
-    path('reportsListView/', views.NotificationListView.as_view(), name='NotificationListView'),
+    path('reportsListView/', views.NotificationListView.as_view(),
+         name='NotificationListView'),
     path('notifications/mark-as-read/', views.MarkNotificationsAsReadView.as_view(),
          name='mark-notifications-as-read'),
 ]

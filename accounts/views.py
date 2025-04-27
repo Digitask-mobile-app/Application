@@ -513,3 +513,8 @@ class NotificationListView(generics.ListAPIView):
 class PositionModelViewSet(viewsets.ModelViewSet):
     queryset = Position.objects.all()
     serializer_class = PositionSerializer
+
+
+class RegionModelViewSet(viewsets.ModelViewSet):
+    queryset = Region.objects.all()
+    serializer_class = RegionSerializer

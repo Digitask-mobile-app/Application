@@ -40,7 +40,8 @@ from warehouse.models import WarehouseHistory
 # ssssssssssssssssssssssssssssssss
 
 
-class CreateGroupView(generics.CreateAPIView):
+class GroupViewSet(viewsets.ModelViewSet):
+    queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
 

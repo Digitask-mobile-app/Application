@@ -1,10 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext, gettext_lazy as _
-from .models import User, OneTimePassword, Group, Meeting, Notification, Room, Message, Position
+from .models import User, OneTimePassword, Group, Meeting, Notification, Room, Message, Position, Region
 from django.urls import reverse
 from django.utils.html import format_html
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
 
 class UserAdmin(BaseUserAdmin):
@@ -45,6 +44,7 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(User, UserAdmin)
 admin.site.register(OneTimePassword)
+admin.site.register(Region)
 admin.site.register(Group)
 admin.site.register(Meeting)
 admin.site.register(Notification)

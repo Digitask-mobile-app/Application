@@ -5,7 +5,8 @@ routerWarehouse = DefaultRouter()
 routerServices = DefaultRouter()
 routerWarehouse.register(r'warehouse_change', views.WarehouseChangeViewSet)
 routerServices.register(r'internet_packs', views.InternetPacksViewSet)
-
+router = DefaultRouter()
+router.register(r'user_groups', views.GroupViewSet)
 
 urlpatterns = [
     path('warehouse/', include(routerWarehouse.urls)),
@@ -16,8 +17,7 @@ urlpatterns = [
     path('status/', views.TaskListAPIView.as_view(), name='filtered_tasks'),
     path('performance/', views.PerformanceListView.as_view(), name='performance'),
     path('groups/', views.GroupListView.as_view(), name='groups'),
-    path("create_employee_group", views.CreateGroupView.as_view(),
-         name="create_employee_group"),
+    path('', include(router.urls)),
     path('update_task/<int:pk>/',
          views.TaskUpdateAPIView.as_view(), name='update_task'),
     path('update_task_image/<int:pk>/',

@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
-from .models import User, OneTimePassword, Group, Room, Message, Notification, Position
+from .models import User, OneTimePassword, Group, Room, Message, Notification, Position, Region
 from services.serializers import GroupSerializer
 from rest_framework import serializers
 from django.contrib.auth import authenticate
@@ -12,6 +12,7 @@ from django.utils.crypto import get_random_string
 from rest_framework.authtoken.models import Token
 from datetime import timedelta
 from services.models import Task
+
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
@@ -45,10 +46,12 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         )
         return user
 
+
 class PositionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Position
         fields = '__all__'
+
 
 class LoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=155, min_length=6)
@@ -219,7 +222,6 @@ class ProfileSerializer(serializers.ModelSerializer):
     )
     group = GroupSerializer(read_only=True)
 
-
     class Meta:
         model = User
         fields = [
@@ -236,6 +238,7 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
             'id', 'email', 'first_name', 'last_name', 'phone',
             'position', 'group', 'profil_picture'
         ]
+
 
 class ProfileReadSerializer(serializers.ModelSerializer):
     groupData = serializers.PrimaryKeyRelatedField(
@@ -268,6 +271,7 @@ class ProfileImageSerializer(serializers.ModelSerializer):
             'id',  'profil_picture'
         ]
 
+
 class ProfileImageSerializer(serializers.ModelSerializer):
     profil_picture = serializers.ImageField(
         allow_empty_file=True, required=False)
@@ -277,7 +281,6 @@ class ProfileImageSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'profil_picture'
         ]
-
 
     # def update(self, instance, validated_data):
     #     group_data = validated_data.pop('groupData', None)
@@ -300,6 +303,7 @@ class ProfileImageSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     group = GroupSerializer()
     position = PositionSerializer()
+
     class Meta:
         model = User
         fields = ['id', 'email', 'first_name', 'last_name',
@@ -387,12 +391,13 @@ class PerformanceUserSerializer(serializers.ModelSerializer):
         fields = ['id', 'first_name', 'last_name', 'position']
 
 
-
 class CreateRoomSerializer(serializers.ModelSerializer):
-    members = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True)
+    members = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), many=True)
+
     class Meta:
         model = Room
-        fields = ['name','members']
+        fields = ['name', 'members']
 
 
 class RemoveRoomSerializer(serializers.ModelSerializer):
@@ -424,6 +429,7 @@ class MessageSerializer(serializers.ModelSerializer):
                 return 'received'
         return 'received'
 
+
 class RoomSerializer(serializers.ModelSerializer):
     members = UserSerializer(many=True, read_only=True)
     admin = UserSerializer(read_only=True)
@@ -453,13 +459,22 @@ class AddRemoveRoomSerializer(serializers.ModelSerializer):
 class UpdateReadStatusSerializer(serializers.Serializer):
     notification_ids = serializers.ListField(child=serializers.IntegerField())
 
+
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = '__all__'
 
+
 class NotifySerializer(serializers.ModelSerializer):
     task = TaskSerializer()
+
     class Meta:
         model = Notification
+        fields = '__all__'
+
+
+class RegionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Region
         fields = '__all__'

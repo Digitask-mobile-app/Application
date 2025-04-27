@@ -23,7 +23,7 @@ class WarehouseViewSet(viewsets.ModelViewSet):
         except Warehouse.DoesNotExist:
             return Response({'error': 'Warehouse not found.'}, status=status.HTTP_404_NOT_FOUND)
         
-
+        
 class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.filter(is_deleted=False)
     serializer_class = ItemSerializer

@@ -36,9 +36,18 @@ class Position(models.Model):
         return self.name
 
 
+class Region(models.Model):
+    name = models.CharField(max_length=255)
+    is_deleted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
+
 class Group(models.Model):
     group = models.CharField(max_length=200)
-    region = models.CharField(max_length=200)
+    region = models.ForeignKey(
+        Region, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.group
