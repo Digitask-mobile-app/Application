@@ -21,7 +21,7 @@ class GroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = ['id', 'group', 'region', 'region_name']
+        fields = ['group', 'region', 'region_name']
 
 
 class InternetSerializer(serializers.ModelSerializer):
@@ -153,7 +153,7 @@ class TaskDetailSerializer(serializers.ModelSerializer):
         model = Task
         fields = [
             'id', 'user', 'full_name', 'task_type', 'registration_number',
-            'contact_number', 'location', 'note', 'date', 'start_time', 'end_time', 'status',
+            'contact_number', 'location', 'note', 'date', 'end_date', 'start_time', 'end_time', 'status',
             'tv', 'voice', 'internet', 'services', 'first_name', 'last_name', 'phone', 'group', 'latitude', 'longitude',
             "is_tv", "is_voice", "is_internet", "passport", 'has_tv', 'has_voice', 'has_internet',
             'task_items'
@@ -413,7 +413,7 @@ class UpdateTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = ['task_type', 'full_name', 'start_time', 'end_time', 'registration_number', 'contact_number', 'location',
-                  'services', 'status', 'group', 'note', "is_tv", "is_voice", "is_internet",  'date', 'latitude', 'longitude',
+                  'services', 'status', 'group', 'note', "is_tv", "is_voice", "is_internet",  'date', 'end_date', 'latitude', 'longitude',
                   'tv', 'voice', 'internet']
 
     def get_services(self, obj):

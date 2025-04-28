@@ -36,6 +36,7 @@ class Task(Status):
     passport = models.ImageField(null=True, blank=True)
     note = models.TextField(null=True, blank=True)
     date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
     start_time = models.TimeField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True)
     group = models.ManyToManyField(
