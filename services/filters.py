@@ -30,9 +30,9 @@ class StatusAndTaskFilter(django_filters.FilterSet):
     task_type = django_filters.ChoiceFilter(
         choices=TASK_TYPES, field_name='task_type')
     month = django_filters.ChoiceFilter(
-        choices=MONTH_CHOICES, method='filter_by_month', field_name='start_date')
+        choices=MONTH_CHOICES, method='filter_by_month', field_name='date')
     year = django_filters.NumberFilter(
-        method='filter_by_year', field_name='start_date')
+        method='filter_by_year', field_name='date')
     group = django_filters.CharFilter(
         field_name='group__region', lookup_expr='icontains')
     registration_number = django_filters.CharFilter(
@@ -44,10 +44,10 @@ class StatusAndTaskFilter(django_filters.FilterSet):
                   'group', 'registration_number']
 
     def filter_by_month(self, queryset, name, value):
-        return queryset.filter(start_date__month=value)
+        return queryset.filter(date__month=value)
 
     def filter_by_year(self, queryset, name, value):
-        return queryset.filter(start_date__year=value)
+        return queryset.filter(date__year=value)
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
@@ -68,9 +68,9 @@ class StatusAndTaskFilter(django_filters.FilterSet):
 
 class TaskFilter(django_filters.FilterSet):
     start_date = django_filters.DateFilter(
-        field_name='start_date', lookup_expr='gte', label='Start Date', widget=forms.DateInput(attrs={'type': 'date'}))
+        field_name='date', lookup_expr='gte', label='Start Date', widget=forms.DateInput(attrs={'type': 'date'}))
     end_date = django_filters.DateFilter(
-        field_name='start_date', lookup_expr='lte', label='End Date', widget=forms.DateInput(attrs={'type': 'date'}))
+        field_name='date', lookup_expr='lte', label='End Date', widget=forms.DateInput(attrs={'type': 'date'}))
 
     class Meta:
         model = Task
@@ -96,7 +96,7 @@ class UserFilter(django_filters.FilterSet):
         if start_date:
             try:
                 start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
-                task_ids = task_ids.filter(start_date__gte=start_date)
+                task_ids = task_ids.filter(date__gte=start_date)
             except ValueError:
                 raise serializers.ValidationError(
                     "Invalid start_date format. Use YYYY-MM-DD.")
@@ -104,7 +104,7 @@ class UserFilter(django_filters.FilterSet):
         if end_date:
             try:
                 end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
-                task_ids = task_ids.filter(start_date__lte=end_date)
+                task_ids = task_ids.filter(date__lte=end_date)
             except ValueError:
                 raise serializers.ValidationError(
                     "Invalid end_date format. Use YYYY-MM-DD.")
