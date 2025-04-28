@@ -21,7 +21,7 @@ class GroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = ['group', 'region', 'region_name']
+        fields = ['id', 'group', 'region', 'region_name']
 
 
 class InternetSerializer(serializers.ModelSerializer):
