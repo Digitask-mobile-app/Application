@@ -17,12 +17,11 @@ class InternetPackSerializer(serializers.ModelSerializer):
 
 
 class GroupSerializer(serializers.ModelSerializer):
-    region_name = serializers.CharField(
-        source='region.name', read_only=True) 
+    region_name = serializers.CharField(source='region.name', read_only=True)
 
     class Meta:
         model = Group
-        fields = ['group', 'region_name']
+        fields = ['group', 'region', 'region_name']
 
 
 class InternetSerializer(serializers.ModelSerializer):
