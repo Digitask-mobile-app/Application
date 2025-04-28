@@ -5,15 +5,19 @@ from django.apps import apps
 
 User = apps.get_model(settings.AUTH_USER_MODEL)
 
+
 class WarehouseUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','first_name','last_name','email']
+        fields = ['id', 'first_name', 'last_name', 'email']
+
 
 class WarehouseSerializer(serializers.ModelSerializer):
+    region_name = serializers.CharField(source='region.name', read_only=True)
+
     class Meta:
         model = Warehouse
-        fields = '__all__'
+        fields = ['id', 'name', 'region', 'region_name']
 
 
 class ItemSerializer(serializers.ModelSerializer):
