@@ -17,7 +17,7 @@ class WarehouseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Warehouse
-        fields = ['id', 'name', 'region', 'region_name']
+        fields = ['id', 'name', 'region', 'region_name', 'is_deleted']
 
 
 class ItemSerializer(serializers.ModelSerializer):
