@@ -60,7 +60,7 @@ class StatusAndTaskFilter(django_filters.FilterSet):
                 combined_queryset = texnik_tasks | waiting_tasks
                 combined_queryset = combined_queryset.distinct()
                 return combined_queryset
-            elif user.position and user.position.tasks_permission == 'read_only':
+            elif user.position and user.position.user_permission == 'read_only':
                 return queryset
             return []
         return []

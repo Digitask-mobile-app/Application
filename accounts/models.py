@@ -22,6 +22,12 @@ USER_PERMISSIONS = (
     ('is_admin', 'is_admin')
 )
 
+TASK_PERMISSIONS = (
+    ('technician', 'technician'),
+    ('read_write', 'read_write'),
+    ('is_admin', 'is_admin')
+)
+
 
 class Position(models.Model):
     name = models.CharField(max_length=200)
@@ -30,7 +36,7 @@ class Position(models.Model):
     users_permission = models.CharField(
         max_length=200, choices=USER_PERMISSIONS)
     tasks_permission = models.CharField(
-        max_length=200, choices=USER_PERMISSIONS)
+        max_length=200, choices=TASK_PERMISSIONS)
 
     def __str__(self):
         return self.name
