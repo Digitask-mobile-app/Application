@@ -25,7 +25,8 @@ USER_PERMISSIONS = (
 TASK_PERMISSIONS = (
     ('technician', 'technician'),
     ('read_write', 'read_write'),
-    ('is_admin', 'is_admin')
+    ('is_admin', 'is_admin'),
+    ('no_access', 'no_access')
 )
 
 
