@@ -20,7 +20,7 @@ class Item(models.Model):
     model = models.CharField(max_length=255, blank=True, null=True)
     mac = models.CharField(max_length=255, blank=True, null=True)
     port_count = models.SmallIntegerField(default=0)
-    port_number = models.PositiveIntegerField(blank=True, null=True)
+    port_number = models.SmallIntegerField(blank=True, null=True)
     serial_number = models.CharField(
         max_length=255,  blank=True, null=True)
     size_length = models.DecimalField(
