@@ -55,7 +55,7 @@ class ItemViewSet(viewsets.ModelViewSet):
             item=serializer.instance,
             modified_by=request.user,
             action='add',
-            old_count=0,
+            old_count=serializer.instance.count,
             new_count=serializer.instance.count,
             delivery_note=request.data.get('delivery_note', ''),
         )

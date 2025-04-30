@@ -21,9 +21,17 @@ class WarehouseSerializer(serializers.ModelSerializer):
 
 
 class ItemSerializer(serializers.ModelSerializer):
+    created_by_name = serializers.SerializerMethodField()
+
     class Meta:
         model = Item
         fields = '__all__'
+        read_only_fields = ['created_by_name']
+
+    def get_created_by_name(self, obj):
+        user = obj.created_by
+        full_name = f"{user.first_name} {user.last_name}".strip()
+        return full_name if full_name else user.email
 
 
 class WarehouseHistorySerializer(serializers.ModelSerializer):
