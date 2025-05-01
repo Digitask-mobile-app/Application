@@ -23,7 +23,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'first_name', 'last_name', 'group',
-                  "position", 'username', 'password', 'password2', 'phone']
+                  "position", 'password', 'password2', 'phone']
 
     def validate(self, attrs):
         password = attrs.get('password', '')
@@ -40,7 +40,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             last_name=validated_data.get('last_name'),
             password=validated_data.get('password'),
             group=validated_data.get('group'),
-            username=validated_data.get('username'),
             position=validated_data.get('position'),
             phone=validated_data.get('phone'),
         )
@@ -307,7 +306,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'email', 'first_name', 'last_name',
-                  'phone', 'position', 'group', 'username']
+                  'phone', 'position', 'group']
 
 
 class UserFilterSerializer(serializers.ModelSerializer):
@@ -331,14 +330,13 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'id', 'email', 'phone', 'position', 'username',
+            'id', 'email', 'phone', 'position',
             'group', 'group_id', 'password', 'password2',
             'first_name', 'last_name'
         ]
         extra_kwargs = {
             'email': {'required': False},
             'phone': {'required': False, 'allow_blank': True, 'allow_null': True},
-            'username': {'required': False, 'allow_blank': True, 'allow_null': True},
             'group_id': {'required': False, 'allow_null': True},
             'password': {'required': False},
             'password2': {'required': False},
