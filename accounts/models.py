@@ -29,6 +29,11 @@ TASK_PERMISSIONS = (
     ('no_access', 'no_access')
 )
 
+REPORT_PERMISSIONS = (
+    ('is_admin', 'is_admin'),
+    ('no_access', 'no_access')
+)
+
 
 class Position(models.Model):
     name = models.CharField(max_length=200)
@@ -38,6 +43,8 @@ class Position(models.Model):
         max_length=200, choices=USER_PERMISSIONS)
     tasks_permission = models.CharField(
         max_length=200, choices=TASK_PERMISSIONS)
+    report_permission = models.CharField(
+        max_length=200, choices=REPORT_PERMISSIONS)
 
     def __str__(self):
         return self.name
