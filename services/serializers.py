@@ -213,7 +213,7 @@ class PerformanceSerializer(serializers.ModelSerializer):
             group_data = {
                 'id': obj.group.id,
                 'group': obj.group.group,
-                'region': obj.group.region
+                'region': str(obj.group.region) if obj.group.region else None
             }
         return group_data
 
