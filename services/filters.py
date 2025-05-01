@@ -53,14 +53,14 @@ class StatusAndTaskFilter(django_filters.FilterSet):
         queryset = super().filter_queryset(queryset)
         user = self.request.user
         if self.request.user.is_authenticated:
-            if user.position and user.position.tasks_permission == 'read_write':
+            if user.position and user.position.tasks_permission == 'technician':
                 valid_statuses = ['waiting']
                 waiting_tasks = queryset.filter(status__in=valid_statuses)
                 texnik_tasks = queryset.filter(user=self.request.user)
                 combined_queryset = texnik_tasks | waiting_tasks
                 combined_queryset = combined_queryset.distinct()
                 return combined_queryset
-            elif user.position and user.position.user_permission == 'read_only':
+            elif user.position and user.position.task_permission != 'no_access':
                 return queryset
             return []
         return []
