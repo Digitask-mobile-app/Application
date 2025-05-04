@@ -34,7 +34,7 @@ class StatusAndTaskFilter(django_filters.FilterSet):
     year = django_filters.NumberFilter(
         method='filter_by_year', field_name='date')
     group = django_filters.CharFilter(
-        field_name='group__region', lookup_expr='icontains')
+        field_name='group__region__name', lookup_expr='icontains')
     registration_number = django_filters.CharFilter(
         field_name='registration_number', lookup_expr='icontains')
 
