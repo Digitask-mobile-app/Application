@@ -295,12 +295,13 @@ class MainPageUserSerializer(serializers.ModelSerializer):
     task_details = serializers.SerializerMethodField()
     completed_tasks = serializers.SerializerMethodField()
     ongoing_tasks = serializers.SerializerMethodField()
+    waiting_tasks = serializers.SerializerMethodField()
     meetings = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'group', 'position', 'is_staff',
-                  'is_superuser', 'task_details', 'completed_tasks', 'meetings', 'ongoing_tasks')
+                  'is_superuser', 'task_details', 'completed_tasks', 'meetings', 'ongoing_tasks', 'waiting_tasks')
 
     def get_task_details(self, obj):
         # if obj.position.name == 'Texnik' or obj.position == 'Plumber':
@@ -354,6 +355,17 @@ class MainPageUserSerializer(serializers.ModelSerializer):
         ongoing_tasks = Task.objects.filter(
             status__in=['started', 'inprogress'])
         data = TaskSerializer(ongoing_tasks, many=True).data
+        return data
+
+    def get_waiting_tasks(self, obj):
+        waiting_tasks = Task.objects.filter(status__in=['waiting'])
+
+        if waiting_tasks.exists():
+            data = TaskSerializer(waiting_tasks, many=True).data
+        else:
+            all_tasks = Task.objects.all()
+            data = TaskSerializer(all_tasks, many=True).data
+
         return data
 
     def get_meetings(self, obj):
