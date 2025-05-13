@@ -53,6 +53,8 @@ urlpatterns = [
          views.WarehouseChangeBulkCreateView.as_view(), name='warehousechange-bulk-create'),
     path('api/task-report/', views.TaskReportAPIView.as_view(), name='task-report'),
     path('map-tasks/', views.MapTaskListView.as_view(), name='map-tasks'),
+    path('resolve-map-url/', views.ResolveMapUrlView.as_view(),
+         name='resolve_map_url'),
 
 ]
 # s

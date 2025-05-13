@@ -16,28 +16,10 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
 from accounts.models import Notification
 from warehouse.models import WarehouseHistory
+import requests
+import re
+from rest_framework.permissions import AllowAny
 
-# class CreateTaskView(generics.CreateAPIView):
-#     serializer_class = CreateTaskSerializer
-
-#     def perform_create(self, serializer):
-#         instance = serializer.save()
-#         self.create_status_notification(instance)
-
-
-#     def create_status_notification(self, task_instance):
-#         message = f'Yeni tapşırıq əlavə edildi. Qeydiyyat nömrəsi {task_instance.registration_number} Tapşırıq siyahısını nəzərdən keçirməniz rica olunur!'
-#         notification = Notification.objects.create(
-#             task=task_instance,
-#             message=message,
-#             action='create'
-#         )
-
-#         texnik_users = User.objects.filter(user_type='Ofis menecer')
-#         plumber_users = User.objects.filter(user_type='Texnik menecer')
-#         notification.users.set(texnik_users | plumber_users)
-#         notification.save()
-# ssssssssssssssssssssssssssssssss
 
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -175,6 +157,43 @@ class CreateTaskView(generics.CreateAPIView):
         notification.users.set(User.objects.all())
         notification.save()
 
+class ResolveMapUrlView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        url = request.GET.get('url')
+        if not url:
+            return JsonResponse({'error': 'URL is required'}, status=400)
+
+        try:
+            def extract_coords(text):
+                regexes = [
+                    r'@(-?\d+\.\d+),(-?\d+\.\d+)',
+                    r'q=(-?\d+\.\d+),(-?\d+\.\d+)',
+                    r'place/(-?\d+\.\d+),(-?\d+\.\d+)',
+                ]
+                for pattern in regexes:
+                    match = re.search(pattern, text)
+                    if match:
+                        return float(match.group(1)), float(match.group(2))
+                return None
+
+            if "maps.app.goo.gl" in url:
+                response = requests.get(url, allow_redirects=True)
+                final_url = response.url
+                coords = extract_coords(final_url)
+            else:
+                coords = extract_coords(url)
+
+            if coords:
+                return JsonResponse({
+                    'latitude': coords[0],
+                    'longitude': coords[1]
+                })
+            return JsonResponse({'error': 'Coordinates not found'}, status=404)
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
 
 class CreateTvView(generics.CreateAPIView):
     queryset = TV.objects.all()
