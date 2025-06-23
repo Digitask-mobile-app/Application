@@ -47,7 +47,9 @@ CORS_ALLOWED_ORIGINS = [
     "https://desgah.az",
     "http://desgah.az",
     "https://app.desgah.az",
-    "http://app.desgah.az"
+    "http://app.desgah.az",
+    "https://app.digitask.store",
+    "http://app.digitask.store",
 ]
 
 # Application definition
@@ -63,7 +65,9 @@ CSRF_TRUSTED_ORIGINS = [
     "https://desgah.az",
     "http://desgah.az",
     "https://app.desgah.az",
-    "http://app.desgah.az"
+    "http://app.desgah.az",
+    "https://app.digitask.store",
+    "http://app.digitask.store",
 ]
 
 
