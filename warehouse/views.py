@@ -58,6 +58,9 @@ class ItemViewSet(viewsets.ModelViewSet):
             old_count=serializer.instance.count,
             new_count=serializer.instance.count,
             delivery_note=request.data.get('delivery_note', ''),
+            requested_count=request.data.get(
+                'requested_count', serializer.instance.count),
+
         )
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -76,6 +79,7 @@ class ItemViewSet(viewsets.ModelViewSet):
             old_count=old_count,
             new_count=item.count,
             delivery_note=request.data.get('delivery_note', ''),
+            requested_count=request.data.get('requested_count'),
         )
 
         return response
@@ -84,6 +88,8 @@ class ItemViewSet(viewsets.ModelViewSet):
         try:
             item = self.get_object()
             old_count = item.count
+            requested_count = int(request.data.get('requested_count', 0))
+            has_problem = requested_count > old_count
             item.count = 0
             item.is_deleted = True
             item.save()
@@ -95,6 +101,7 @@ class ItemViewSet(viewsets.ModelViewSet):
                 old_count=old_count,
                 new_count=0,
                 delivery_note=request.data.get('delivery_note', ''),
+                requested_count=requested_count,
             )
 
             return Response({'message': f'Item has been deleted and count set to zero.'}, status=status.HTTP_204_NO_CONTENT)

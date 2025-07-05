@@ -74,6 +74,7 @@ class WarehouseHistory(models.Model):
     has_problem = models.BooleanField(default=False)
     must_change = models.PositiveBigIntegerField(
         default=0, null=True, blank=True)
+    requested_count = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.item.equipment_name}  - {self.action}"
