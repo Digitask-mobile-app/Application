@@ -2,6 +2,7 @@ from django.db import models
 from accounts.models import User, Group
 # from django.contrib.gis.db import models
 from django.utils import timezone
+import datetime
 
 
 TASK_TYPES = (
@@ -37,8 +38,8 @@ class Task(Status):
     note = models.TextField(null=True, blank=True)
     date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
-    start_time = models.TimeField(null=True, blank=True)
-    end_time = models.TimeField(null=True, blank=True)
+    start_time = models.TimeField(default=datetime.time(9, 0), null=True, blank=True)
+    end_time = models.TimeField(default=datetime.time(18, 0), null=True, blank=True)
     group = models.ManyToManyField(
         Group, related_name='group_tasks', blank=True)
     status = models.CharField(
