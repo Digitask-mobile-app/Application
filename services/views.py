@@ -44,11 +44,30 @@ class TaskDetailView(RetrieveAPIView):
 
 
 class TaskListAPIView(generics.ListAPIView):
+    serializer_class = TaskSerializer
+    filterset_class = StatusAndTaskFilter
+    filter_backends = (DjangoFilterBackend,)
+    
+
+    def get_queryset(self):
+        user = self.request.user
+        
+        if user.is_authenticated:
+            queryset = Task.objects.filter(
+                Q(user__isnull=True) | Q(user=user)
+            ).order_by('-created_at')
+        else:
+            queryset = Task.objects.filter(
+                user__isnull=True
+            ).order_by('-created_at')
+        
+        return queryset
+
+class TaskWebListAPIView(generics.ListAPIView):
     queryset = Task.objects.all().order_by('-created_at')
     serializer_class = TaskSerializer
     filterset_class = StatusAndTaskFilter
     filter_backends = (DjangoFilterBackend,)
-
 
 class UserTaskListView(APIView):
     serializer_class = TaskSerializer

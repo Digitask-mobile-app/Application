@@ -15,6 +15,7 @@ urlpatterns = [
     path('usertasks/', views.UserTaskListView.as_view(), name='user_tasks'),
     path('task/<int:id>/', views.TaskDetailView.as_view(), name='task-detail'),
     path('status/', views.TaskListAPIView.as_view(), name='filtered_tasks'),
+    path('statusweb/', views.TaskWebListAPIView.as_view(), name='filtered_tasks'),
     path('performance/', views.PerformanceListView.as_view(), name='performance'),
     path('groups/', views.GroupListView.as_view(), name='groups'),
     path('', include(router.urls)),
