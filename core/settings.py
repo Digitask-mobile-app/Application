@@ -345,7 +345,7 @@ else:
 
 # STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
-MEDIA_URL = 'https://app.desgah.az/media/'
+MEDIA_URL = 'https://app.digitask.store/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Default primary key field type
