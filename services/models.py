@@ -52,7 +52,7 @@ class Task(Status):
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return self.task_type
+        return self.task_type + ' ' + self.full_name + ' ' + self.registration_number
 
     def is_service(self):
         return hasattr(self, 'internet') or hasattr(self, 'tv') or hasattr(self, 'voice')
